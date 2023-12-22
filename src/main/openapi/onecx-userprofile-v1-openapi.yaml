@@ -1,0 +1,522 @@
+---
+openapi: 3.0.3
+info:
+  title: onecx-user-profile internal service
+  version: 1.0.0
+servers:
+  - url: "http://onecx-user-profile:8080"
+tags:
+  - name: userProfileV1
+  - name: userAvatarV1
+paths:
+  /v1/userProfile/me:
+    get:
+      tags:
+        - userProfileV1
+      description: Load user profile for current user
+      operationId: getUserProfile
+      responses:
+        "200":
+          description: User profile of current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+    delete:
+      tags:
+        - userProfileV1
+      description: Delete user profile for current user
+      operationId: deleteUserProfile
+      responses:
+        "204":
+          description: OK
+        "400":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /v1/userProfile/me/preferences:
+    get:
+      tags:
+        - userProfileV1
+      description: Load user preferences for current user
+      operationId: getUserPreference
+      responses:
+        "200":
+          description: User profile of current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPreferences'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+    post:
+      tags:
+        - userProfileV1
+      description: Create user preference
+      operationId: createUserPreference
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserPreference'
+      responses:
+        "201":
+          description: OK
+          headers:
+            Location:
+              required: true
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPreference'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /v1/userProfile/me/preferences/{id}:
+    patch:
+      tags:
+        - userProfileV1
+      description: Update preference value
+      operationId: updateUserPreference
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPreference'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        "404":
+          description: User preference not found
+    delete:
+      tags:
+        - userProfileV1
+      description: Delete preference by id for current user
+      operationId: deleteUserPreference
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        "204":
+          description: OK
+        "400":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /v1/userProfile/me/person:
+    get:
+      tags:
+        - userProfileV1
+      description: Load user person for current user
+      operationId: getUserPerson
+      responses:
+        "200":
+          description: User person of current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPerson'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+    put:
+      tags:
+        - userProfileV1
+      description: Update person information
+      operationId: updateUserPerson
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserPerson'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPerson'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /v1/userProfile/me/settings:
+    get:
+      tags:
+        - userProfileV1
+      description: Load user profile account settings for current user
+      operationId: getUserSettings
+      responses:
+        "200":
+          description: User profile account settings of current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileAccountSettings'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+    put:
+      tags:
+        - userProfileV1
+      description: Update user account settings
+      operationId: updateUserSettings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserSettings'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileAccountSettings'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /v1/userProfile/me/avatar:
+    get:
+      tags:
+        - avatarV1
+      description: Get user avatar info
+      operationId: getUserAvatarInfo
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageInfo'
+        "404":
+          description: User avatar not found
+    put:
+      tags:
+        - avatarV1
+      description: Upload user avatar
+      operationId: uploadAvatar
+      requestBody:
+        required: true
+        content:
+          'image/*':
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageInfo'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+    delete:
+      tags:
+        - avatarV1
+      description: Delete user's avatar
+      operationId: deleteUserAvatar
+      responses:
+        '204':
+          description: No Content
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /v1/userProfile/me/avatar/{id}:
+    get:
+      tags:
+        - avatarV1
+      description: Get the image of user's avatar
+      operationId: getUserAvatar
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        "404":
+          description: Not found
+components:
+  schemas:
+    CreateUserPreference:
+      type: object
+      properties:
+        applicationId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        value:
+          type: string
+    UserPreferences:
+      type: object
+      properties:
+        preferences:
+          items:
+            $ref: '#/components/schemas/UserPreference'
+    UserPreference:
+      type: object
+      properties:
+        id:
+          type: string
+        applicationId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        value:
+          type: string
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: string
+        version:
+          format: int32
+          type: integer
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        userId:
+          type: string
+        identityProvider:
+          type: string
+        identityProviderId:
+          type: string
+        organization:
+          type: string
+        person:
+          $ref: '#/components/schemas/UserPerson'
+        accountSettings:
+          $ref: '#/components/schemas/UserProfileAccountSettings'
+    UserPerson:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        displayName:
+          type: string
+        email:
+          type: string
+        address:
+          $ref: '#/components/schemas/UserPersonAddress'
+        phone:
+          $ref: '#/components/schemas/UserPersonPhone'
+    UserPersonAddress:
+      type: object
+      properties:
+        street:
+          type: string
+        streetNo:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+        postalCode:
+          type: string
+    UserPersonPhone:
+      type: object
+      properties:
+        number:
+          type: string
+        type:
+          $ref: '#/components/schemas/PhoneType'
+    PhoneType:
+      enum:
+        - MOBILE
+        - LANDLINE
+      type: string
+    UpdateUserPerson:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        displayName:
+          type: string
+        email:
+          type: string
+        address:
+          $ref: '#/components/schemas/UserPersonAddress'
+        phone:
+          $ref: '#/components/schemas/UserPersonPhone'
+    UpdateUserSettings:
+      type: object
+      properties:
+        hideMyProfile:
+          type: boolean
+        locale:
+          type: string
+        timezone:
+          type: string
+        menuMode:
+          $ref: '#/components/schemas/MenuMode'
+        colorScheme:
+          $ref: '#/components/schemas/ColorScheme'
+    UserProfileAccountSettings:
+      type: object
+      properties:
+        hideMyProfile:
+          type: boolean
+        locale:
+          type: string
+        timezone:
+          type: string
+        menuMode:
+          $ref: '#/components/schemas/MenuMode'
+        colorScheme:
+          $ref: '#/components/schemas/ColorScheme'
+    MenuMode:
+      enum:
+        - STATIC
+        - HORIZONTAL
+        - OVERLAY
+        - SLIM
+        - SLIMPLUS
+      type: string
+    ColorScheme:
+      enum:
+        - AUTO
+        - LIGHT
+        - DARK
+      type: string
+    ImageInfo:
+      type: object
+      properties:
+        version:
+          format: int32
+          type: integer
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        id:
+          type: string
+        userUploaded:
+          description: flag whether Image was uploaded by user
+          type: boolean
+        imageUrl:
+          type: string
+          example: http://tkit-portal/data/afcc5d0d-6509-497a-8125-614f82b106ae
+        smallImageUrl:
+          type: string
+          example: http://tkit-portal/data/afcc5d0d-6509-497a-8125-614f82asb106ae
+    ProblemDetailResponse:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        detail:
+          type: string
+        params:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemDetailParam'
+        invalidParams:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemDetailInvalidParam'
+    ProblemDetailParam:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    ProblemDetailInvalidParam:
+      type: object
+      properties:
+        name:
+          type: string
+        message:
+          type: string
+    OffsetDateTime:
+      format: date-time
+      type: string
+      example: 2022-03-10T12:15:50-04:00
+  parameters:
+    id:
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
