@@ -1,0 +1,340 @@
+---
+openapi: 3.0.3
+info:
+  title: onecx-user-profile internal service
+  version: 1.0.0
+servers:
+  - url: "http://onecx-user-profile:8080"
+tags:
+  - name: userProfileInternal
+paths:
+  /internal/userProfiles:
+    post:
+      tags:
+        - userProfileInternal
+      description: Create new user profile
+      operationId: createUserProfile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserProfileRequest'
+      responses:
+        "201":
+          description: New user profile created
+          headers:
+            Location:
+              required: true
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/userProfiles/search:
+    post:
+      tags:
+        - userProfileInternal
+      description: Search for user profiles by search criteria
+      operationId: searchUserProfile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPersonCriteria'
+      responses:
+        "200":
+          description: Corresponding user profiles
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfilePageResult'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/userProfiles/{id}:
+    get:
+      tags:
+        - userProfileInternal
+      description: Return user profile by id
+      operationId: getUserProfile
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        "404":
+          description: Not found
+    put:
+      tags:
+        - userProfileInternal
+      description: Update workspace by ID
+      operationId: updateUserProfile
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserPersonRequest'
+      responses:
+        "204":
+          description: User profile updated
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        "404":
+          description: User profile not found
+    delete:
+      tags:
+        - userProfileInternal
+      description: Delete user profile by ID
+      operationId: deleteUserProfile
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+components:
+  schemas:
+    UserPersonCriteria:
+      type: object
+      properties:
+        userId:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 10
+          type: integer
+    UserProfilePageResult:
+      type: object
+      properties:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserProfile'
+    CreateUserProfileRequest:
+      type: object
+      properties:
+        userId:
+          type: string
+        identityProvider:
+          type: string
+        identityProviderId:
+          type: string
+        organization:
+          type: string
+        person:
+          $ref: '#/components/schemas/CreateUserPerson'
+    CreateUserPerson:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        displayName:
+          type: string
+        email:
+          type: string
+    UpdateUserPersonRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        displayName:
+          type: string
+        email:
+          type: string
+        address:
+          $ref: '#/components/schemas/UserPersonAddress'
+        phone:
+          $ref: '#/components/schemas/UserPersonPhone'
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: string
+        version:
+          format: int32
+          type: integer
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        userId:
+          type: string
+        identityProvider:
+          type: string
+        identityProviderId:
+          type: string
+        organization:
+          type: string
+        person:
+          $ref: '#/components/schemas/UserPerson'
+        accountSettings:
+          $ref: '#/components/schemas/UserProfileAccountSettings'
+    UserPerson:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        displayName:
+          type: string
+        email:
+          type: string
+        address:
+          $ref: '#/components/schemas/UserPersonAddress'
+        phone:
+          $ref: '#/components/schemas/UserPersonPhone'
+    UserPersonAddress:
+      type: object
+      properties:
+        street:
+          type: string
+        streetNo:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+        postalCode:
+          type: string
+    UserPersonPhone:
+      type: object
+      properties:
+        number:
+          type: string
+        type:
+          $ref: '#/components/schemas/PhoneType'
+    PhoneType:
+      enum:
+        - MOBILE
+        - LANDLINE
+      type: string
+    UserProfileAccountSettings:
+      type: object
+      properties:
+        hideMyProfile:
+          type: boolean
+        locale:
+          type: string
+        timezone:
+          type: string
+        menuMode:
+          $ref: '#/components/schemas/MenuMode'
+        colorScheme:
+          $ref: '#/components/schemas/ColorScheme'
+    MenuMode:
+      enum:
+        - STATIC
+        - HORIZONTAL
+        - OVERLAY
+        - SLIM
+        - SLIMPLUS
+      type: string
+    ColorScheme:
+      enum:
+        - AUTO
+        - LIGHT
+        - DARK
+      type: string
+    ProblemDetailResponse:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        detail:
+          type: string
+        params:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemDetailParam'
+        invalidParams:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemDetailInvalidParam'
+    ProblemDetailParam:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    ProblemDetailInvalidParam:
+      type: object
+      properties:
+        name:
+          type: string
+        message:
+          type: string
+    OffsetDateTime:
+      format: date-time
+      type: string
+      example: 2022-03-10T12:15:50-04:00
+  parameters:
+    id:
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
