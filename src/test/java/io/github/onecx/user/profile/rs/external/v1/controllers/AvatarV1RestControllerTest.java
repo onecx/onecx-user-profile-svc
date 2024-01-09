@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.io.github.onecx.user.profile.rs.external.v1.model.ImageInfoDTO;
+import gen.io.github.onecx.user.profile.rs.internal.model.ProblemDetailResponseDTO;
 import io.github.onecx.user.profile.test.AbstractTest;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -24,6 +25,35 @@ public class AvatarV1RestControllerTest extends AbstractTest {
 
     @Test
     void testAvatarRestControler() throws URISyntaxException, IOException {
+        // test empty jpg image
+        File emptyAvatar = new File("src/test/resources/data/avatar_empty.jpg");
+        var error = given()
+                .when()
+                .contentType("image/jpg")
+                .body(emptyAvatar)
+                .header(APM_HEADER_PARAM, createToken("user1", null))
+                .put()
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode())
+                .extract().as(ProblemDetailResponseDTO.class);
+
+        assertThat(error).isNotNull();
+        assertThat(error.getErrorCode()).isEqualTo("UPLOAD_ERROR");
+
+        var avatarInfo = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .header(APM_HEADER_PARAM, createToken("user1", null))
+                .get()
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(ImageInfoDTO.class);
+
+        assertThat(avatarInfo).isNotNull();
+        assertThat(avatarInfo.getImageUrl()).isNotNull();
+        assertThat(avatarInfo.getSmallImageUrl()).isNotNull();
+
+        // add avatar
         File avatar = new File("src/test/resources/data/avatar_test.jpg");
 
         var imageInfo = given()
@@ -64,7 +94,7 @@ public class AvatarV1RestControllerTest extends AbstractTest {
 
         assertThat(avatarByteArray).isNotNull();
 
-        var avatarInfo = given()
+        avatarInfo = given()
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user1", null))

@@ -14,10 +14,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.jboss.resteasy.reactive.RestResponse;
-import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 import org.tkit.quarkus.context.ApplicationContext;
-import org.tkit.quarkus.jpa.exceptions.DAOException;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.io.github.onecx.user.profile.rs.external.v1.AvatarV1Api;
@@ -142,39 +139,25 @@ public class AvatarV1RestController implements AvatarV1Api {
                     .concat(userProfile.getSmallAvatar().getId()));
 
             return Response.ok(imageInfo).build();
-        } catch (IOException ioe) {
-            var e = exceptionMapper.exception("IO_EXCEPTION", ioe.getMessage());
+        } catch (Exception ioe) {
+            var e = exceptionMapper.exception("UPLOAD_ERROR", ioe.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
         }
     }
 
-    @ServerExceptionMapper
-    public RestResponse<ProblemDetailResponseDTO> exception(DAOException ex) {
-        return exceptionMapper.exception(ex);
-    }
-
-    private Image updateUserAvatar(UserProfile userProfile, byte[] avatarBytes, byte[] smallAvatarBytes, String mimeType) {
-
+    private Image updateUserAvatar(UserProfile userProfile, byte[] avatarBytes, byte[] smallAvatarBytes, String mimeType)
+            throws IOException {
         var avatar = new Image();
         userProfile.setAvatar(avatar);
         avatar.setImage(avatarBytes);
         avatar.setMimeType(mimeType);
-        try {
-            this.setUpAvatarDimensions(avatar);
-        } catch (IOException e) {
-            log.error("Exception thrown when setting up small avatar's metadata", e);
-        }
+        this.setUpAvatarDimensions(avatar);
 
         var smallAvatar = new Image();
         userProfile.setSmallAvatar(smallAvatar);
         smallAvatar.setImage(smallAvatarBytes);
         smallAvatar.setMimeType("image/png");
-        try {
-            this.setUpAvatarDimensions(smallAvatar);
-        } catch (IOException e) {
-            log.error("Exception thrown when setting up small avatar's metadata", e);
-        }
-
+        this.setUpAvatarDimensions(smallAvatar);
         userProfile.setSmallAvatar(smallAvatar);
 
         userProfileDAO.update(userProfile);
@@ -182,12 +165,10 @@ public class AvatarV1RestController implements AvatarV1Api {
     }
 
     private byte[] convertToSmallImage(byte[] imgBytesArray) throws IOException {
-
         return ImageUtilService.resizeImage(imgBytesArray, smallImgWidth, smallImgHeight);
     }
 
     private void setUpAvatarDimensions(Image avatar) throws IOException {
-
         var image = ImageIO.read(new ByteArrayInputStream(avatar.getImage()));
         avatar.setHeight(image.getHeight());
         avatar.setWidth(image.getWidth());
