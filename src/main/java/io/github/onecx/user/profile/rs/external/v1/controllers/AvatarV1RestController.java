@@ -116,6 +116,10 @@ public class AvatarV1RestController implements AvatarV1Api {
         var userProfile = userProfileDAO.getUserProfileByUserId(ApplicationContext.get().getPrincipal(),
                 UserProfile.ENTITY_GRAPH_LOAD_ALL);
 
+        if (userProfile == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
         try {
             byte[] avatarBytes = Files.readAllBytes(body.toPath());
             InputStream avatarIs = new ByteArrayInputStream(avatarBytes);

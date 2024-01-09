@@ -2,6 +2,7 @@ package io.github.onecx.user.profile.domain.models;
 
 import jakarta.persistence.*;
 
+import org.hibernate.annotations.TenantId;
 import org.tkit.quarkus.jpa.models.TraceableEntity;
 
 import lombok.Getter;
@@ -41,6 +42,7 @@ public class UserProfile extends TraceableEntity {
     @Column(name = "USER_ID")
     private String userId;
 
+    @TenantId
     @Column(name = "TENANT_ID")
     private String tenantId;
 

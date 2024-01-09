@@ -24,6 +24,6 @@ public class UserProfileDAOTest extends AbstractTest {
 
         var resultList = dao.findBySearchCriteria(null, 0, 10);
         assertThat(resultList).isNotNull();
-        assertThat(resultList.getTotalElements()).isEqualTo(4);
+        assertThat(resultList.getTotalElements()).isEqualTo(2);
     }
 }
