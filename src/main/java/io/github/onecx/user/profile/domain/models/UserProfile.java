@@ -31,6 +31,7 @@ import lombok.Setter;
 })
 @Getter
 @Setter
+@SuppressWarnings("java:S2160")
 public class UserProfile extends TraceableEntity {
 
     /**

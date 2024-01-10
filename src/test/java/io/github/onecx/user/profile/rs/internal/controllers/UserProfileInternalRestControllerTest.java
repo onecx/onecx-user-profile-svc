@@ -203,10 +203,10 @@ class UserProfileInternalRestControllerTest extends AbstractTest {
         assertThat(result).isNotNull();
         assertThat(result.getTotalElements()).isZero();
 
-        // search with all criteria filled with *
+        // search with all criteria filled with * or ?
         criteriaDTO = new UserPersonCriteriaDTO();
-        criteriaDTO.setEmail("*cap.de");
-        criteriaDTO.setUserId("user*");
+        criteriaDTO.setEmail("*cap.d?");
+        criteriaDTO.setUserId("user?");
         criteriaDTO.setFirstName("User*");
         criteriaDTO.setLastName("*o*");
         result = given()

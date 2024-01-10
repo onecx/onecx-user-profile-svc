@@ -1,18 +1,20 @@
 package io.github.onecx.user.profile.domain.daos;
 
-import static io.github.onecx.user.profile.domain.models.UserPerson_.*;
 import static io.github.onecx.user.profile.domain.models.UserProfile_.PERSON;
 import static io.github.onecx.user.profile.domain.models.UserProfile_.USER_ID;
 
 import java.util.ArrayList;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 
 import org.tkit.quarkus.jpa.daos.AbstractDAO;
 import org.tkit.quarkus.jpa.daos.Page;
 import org.tkit.quarkus.jpa.daos.PageResult;
+import org.tkit.quarkus.jpa.utils.QueryCriteriaUtil;
 
 import io.github.onecx.user.profile.domain.criteria.UserPersonCriteria;
 import io.github.onecx.user.profile.domain.models.UserPerson_;
@@ -28,48 +30,21 @@ public class UserProfileDAO extends AbstractDAO<UserProfile> {
         var root = cq.from(UserProfile.class);
         cq.select(root).distinct(true);
         var predicates = new ArrayList<>();
-        if (criteria != null) {
-            if (criteria.getUserId() != null) {
-                var userIdCriterion = criteria.getUserId().toLowerCase();
-                var userIdLowercase = cb.lower(root.get(UserProfile_.userId));
-                if (userIdCriterion.contains("*")) {
-                    var pattern = preparePatternForLikeQueryWithWildcards(userIdCriterion);
-                    predicates.add(cb.like(userIdLowercase, pattern));
-                } else {
-                    predicates.add(cb.equal(userIdLowercase, userIdCriterion));
-                }
-            }
-            if (criteria.getEmail() != null) {
-                var emailCriterion = criteria.getEmail().toLowerCase();
-                var emailLowercase = cb.lower(root.get(PERSON).get(UserPerson_.EMAIL));
-                if (emailCriterion.contains("*")) {
-                    var pattern = preparePatternForLikeQueryWithWildcards(emailCriterion);
-                    predicates.add(cb.like(emailLowercase, pattern));
-                } else {
-                    predicates.add(cb.equal(emailLowercase, emailCriterion));
-                }
-            }
-            if (criteria.getFirstName() != null) {
-                var firstNameCriterion = criteria.getFirstName().toLowerCase();
-                var firstNameLowercase = cb.lower(root.get(PERSON).get(FIRST_NAME));
-                if (firstNameCriterion.contains("*")) {
-                    var pattern = preparePatternForLikeQueryWithWildcards(firstNameCriterion);
-                    predicates.add(cb.like(firstNameLowercase, pattern));
-                } else {
-                    predicates.add(cb.equal(firstNameLowercase, firstNameCriterion));
-                }
-            }
-            if (criteria.getLastName() != null) {
-                var lastNameCriterion = criteria.getLastName().toLowerCase();
-                var lastNameLowercase = cb.lower(root.get(PERSON).get(LAST_NAME));
-                if (lastNameCriterion.contains("*")) {
-                    var pattern = preparePatternForLikeQueryWithWildcards(lastNameCriterion);
-                    predicates.add(cb.like(lastNameLowercase, pattern));
-                } else {
-                    predicates.add(cb.equal(lastNameLowercase, lastNameCriterion));
-                }
-            }
+        if (criteria.getUserId() != null) {
+            predicates.add(createSearchStringPredicate(cb, root.get(UserProfile_.userId), criteria.getUserId()));
         }
+        if (criteria.getEmail() != null) {
+            predicates.add(createSearchStringPredicate(cb, root.get(PERSON).get(UserPerson_.EMAIL), criteria.getEmail()));
+        }
+        if (criteria.getFirstName() != null) {
+            predicates.add(createSearchStringPredicate(cb, root.get(PERSON).get(UserPerson_.FIRST_NAME),
+                    criteria.getFirstName()));
+        }
+        if (criteria.getLastName() != null) {
+            predicates.add(
+                    createSearchStringPredicate(cb, root.get(PERSON).get(UserPerson_.LAST_NAME), criteria.getLastName()));
+        }
+
         if (!predicates.isEmpty()) {
             cq.where(cb.and(predicates.toArray(new Predicate[0])));
         }
@@ -94,12 +69,45 @@ public class UserProfileDAO extends AbstractDAO<UserProfile> {
         return typedQuery.getResultList().stream().findFirst().orElse(null);
     }
 
-    private static String preparePatternForLikeQueryWithWildcards(String criterionValue) {
-
-        return criterionValue
-                .replace("\\", "\\\\")
-                .replace("%", "\\%")
-                .replace("_", "\\_")
-                .replace("*", "%");
+    /**
+     * Create a search predicate as a case of insensitive search.
+     *
+     * @param criteriaBuilder - CriteriaBuilder
+     * @param column - column Path [root.get(Entity_.attribute)]
+     * @param searchString - string to search. if Contains [*,?] like will be used
+     * @return LIKE or EQUAL Predicate according to the search string
+     */
+    public Predicate createSearchStringPredicate(CriteriaBuilder criteriaBuilder, Expression<String> column,
+            String searchString) {
+        return createSearchStringPredicate(criteriaBuilder, column, searchString, true);
     }
+
+    /**
+     * Create a search predicate.
+     *
+     * @param criteriaBuilder - CriteriaBuilder
+     * @param column - column Path [root.get(Entity_.attribute)]
+     * @param searchString - string to search. if Contains [*,?] like will be used
+     * @param caseInsensitive - true in case of insensitive search (db column and search string are given to lower case)
+     * @return LIKE or EQUAL Predicate according to the search string
+     */
+    public Predicate createSearchStringPredicate(CriteriaBuilder criteriaBuilder, Expression<String> column,
+            String searchString, final boolean caseInsensitive) {
+
+        Expression<String> columnDefinition = column;
+        if (caseInsensitive) {
+            searchString = searchString.toLowerCase();
+            columnDefinition = criteriaBuilder.lower(column);
+        }
+
+        Predicate searchPredicate = null;
+        if (searchString.contains("*") || searchString.contains("?")) {
+            searchPredicate = criteriaBuilder.like(columnDefinition, QueryCriteriaUtil.wildcard(searchString, caseInsensitive));
+        } else {
+            searchPredicate = criteriaBuilder.equal(columnDefinition, searchString);
+        }
+
+        return searchPredicate;
+    }
+
 }

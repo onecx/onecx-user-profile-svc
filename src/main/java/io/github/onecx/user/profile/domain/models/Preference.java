@@ -17,6 +17,7 @@ import lombok.Setter;
 @Table(name = "USM_PREFERENCE", indexes = { @Index(columnList = "USER_ID", name = "preferences_user_id_idx") })
 @Getter
 @Setter
+@SuppressWarnings("java:S2160")
 public class Preference extends TraceableEntity {
 
     @ManyToOne(optional = false)

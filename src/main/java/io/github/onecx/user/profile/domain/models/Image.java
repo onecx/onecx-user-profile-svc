@@ -12,6 +12,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@SuppressWarnings("java:S2160")
 public class Image extends TraceableEntity {
 
     @TenantId
