@@ -17,7 +17,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(UserProfileV1RestController.class)
 @WithDBData(value = "data/testdata.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
-public class UserProfileV1RestControllerTest extends AbstractTest {
+class UserProfileV1RestControllerTest extends AbstractTest {
 
     @Test
     void createUserPreferenceTest() {

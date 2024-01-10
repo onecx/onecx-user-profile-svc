@@ -20,7 +20,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(AvatarV1RestController.class)
 @WithDBData(value = "data/testdata.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
-public class AvatarV1RestControllerTenantTest extends AbstractTest {
+class AvatarV1RestControllerTenantTest extends AbstractTest {
 
     @Test
     void testAvatarRestControler() throws URISyntaxException, IOException {

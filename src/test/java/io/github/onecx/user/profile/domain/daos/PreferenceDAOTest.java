@@ -15,7 +15,7 @@ import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-public class PreferenceDAOTest extends AbstractTest {
+class PreferenceDAOTest extends AbstractTest {
 
     @Inject
     PreferenceDAO dao;

@@ -1,5 +1,7 @@
 package io.github.onecx.user.profile.domain.models;
 
+import java.io.Serializable;
+
 import jakarta.persistence.*;
 
 import io.github.onecx.user.profile.domain.models.enums.ColorScheme;
@@ -13,7 +15,7 @@ import lombok.Setter;
 @Embeddable
 @Getter
 @Setter
-public class UserProfileAccountSettings {
+public class UserProfileAccountSettings implements Serializable {
 
     @Column(name = "HIDE_MY_PROFILE")
     private Boolean hideMyProfile;

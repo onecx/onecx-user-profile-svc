@@ -17,7 +17,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(UserProfileInternalRestController.class)
 @WithDBData(value = "data/testdata.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
-public class UserProfileInternalRestControllerTest extends AbstractTest {
+class UserProfileInternalRestControllerTest extends AbstractTest {
 
     @Test
     void createUserProfileTest() {
@@ -201,7 +201,7 @@ public class UserProfileInternalRestControllerTest extends AbstractTest {
                 .extract().as(UserProfilePageResultDTO.class);
 
         assertThat(result).isNotNull();
-        assertThat(result.getTotalElements()).isEqualTo(0);
+        assertThat(result.getTotalElements()).isZero();
 
         // search with all criteria filled with *
         criteriaDTO = new UserPersonCriteriaDTO();

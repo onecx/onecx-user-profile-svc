@@ -28,6 +28,7 @@ public class Image extends TraceableEntity {
     private String mimeType;
 
     @Lob
-    private byte[] image;
+    @Column(name = "IMAGE")
+    private byte[] imageByte;
 
 }

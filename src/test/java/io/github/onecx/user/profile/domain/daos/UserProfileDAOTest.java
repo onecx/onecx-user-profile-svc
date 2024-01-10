@@ -12,7 +12,7 @@ import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @WithDBData(value = "data/testdata.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
-public class UserProfileDAOTest extends AbstractTest {
+class UserProfileDAOTest extends AbstractTest {
 
     @Inject
     UserProfileDAO dao;
