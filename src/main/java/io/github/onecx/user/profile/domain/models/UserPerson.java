@@ -1,5 +1,7 @@
 package io.github.onecx.user.profile.domain.models;
 
+import java.io.Serializable;
+
 import jakarta.persistence.*;
 
 import lombok.Getter;
@@ -13,7 +15,7 @@ import lombok.Setter;
 @Embeddable
 @Getter
 @Setter
-public class UserPerson {
+public class UserPerson implements Serializable {
 
     @Column(name = "FIRST_NAME")
     private String firstName;

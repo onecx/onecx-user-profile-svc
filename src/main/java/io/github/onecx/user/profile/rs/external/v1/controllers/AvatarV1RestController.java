@@ -18,7 +18,6 @@ import org.tkit.quarkus.context.ApplicationContext;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.io.github.onecx.user.profile.rs.external.v1.AvatarV1Api;
-import gen.io.github.onecx.user.profile.rs.external.v1.model.*;
 import io.github.onecx.user.profile.domain.daos.ImageDAO;
 import io.github.onecx.user.profile.domain.daos.UserProfileDAO;
 import io.github.onecx.user.profile.domain.models.Image;
@@ -79,7 +78,7 @@ public class AvatarV1RestController implements AvatarV1Api {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        var imageByteInputStream = new ByteArrayInputStream(avatar.getImage());
+        var imageByteInputStream = new ByteArrayInputStream(avatar.getImageByte());
 
         return Response.ok(imageByteInputStream).header("Content-Type", avatar.getMimeType()).build();
     }
@@ -116,6 +115,10 @@ public class AvatarV1RestController implements AvatarV1Api {
         var userProfile = userProfileDAO.getUserProfileByUserId(ApplicationContext.get().getPrincipal(),
                 UserProfile.ENTITY_GRAPH_LOAD_ALL);
 
+        if (userProfile == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
         try {
             byte[] avatarBytes = Files.readAllBytes(body.toPath());
             InputStream avatarIs = new ByteArrayInputStream(avatarBytes);
@@ -149,13 +152,13 @@ public class AvatarV1RestController implements AvatarV1Api {
             throws IOException {
         var avatar = new Image();
         userProfile.setAvatar(avatar);
-        avatar.setImage(avatarBytes);
+        avatar.setImageByte(avatarBytes);
         avatar.setMimeType(mimeType);
         this.setUpAvatarDimensions(avatar);
 
         var smallAvatar = new Image();
         userProfile.setSmallAvatar(smallAvatar);
-        smallAvatar.setImage(smallAvatarBytes);
+        smallAvatar.setImageByte(smallAvatarBytes);
         smallAvatar.setMimeType("image/png");
         this.setUpAvatarDimensions(smallAvatar);
         userProfile.setSmallAvatar(smallAvatar);
@@ -169,7 +172,7 @@ public class AvatarV1RestController implements AvatarV1Api {
     }
 
     private void setUpAvatarDimensions(Image avatar) throws IOException {
-        var image = ImageIO.read(new ByteArrayInputStream(avatar.getImage()));
+        var image = ImageIO.read(new ByteArrayInputStream(avatar.getImageByte()));
         avatar.setHeight(image.getHeight());
         avatar.setWidth(image.getWidth());
     }

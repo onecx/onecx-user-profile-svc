@@ -36,7 +36,7 @@
             <artifactId>tkit-quarkus-rest</artifactId>
         </dependency>
 
-        <!-- TENANT
+        <!-- TENANT -->
         <dependency>
             <groupId>io.github.onecx.quarkus</groupId>
             <artifactId>onecx-tenant</artifactId>
@@ -48,7 +48,7 @@
         <dependency>
             <groupId>org.tkit.quarkus.lib</groupId>
             <artifactId>tkit-quarkus-rest-context</artifactId>
-        </dependency>-->
+        </dependency>
 
         <!-- QUARKUS -->
         <dependency>
@@ -98,11 +98,6 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-opentelemetry</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.tkit.quarkus.lib</groupId>
-            <artifactId>tkit-quarkus-rest-context</artifactId>
         </dependency>
 
         <!-- OTHER -->

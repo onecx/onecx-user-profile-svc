@@ -17,7 +17,9 @@
             <column name="guid" type="VARCHAR(255)">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="usm_preference_pkey"/>
             </column>
-            <column name="tenant_id" type="VARCHAR(255)"/>
+            <column name="tenant_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
             <column name="user_id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
@@ -56,7 +58,9 @@
             <column name="small_avatar_guid" type="VARCHAR(255)"/>
             <column name="street" type="VARCHAR(255)"/>
             <column name="street_no" type="VARCHAR(255)"/>
-            <column name="tenant_id" type="VARCHAR(255)"/>
+            <column name="tenant_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
             <column name="timezone" type="VARCHAR(255)"/>
             <column name="type" type="VARCHAR(255)"/>
             <column name="user_id" type="VARCHAR(255)"/>
@@ -84,7 +88,9 @@
             <column name="optlock" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
-            <column name="tenant_id" type="VARCHAR(255)"/>
+            <column name="tenant_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
             <column name="width" type="INTEGER"/>
             <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>

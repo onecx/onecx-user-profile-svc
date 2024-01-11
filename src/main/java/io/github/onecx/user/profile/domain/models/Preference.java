@@ -2,6 +2,7 @@ package io.github.onecx.user.profile.domain.models;
 
 import jakarta.persistence.*;
 
+import org.hibernate.annotations.TenantId;
 import org.tkit.quarkus.jpa.models.TraceableEntity;
 
 import lombok.Getter;
@@ -16,6 +17,7 @@ import lombok.Setter;
 @Table(name = "USM_PREFERENCE", indexes = { @Index(columnList = "USER_ID", name = "preferences_user_id_idx") })
 @Getter
 @Setter
+@SuppressWarnings("java:S2160")
 public class Preference extends TraceableEntity {
 
     @ManyToOne(optional = false)
@@ -25,6 +27,7 @@ public class Preference extends TraceableEntity {
     @Column(name = "APPLICATION_ID")
     private String applicationId;
 
+    @TenantId
     @Column(name = "TENANT_ID")
     private String tenantId;
 

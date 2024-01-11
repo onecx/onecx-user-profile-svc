@@ -1,5 +1,7 @@
 package io.github.onecx.user.profile.domain.models;
 
+import java.io.Serializable;
+
 import jakarta.persistence.*;
 
 import lombok.Getter;
@@ -8,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Embeddable
-public class UserPersonPhone {
+public class UserPersonPhone implements Serializable {
 
     @Column(name = "TYPE")
     @Enumerated(EnumType.STRING)
