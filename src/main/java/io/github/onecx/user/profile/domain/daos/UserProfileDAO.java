@@ -94,6 +94,12 @@ public class UserProfileDAO extends AbstractDAO<UserProfile> {
     public Predicate createSearchStringPredicate(CriteriaBuilder criteriaBuilder, Expression<String> column,
             String searchString, final boolean caseInsensitive) {
 
+        // escape the extra DB characters
+        searchString = searchString
+                .replace("\\", "\\\\")
+                .replace("%", "\\%")
+                .replace("_", "\\_");
+
         Expression<String> columnDefinition = column;
         if (caseInsensitive) {
             searchString = searchString.toLowerCase();
