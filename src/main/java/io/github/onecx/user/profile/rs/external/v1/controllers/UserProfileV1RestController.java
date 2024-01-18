@@ -26,6 +26,7 @@ import io.github.onecx.user.profile.domain.models.UserProfile;
 import io.github.onecx.user.profile.rs.external.v1.mappers.PreferenceMapper;
 import io.github.onecx.user.profile.rs.external.v1.mappers.UserProfileMapper;
 import io.github.onecx.user.profile.rs.external.v1.mappers.V1ExceptionMapper;
+import io.github.onecx.user.profile.rs.external.v1.service.JWTService;
 
 @LogService
 @ApplicationScoped
@@ -46,6 +47,9 @@ public class UserProfileV1RestController implements UserProfileV1Api {
 
     @Inject
     UserProfileMapper userProfileMapper;
+
+    @Inject
+    JWTService jwtService;
 
     @Context
     UriInfo uriInfo;
@@ -138,7 +142,9 @@ public class UserProfileV1RestController implements UserProfileV1Api {
         var userProfile = userProfileDAO.getUserProfileByUserId(userId, UserProfile.ENTITY_GRAPH_LOAD_PERSON);
 
         if (userProfile == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            // create user profile if it does not exist
+            var createUserProfile = jwtService.createProfileFromToken(userId);
+            userProfile = userProfileDAO.create(createUserProfile);
         }
 
         return Response.ok(userProfileMapper.map(userProfile)).build();

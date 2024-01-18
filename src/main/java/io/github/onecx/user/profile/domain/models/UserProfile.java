@@ -15,7 +15,7 @@ import lombok.Setter;
  */
 @Entity
 @Table(name = "USM_USER_PROFILE", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "USER_ID" })
+        @UniqueConstraint(columnNames = { "USER_ID", "TENANT_ID" })
 }, indexes = {
         @Index(columnList = "FIRST_NAME,LAST_NAME,EMAIL, TENANT_ID", name = "user_person_criteria_idx") })
 @NamedEntityGraph(name = "UserProfile.loadById", attributeNodes = {

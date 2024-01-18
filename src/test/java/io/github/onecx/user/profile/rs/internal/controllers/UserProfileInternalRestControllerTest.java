@@ -89,7 +89,7 @@ class UserProfileInternalRestControllerTest extends AbstractTest {
         assertThat(error).isNotNull();
         assertThat(error.getErrorCode()).isEqualTo("PERSIST_ENTITY_FAILED");
         assertThat(error.getDetail()).isEqualTo(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'ukm9nl9w7ih2pti88rq0xf31c5y'  Detail: Key (user_id)=(cap) already exists.]");
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'ukm9nl9w7ih2pti88rq0xf31c5y'  Detail: Key (user_id, tenant_id)=(cap, tenant-200) already exists.]");
     }
 
     @Test

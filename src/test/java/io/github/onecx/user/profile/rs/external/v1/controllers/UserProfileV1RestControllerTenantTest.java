@@ -5,6 +5,8 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.OffsetDateTime;
+
 import org.junit.jupiter.api.Test;
 import org.tkit.quarkus.test.WithDBData;
 
@@ -132,14 +134,16 @@ class UserProfileV1RestControllerTenantTest extends AbstractTest {
                 .then()
                 .statusCode(NO_CONTENT.getStatusCode());
 
-        given()
+        userPofile = given()
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user3", "org2"))
                 .get()
                 .then()
-                .statusCode(NOT_FOUND.getStatusCode());
+                .statusCode(OK.getStatusCode())
+                .extract().as(UserProfileDTO.class);
 
+        assertThat(userPofile.getModificationDate()).isAfterOrEqualTo(OffsetDateTime.now().minusSeconds(1));
     }
 
     @Test
@@ -196,15 +200,17 @@ class UserProfileV1RestControllerTenantTest extends AbstractTest {
 
     @Test
     void getUserProfileTest() {
-        // load existing user profile with wrong tenant - NOT_FOUND as result
-        given()
+        // load existing user profile with wrong tenant - will be created, as the tenant is from organization stored in keycloak
+        var userProfile = given()
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user3", "org1"))
                 .get()
                 .then()
-                .statusCode(NOT_FOUND.getStatusCode());
+                .statusCode(OK.getStatusCode())
+                .extract().as(UserProfileDTO.class);
 
+        assertThat(userProfile.getModificationDate()).isAfterOrEqualTo(OffsetDateTime.now().minusSeconds(1));
     }
 
     @Test

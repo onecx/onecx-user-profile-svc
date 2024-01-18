@@ -180,17 +180,21 @@ class UserProfileV1RestControllerTest extends AbstractTest {
 
     @Test
     void getUserProfileTest() {
-        // not existing user profile
-        given()
+        // not existing user profile, should be created
+        var userPofile = given()
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("not-existing", null))
                 .get()
                 .then()
-                .statusCode(NOT_FOUND.getStatusCode());
+                .statusCode(OK.getStatusCode())
+                .extract().as(UserProfileDTO.class);
+
+        assertThat(userPofile.getUserId()).isEqualTo("not-existing");
+        assertThat(userPofile.getPerson().getEmail()).isEqualTo("not-existing@cap.de");
 
         // load existing user profile
-        var userPofile = given()
+        userPofile = given()
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user3", "org2"))
@@ -402,4 +406,5 @@ class UserProfileV1RestControllerTest extends AbstractTest {
         assertThat(result).isNotNull();
         assertThat(result.getMenuMode()).isEqualTo(request.getMenuMode());
     }
+
 }

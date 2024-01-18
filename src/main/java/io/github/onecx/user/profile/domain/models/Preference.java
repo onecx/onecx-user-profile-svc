@@ -14,7 +14,7 @@ import lombok.Setter;
  * @author bkalas
  */
 @Entity
-@Table(name = "USM_PREFERENCE", indexes = { @Index(columnList = "USER_ID", name = "preferences_user_id_idx") })
+@Table(name = "USM_PREFERENCE", indexes = { @Index(columnList = "USER_ID, TENANT_ID", name = "preferences_user_id_idx") })
 @Getter
 @Setter
 @SuppressWarnings("java:S2160")
