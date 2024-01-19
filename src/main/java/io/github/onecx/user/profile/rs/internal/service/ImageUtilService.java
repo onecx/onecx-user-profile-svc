@@ -1,4 +1,4 @@
-package io.github.onecx.user.profile.rs.external.v1.service;
+package io.github.onecx.user.profile.rs.internal.service;
 
 import static java.awt.Image.SCALE_DEFAULT;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;

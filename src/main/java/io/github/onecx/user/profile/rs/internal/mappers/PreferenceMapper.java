@@ -1,4 +1,4 @@
-package io.github.onecx.user.profile.rs.external.v1.mappers;
+package io.github.onecx.user.profile.rs.internal.mappers;
 
 import java.util.List;
 
@@ -6,9 +6,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
-import gen.io.github.onecx.user.profile.rs.external.v1.model.CreateUserPreferenceDTO;
-import gen.io.github.onecx.user.profile.rs.external.v1.model.UserPreferenceDTO;
-import gen.io.github.onecx.user.profile.rs.external.v1.model.UserPreferencesDTO;
+import gen.io.github.onecx.user.profile.rs.internal.model.CreateUserPreferenceDTO;
+import gen.io.github.onecx.user.profile.rs.internal.model.UserPreferenceDTO;
+import gen.io.github.onecx.user.profile.rs.internal.model.UserPreferencesDTO;
 import io.github.onecx.user.profile.domain.models.Preference;
 
 @Mapper(uses = { OffsetDateTimeMapper.class })

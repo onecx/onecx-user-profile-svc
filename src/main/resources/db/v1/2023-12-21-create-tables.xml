@@ -70,6 +70,7 @@
 
         <createIndex indexName="preferences_user_id_idx" tableName="usm_preference">
             <column name="user_id"/>
+            <column name="tenant_id"/>
         </createIndex>
 
         <createIndex indexName="user_person_criteria_idx" tableName="usm_user_profile">
@@ -79,7 +80,7 @@
             <column name="tenant_id"/>
         </createIndex>
 
-        <addUniqueConstraint columnNames="user_id" constraintName="ukm9nl9w7ih2pti88rq0xf31c5y" tableName="usm_user_profile"/>
+        <addUniqueConstraint columnNames="user_id, tenant_id" constraintName="ukm9nl9w7ih2pti88rq0xf31c5y" tableName="usm_user_profile"/>
         <addUniqueConstraint columnNames="avatar_guid" constraintName="usm_user_profile_avatar_guid_key" tableName="usm_user_profile"/>
         <addUniqueConstraint columnNames="small_avatar_guid" constraintName="usm_user_profile_small_avatar_guid_key" tableName="usm_user_profile"/>
 
@@ -105,7 +106,6 @@
 
         <addForeignKeyConstraint baseColumnNames="avatar_guid" baseTableName="usm_user_profile" constraintName="fk6ugebkclhuujc15gyowewqf3p" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="image" validate="true"/>
         <addForeignKeyConstraint baseColumnNames="small_avatar_guid" baseTableName="usm_user_profile" constraintName="fkg895b7vcf6kixqmjicil1isrd" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="image" validate="true"/>
-        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="usm_preference" constraintName="fkqvhbgl2bk6twctnr3qwntfriy" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableName="usm_user_profile" validate="true"/>
     </changeSet>
 
     </databaseChangeLog>
