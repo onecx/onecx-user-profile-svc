@@ -5,6 +5,7 @@ import static io.github.onecx.user.profile.domain.models.UserProfile.ENTITY_GRAP
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.OptimisticLockException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.Context;
@@ -14,9 +15,10 @@ import jakarta.ws.rs.core.UriInfo;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
+import org.tkit.quarkus.jpa.exceptions.DAOException;
 import org.tkit.quarkus.log.cdi.LogService;
 
-import gen.io.github.onecx.user.profile.rs.internal.UserProfileInternalApi;
+import gen.io.github.onecx.user.profile.rs.internal.UserProfileAdminApi;
 import gen.io.github.onecx.user.profile.rs.internal.model.CreateUserProfileRequestDTO;
 import gen.io.github.onecx.user.profile.rs.internal.model.ProblemDetailResponseDTO;
 import gen.io.github.onecx.user.profile.rs.internal.model.UpdateUserPersonRequestDTO;
@@ -29,7 +31,7 @@ import io.github.onecx.user.profile.rs.internal.mappers.UserProfileMapper;
 @LogService
 @ApplicationScoped
 @Transactional(Transactional.TxType.NOT_SUPPORTED)
-public class UserProfileInternalRestController implements UserProfileInternalApi {
+public class UserProfileAdminRestController implements UserProfileAdminApi {
 
     @Inject
     UserProfileDAO userProfileDAO;
@@ -97,8 +99,7 @@ public class UserProfileInternalRestController implements UserProfileInternalApi
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        var userPerson = userProfile.getPerson();
-        userProfileMapper.update(userPerson, updateUserPersonRequestDTO);
+        userProfileMapper.updateUserPerson(userProfile, updateUserPersonRequestDTO);
         userProfileDAO.update(userProfile);
 
         return Response.noContent().build();
@@ -112,5 +113,13 @@ public class UserProfileInternalRestController implements UserProfileInternalApi
     @ServerExceptionMapper
     public RestResponse<ProblemDetailResponseDTO> constraint(ConstraintViolationException ex) {
         return exceptionMapper.constraint(ex);
+    }
+
+    @ServerExceptionMapper
+    public RestResponse<ProblemDetailResponseDTO> optimisticLock(DAOException ex) {
+        if (ex.getCause() instanceof OptimisticLockException oex) {
+            return exceptionMapper.optimisticLock(oex);
+        }
+        throw ex;
     }
 }

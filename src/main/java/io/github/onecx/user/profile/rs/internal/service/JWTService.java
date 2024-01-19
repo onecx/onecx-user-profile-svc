@@ -1,4 +1,4 @@
-package io.github.onecx.user.profile.rs.external.v1.service;
+package io.github.onecx.user.profile.rs.internal.service;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;

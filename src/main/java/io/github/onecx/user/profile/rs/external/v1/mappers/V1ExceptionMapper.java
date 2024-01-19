@@ -18,6 +18,7 @@ import org.tkit.quarkus.log.cdi.LogService;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
 import gen.io.github.onecx.user.profile.rs.external.v1.model.*;
+import io.github.onecx.user.profile.rs.internal.mappers.InternalExceptionMapper;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -26,7 +27,7 @@ public abstract class V1ExceptionMapper {
 
     @LogService(log = false)
     public RestResponse<ProblemDetailResponseDTO> constraint(ConstraintViolationException ex) {
-        var dto = exception("CONSTRAINT_VIOLATIONS", ex.getMessage());
+        var dto = exception(InternalExceptionMapper.TechnicalErrorKeys.CONSTRAINT_VIOLATIONS.name(), ex.getMessage());
         dto.setInvalidParams(createErrorValidationResponse(ex.getConstraintViolations()));
         return RestResponse.status(Response.Status.BAD_REQUEST, dto);
     }

@@ -1,4 +1,4 @@
-package io.github.onecx.user.profile.rs.external.v1.service;
+package io.github.onecx.user.profile.rs.internal.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,7 +22,7 @@ import io.smallrye.jwt.build.Jwt;
 import io.smallrye.jwt.util.KeyUtils;
 
 @QuarkusTest
-public class JWTServiceTest extends AbstractTest {
+class JWTServiceTest extends AbstractTest {
 
     @Inject
     JWTService service;

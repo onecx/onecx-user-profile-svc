@@ -36,16 +36,35 @@ public interface UserProfileMapper {
     @Mapping(target = "address", ignore = true)
     UserPerson create(CreateUserPersonDTO dto);
 
-    @Mapping(target = "version", source = "modificationCount")
     UserProfileDTO map(UserProfile entity);
 
+    default UserPersonDTO mapUserPerson(UserProfile entity) {
+        var dto = map(entity.getPerson());
+        dto.setModificationCount(entity.getModificationCount());
+
+        return dto;
+    }
+
+    @Mapping(target = "modificationCount", ignore = true)
     UserPersonDTO map(UserPerson entity);
 
     UserPersonAddressDTO map(UserPersonAddress entity);
 
     UserPersonPhoneDTO map(UserPersonPhone entity);
 
+    default UserProfileAccountSettingsDTO mapAccountSettings(UserProfile entity) {
+        var dto = map(entity.getAccountSettings());
+        dto.setModificationCount(entity.getModificationCount());
+        return dto;
+    }
+
+    @Mapping(target = "modificationCount", ignore = true)
     UserProfileAccountSettingsDTO map(UserProfileAccountSettings entity);
+
+    default void updateUserPerson(UserProfile model, UpdateUserPersonRequestDTO dto) {
+        model.setModificationCount(dto.getModificationCount());
+        update(model.getPerson(), dto);
+    }
 
     void update(@MappingTarget UserPerson model, UpdateUserPersonRequestDTO dto);
 
@@ -57,5 +76,12 @@ public interface UserProfileMapper {
 
     @Named("mapStream")
     List<UserProfileDTO> mapStream(Stream<UserProfile> stream);
+
+    default void updateUserSettings(UserProfile model, UpdateUserSettingsDTO dto) {
+        model.setModificationCount(dto.getModificationCount());
+        update(model.getAccountSettings(), dto);
+    }
+
+    void update(@MappingTarget UserProfileAccountSettings model, UpdateUserSettingsDTO dto);
 
 }

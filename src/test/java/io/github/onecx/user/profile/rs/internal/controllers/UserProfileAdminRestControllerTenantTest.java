@@ -3,7 +3,6 @@ package io.github.onecx.user.profile.rs.internal.controllers;
 import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
@@ -15,25 +14,12 @@ import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-@TestHTTPEndpoint(UserProfileInternalRestController.class)
+@TestHTTPEndpoint(UserProfileAdminRestController.class)
 @WithDBData(value = "data/testdata.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
-class UserProfileInternalRestControllerTest extends AbstractTest {
+class UserProfileAdminRestControllerTenantTest extends AbstractTest {
 
     @Test
     void createUserProfileTest() {
-        // test not sending the body
-        var error = given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .post()
-                .then()
-                .statusCode(BAD_REQUEST.getStatusCode())
-                .extract().as(ProblemDetailResponseDTO.class);
-
-        assertThat(error).isNotNull();
-        assertThat(error.getErrorCode()).isEqualTo("CONSTRAINT_VIOLATIONS");
-        assertThat(error.getDetail()).isEqualTo("createUserProfile.createUserProfileRequestDTO: must not be null");
-
         // create user profile with content
         CreateUserProfileRequestDTO request = new CreateUserProfileRequestDTO();
         request.setUserId("cap");
@@ -50,7 +36,7 @@ class UserProfileInternalRestControllerTest extends AbstractTest {
         var result = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("user3", "org2"))
+                .header(APM_HEADER_PARAM, createToken("user4", "org3"))
                 .body(request)
                 .post()
                 .then()
@@ -62,10 +48,18 @@ class UserProfileInternalRestControllerTest extends AbstractTest {
         assertThat(result.getModificationDate()).isNotNull();
         assertThat(result.getPerson().getPhone()).isNull();
 
+        given()
+                .when()
+                .pathParam("id", "cap")
+                .header(APM_HEADER_PARAM, createToken("user4", "org2"))
+                .get("{id}")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
         result = given()
                 .when()
-                .header(APM_HEADER_PARAM, createToken("user3", "org2"))
                 .pathParam("id", "cap")
+                .header(APM_HEADER_PARAM, createToken("user4", "org3"))
                 .get("{id}")
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -76,43 +70,41 @@ class UserProfileInternalRestControllerTest extends AbstractTest {
         assertThat(result.getModificationDate()).isNotNull();
         assertThat(result.getPerson().getPhone()).isNull();
 
-        error = given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("user3", "org2"))
-                .body(request)
-                .post()
-                .then()
-                .statusCode(BAD_REQUEST.getStatusCode())
-                .extract().as(ProblemDetailResponseDTO.class);
-
-        assertThat(error).isNotNull();
-        assertThat(error.getErrorCode()).isEqualTo("PERSIST_ENTITY_FAILED");
-        assertThat(error.getDetail()).isEqualTo(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'ukm9nl9w7ih2pti88rq0xf31c5y'  Detail: Key (user_id, tenant_id)=(cap, tenant-200) already exists.]");
     }
 
     @Test
     void deleteUserProfileTest() {
-        // delete not existing profile
+        // delete existing profile with wrong tenant
         given()
                 .when()
-                .pathParam("id", "not-existing")
-                .delete("{id}")
-                .then()
-                .statusCode(NO_CONTENT.getStatusCode());
-
-        // delete existing profile
-        given()
-                .when()
+                .header(APM_HEADER_PARAM, createToken("user4", "org3"))
                 .pathParam("id", "user1")
                 .delete("{id}")
                 .then()
                 .statusCode(NO_CONTENT.getStatusCode());
 
-        // load deleted profile
+        // load deleted profile still found as deleted with wrong tenant
         given()
                 .when()
+                .header(APM_HEADER_PARAM, createToken("user4", "org1"))
+                .pathParam("id", "user1")
+                .get("{id}")
+                .then()
+                .statusCode(OK.getStatusCode());
+
+        // delete existing profile with correct tenant
+        given()
+                .when()
+                .header(APM_HEADER_PARAM, createToken("user4", "org1"))
+                .pathParam("id", "user1")
+                .delete("{id}")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+
+        // load deleted profile returns not found
+        given()
+                .when()
+                .header(APM_HEADER_PARAM, createToken("user4", "org1"))
                 .pathParam("id", "user1")
                 .get("{id}")
                 .then()
@@ -121,9 +113,19 @@ class UserProfileInternalRestControllerTest extends AbstractTest {
 
     @Test
     void getUserProfileTest() {
-        // get existing profile
+        // get with different tenant
+        given()
+                .when()
+                .header(APM_HEADER_PARAM, createToken("user4", "org2"))
+                .pathParam("id", "user1")
+                .get("{id}")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        // get existing profile with correct tenant
         var result = given()
                 .when()
+                .header(APM_HEADER_PARAM, createToken("user4", "org1"))
                 .pathParam("id", "user1")
                 .get("{id}")
                 .then()
@@ -139,24 +141,13 @@ class UserProfileInternalRestControllerTest extends AbstractTest {
 
     @Test
     void searchUserProfileTest() {
-        // search without criteria
-        var error = given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .post("search")
-                .then()
-                .statusCode(BAD_REQUEST.getStatusCode())
-                .extract().as(ProblemDetailResponseDTO.class);
-
-        assertThat(error).isNotNull();
-        assertThat(error.getErrorCode()).isEqualTo("CONSTRAINT_VIOLATIONS");
-        assertThat(error.getDetail()).isEqualTo("searchUserProfile.userPersonCriteriaDTO: must not be null");
-
         // search with criteria
+        // org1
         UserPersonCriteriaDTO criteriaDTO = new UserPersonCriteriaDTO();
         criteriaDTO.setEmail("*cap.de");
         var result = given()
                 .when()
+                .header(APM_HEADER_PARAM, createToken("user4", "org1"))
                 .body(criteriaDTO)
                 .contentType(APPLICATION_JSON)
                 .post("search")
@@ -169,10 +160,10 @@ class UserProfileInternalRestControllerTest extends AbstractTest {
         var resultList = result.getStream();
         assertThat(resultList.get(0).getPerson().getLastName()).isEqualTo("One");
 
-        // search with empty criteria
-        criteriaDTO = new UserPersonCriteriaDTO();
+        // org2
         result = given()
                 .when()
+                .header(APM_HEADER_PARAM, createToken("user4", "org2"))
                 .body(criteriaDTO)
                 .contentType(APPLICATION_JSON)
                 .post("search")
@@ -181,65 +172,17 @@ class UserProfileInternalRestControllerTest extends AbstractTest {
                 .extract().as(UserProfilePageResultDTO.class);
 
         assertThat(result).isNotNull();
-        assertThat(result.getTotalElements()).isEqualTo(2);
+        assertThat(result.getTotalElements()).isEqualTo(1);
         resultList = result.getStream();
-        assertThat(resultList.get(0).getPerson().getLastName()).isEqualTo("One");
+        assertThat(resultList.get(0).getPerson().getLastName()).isEqualTo("Three");
 
-        // search with all criteria filled
-        criteriaDTO = new UserPersonCriteriaDTO();
-        criteriaDTO.setEmail("email");
-        criteriaDTO.setUserId("userId");
-        criteriaDTO.setFirstName("firstName");
-        criteriaDTO.setLastName("lastName");
-        result = given()
-                .when()
-                .body(criteriaDTO)
-                .contentType(APPLICATION_JSON)
-                .post("search")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(UserProfilePageResultDTO.class);
-
-        assertThat(result).isNotNull();
-        assertThat(result.getTotalElements()).isZero();
-
-        // search with all criteria filled with * or ?
-        criteriaDTO = new UserPersonCriteriaDTO();
-        criteriaDTO.setEmail("*cap.d?");
-        criteriaDTO.setUserId("user?");
-        criteriaDTO.setFirstName("User*");
-        criteriaDTO.setLastName("*o*");
-        result = given()
-                .when()
-                .body(criteriaDTO)
-                .contentType(APPLICATION_JSON)
-                .post("search")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(UserProfilePageResultDTO.class);
-
-        assertThat(result).isNotNull();
-        assertThat(result.getTotalElements()).isEqualTo(2);
     }
 
     @Test
     void updateUserProfileTest() {
-        // no content for update
-        var error = given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .pathParam("id", "not-existing")
-                .put("{id}")
-                .then()
-                .statusCode(BAD_REQUEST.getStatusCode())
-                .extract().as(ProblemDetailResponseDTO.class);
-
-        assertThat(error).isNotNull();
-        assertThat(error.getErrorCode()).isEqualTo("CONSTRAINT_VIOLATIONS");
-        assertThat(error.getDetail()).isEqualTo("updateUserProfile.updateUserPersonRequestDTO: must not be null");
-
         var userProfileDTO = given()
                 .when()
+                .header(APM_HEADER_PARAM, createToken("user4", "org1"))
                 .pathParam("id", "user1")
                 .get("{id}")
                 .then()
@@ -255,20 +198,23 @@ class UserProfileInternalRestControllerTest extends AbstractTest {
         requestDTO.setPhone(userProfileDTO.getPerson().getPhone());
         requestDTO.getPhone().setNumber("123456789");
         requestDTO.getPhone().setType(PhoneTypeDTO.LANDLINE);
+        requestDTO.setModificationCount(userProfileDTO.getModificationCount());
 
-        // update not existing profile
+        // update existing profile with wrong tenant
         given()
                 .when()
+                .header(APM_HEADER_PARAM, createToken("user4", "org2"))
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
-                .pathParam("id", "not-existing")
+                .pathParam("id", "user1")
                 .put("{id}")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
 
-        // update existing profile
+        // update existing profile with correct tenant
         given()
                 .when()
+                .header(APM_HEADER_PARAM, createToken("user4", "org1"))
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
                 .pathParam("id", "user1")
@@ -278,6 +224,7 @@ class UserProfileInternalRestControllerTest extends AbstractTest {
 
         userProfileDTO = given()
                 .when()
+                .header(APM_HEADER_PARAM, createToken("user4", "org1"))
                 .pathParam("id", "user1")
                 .get("{id}")
                 .then()
