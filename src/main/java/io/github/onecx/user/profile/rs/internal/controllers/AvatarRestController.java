@@ -75,42 +75,42 @@ public class AvatarRestController implements AvatarApi {
     @Override
     @Transactional
     public Response getUserAvatar(String id) {
-        var avatar = imageDAO.findById(id);
+        var avatarEntity = imageDAO.findById(id);
 
-        if (avatar == null) {
+        if (avatarEntity == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        var imageByteInputStream = new ByteArrayInputStream(avatar.getImageByte());
+        var imageByteInputStream = new ByteArrayInputStream(avatarEntity.getImageByte());
 
-        return Response.ok(imageByteInputStream).header("Content-Type", avatar.getMimeType()).build();
+        return Response.ok(imageByteInputStream).header("Content-Type", avatarEntity.getMimeType()).build();
     }
 
     @Override
     public Response getUserAvatarInfo() {
-        var userProfile = userProfileDAO.getUserProfileByUserId(ApplicationContext.get().getPrincipal(),
+        var userProfileEntity = userProfileDAO.getUserProfileByUserId(ApplicationContext.get().getPrincipal(),
                 UserProfile.ENTITY_GRAPH_LOAD_ALL);
 
-        if (userProfile == null || userProfile.getAvatar() == null) {
+        if (userProfileEntity == null || userProfileEntity.getAvatar() == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        var avatar = userProfile.getAvatar();
-        var imageInfo = avatarV1Mapper.map(avatar);
+        var avatarEntity = userProfileEntity.getAvatar();
+        var imageInfoDTO = avatarV1Mapper.map(avatarEntity);
 
-        if (userProfile.getUserId().equals(avatar.getModificationUser())) {
-            imageInfo.setUserUploaded(true);
+        if (userProfileEntity.getUserId().equals(avatarEntity.getModificationUser())) {
+            imageInfoDTO.setUserUploaded(true);
         }
 
-        imageInfo.setImageUrl(uriInfo.getPath()
+        imageInfoDTO.setImageUrl(uriInfo.getPath()
                 .concat("/")
-                .concat(avatar.getId()));
+                .concat(avatarEntity.getId()));
 
-        imageInfo.setSmallImageUrl((uriInfo.getPath()
+        imageInfoDTO.setSmallImageUrl((uriInfo.getPath()
                 .concat("/")
-                .concat(userProfile.getSmallAvatar().getId())));
+                .concat(userProfileEntity.getSmallAvatar().getId())));
 
-        return Response.ok(imageInfo).build();
+        return Response.ok(imageInfoDTO).build();
     }
 
     @Override

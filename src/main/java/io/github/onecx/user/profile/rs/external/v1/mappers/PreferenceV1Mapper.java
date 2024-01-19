@@ -13,28 +13,28 @@ import io.github.onecx.user.profile.domain.models.Preference;
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public interface PreferenceV1Mapper {
 
-    UserPreferenceDTO map(Preference preferences);
+    UserPreferenceDTO mapV1(Preference preferences);
 
-    List<Preference> create(List<UserPreferenceDTO> preferencesDTOv1s);
+    List<Preference> createV1(List<UserPreferenceDTO> preferencesDTOv1s);
 
+    @Mapping(target = "modificationUser", ignore = true)
+    @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "userProfile", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
-    @Mapping(target = "persisted", ignore = true)
-    @Mapping(target = "modificationUser", ignore = true)
-    @Mapping(target = "modificationDate", ignore = true)
-    @Mapping(target = "modificationCount", ignore = true)
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "creationUser", ignore = true)
+    @Mapping(target = "modificationCount", ignore = true)
+    @Mapping(target = "modificationDate", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
+    @Mapping(target = "creationUser", ignore = true)
     @Mapping(target = "controlTraceabilityManual", ignore = true)
-    Preference map(UserPreferenceDTO dto);
+    Preference mapv1(UserPreferenceDTO dto);
 
-    List<UserPreferenceDTO> map(List<Preference> preferences);
+    List<UserPreferenceDTO> mapv1(List<Preference> preferences);
 
-    default UserPreferencesDTO find(List<Preference> preferenceList) {
+    default UserPreferencesDTO findv1(List<Preference> preferenceList) {
         var preferences = new UserPreferencesDTO();
 
-        preferences.setPreferences(map(preferenceList));
+        preferences.setPreferences(mapv1(preferenceList));
 
         return preferences;
     }

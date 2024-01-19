@@ -216,21 +216,21 @@ public class UserProfileRestController implements UserProfileApi {
     }
 
     @ServerExceptionMapper
-    public RestResponse<ProblemDetailResponseDTO> exception(ConstraintException ex) {
-        return exceptionMapper.exception(ex);
-    }
-
-    @ServerExceptionMapper
-    public RestResponse<ProblemDetailResponseDTO> constraint(ConstraintViolationException ex) {
-        return exceptionMapper.constraint(ex);
-    }
-
-    @ServerExceptionMapper
-    public RestResponse<ProblemDetailResponseDTO> optimisticLock(DAOException ex) {
+    public RestResponse<ProblemDetailResponseDTO> daoException(DAOException ex) {
         if (ex.getCause() instanceof OptimisticLockException oex) {
             return exceptionMapper.optimisticLock(oex);
         }
         throw ex;
+    }
+
+    @ServerExceptionMapper
+    public RestResponse<ProblemDetailResponseDTO> constraintViolation(ConstraintViolationException ex) {
+        return exceptionMapper.constraint(ex);
+    }
+
+    @ServerExceptionMapper
+    public RestResponse<ProblemDetailResponseDTO> constraintException(ConstraintException ex) {
+        return exceptionMapper.exception(ex);
     }
 
     enum ErrorKeys {
