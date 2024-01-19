@@ -62,7 +62,7 @@ public class UserProfileV1RestController implements UserProfileV1Api {
 
         var preferences = preferenceDAO.getAllPreferencesByUserId(userId);
 
-        return Response.ok(preferenceMapper.findv1(preferences)).build();
+        return Response.ok(preferenceMapper.findV1(preferences)).build();
     }
 
     @Override
