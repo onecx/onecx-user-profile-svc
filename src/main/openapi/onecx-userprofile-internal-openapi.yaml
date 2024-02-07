@@ -14,7 +14,7 @@ paths:
       tags:
         - userProfileAdmin
       description: Create new user profile
-      operationId: createUserProfile
+      operationId: createUserProfileData
       requestBody:
         required: true
         content:
@@ -45,7 +45,7 @@ paths:
       tags:
         - userProfileAdmin
       description: Search for user profiles by search criteria
-      operationId: searchUserProfile
+      operationId: searchUserProfileData
       requestBody:
         required: true
         content:
@@ -70,7 +70,7 @@ paths:
       tags:
         - userProfileAdmin
       description: Return user profile by id
-      operationId: getUserProfile
+      operationId: getUserProfileData
       parameters:
         - $ref: '#/components/parameters/id'
       responses:
@@ -86,7 +86,7 @@ paths:
       tags:
         - userProfileAdmin
       description: Update workspace by ID
-      operationId: updateUserProfile
+      operationId: updateUserProfileData
       parameters:
         - $ref: '#/components/parameters/id'
       requestBody:
@@ -110,7 +110,7 @@ paths:
       tags:
         - userProfileAdmin
       description: Delete user profile by ID
-      operationId: deleteUserProfile
+      operationId: deleteUserProfileData
       parameters:
         - $ref: '#/components/parameters/id'
       responses:
@@ -160,7 +160,7 @@ paths:
       tags:
         - userProfile
       description: Load user preferences for current user
-      operationId: getUserPreference
+      operationId: getUserProfilePreference
       responses:
         "200":
           description: User profile of current user
@@ -178,7 +178,7 @@ paths:
       tags:
         - userProfile
       description: Create user preference
-      operationId: createUserPreference
+      operationId: createUserProfilePreference
       requestBody:
         required: true
         content:
@@ -209,7 +209,7 @@ paths:
       tags:
         - userProfile
       description: Update preference value
-      operationId: updateUserPreference
+      operationId: updateUserProfilePreference
       parameters:
         - $ref: '#/components/parameters/id'
       requestBody:
@@ -237,7 +237,7 @@ paths:
       tags:
         - userProfile
       description: Delete preference by id for current user
-      operationId: deleteUserPreference
+      operationId: deleteUserProfilePreference
       parameters:
         - $ref: '#/components/parameters/id'
       responses:
@@ -254,7 +254,7 @@ paths:
       tags:
         - userProfile
       description: Load user person for current user
-      operationId: getUserPerson
+      operationId: getUserProfilePerson
       responses:
         "200":
           description: User person of current user
@@ -272,7 +272,7 @@ paths:
       tags:
         - userProfile
       description: Update person information
-      operationId: updateUserPerson
+      operationId: updateUserProfilePerson
       requestBody:
         required: true
         content:
@@ -297,7 +297,7 @@ paths:
       tags:
         - userProfile
       description: Load user profile account settings for current user
-      operationId: getUserSettings
+      operationId: getUserProfileSettings
       responses:
         "200":
           description: User profile account settings of current user
@@ -315,7 +315,7 @@ paths:
       tags:
         - userProfile
       description: Update user account settings
-      operationId: updateUserSettings
+      operationId: updateUserProfileSettings
       requestBody:
         required: true
         content:
@@ -340,7 +340,7 @@ paths:
       tags:
         - avatar
       description: Get user avatar info
-      operationId: getUserAvatarInfo
+      operationId: getUserProfileAvatarInfo
       responses:
         "200":
           description: OK
@@ -354,7 +354,7 @@ paths:
       tags:
         - avatar
       description: Upload user avatar
-      operationId: uploadAvatar
+      operationId: uploadUserProfileAvatar
       requestBody:
         required: true
         content:
@@ -379,7 +379,7 @@ paths:
       tags:
         - avatar
       description: Delete user's avatar
-      operationId: deleteUserAvatar
+      operationId: deleteUserProfileAvatar
       responses:
         '204':
           description: No Content
@@ -394,7 +394,7 @@ paths:
       tags:
         - avatar
       description: Get the image of user's avatar
-      operationId: getUserAvatar
+      operationId: getUserProfileAvatar
       parameters:
         - $ref: '#/components/parameters/id'
       responses:
