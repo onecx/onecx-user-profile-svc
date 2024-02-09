@@ -13,6 +13,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
@@ -75,15 +76,13 @@ public class AvatarRestController implements AvatarApi {
     @Override
     @Transactional
     public Response getUserProfileAvatar(String id) {
-        var avatarEntity = imageDAO.findById(id);
-
-        if (avatarEntity == null) {
+        var avatar = imageDAO.findById(id);
+        if (avatar == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
+        return Response.ok(avatar.getImageData(), avatar.getMimeType())
+                .header(HttpHeaders.CONTENT_LENGTH, avatar.getLength()).build();
 
-        var imageByteInputStream = new ByteArrayInputStream(avatarEntity.getImageByte());
-
-        return Response.ok(imageByteInputStream).header("Content-Type", avatarEntity.getMimeType()).build();
     }
 
     @Override
@@ -155,13 +154,15 @@ public class AvatarRestController implements AvatarApi {
             throws IOException {
         var avatar = new Image();
         userProfile.setAvatar(avatar);
-        avatar.setImageByte(avatarBytes);
+        avatar.setLength(avatarBytes.length);
+        avatar.setImageData(avatarBytes);
         avatar.setMimeType(mimeType);
         this.setUpAvatarDimensions(avatar);
 
         var smallAvatar = new Image();
         userProfile.setSmallAvatar(smallAvatar);
-        smallAvatar.setImageByte(smallAvatarBytes);
+        smallAvatar.setLength(smallAvatarBytes.length);
+        smallAvatar.setImageData(smallAvatarBytes);
         smallAvatar.setMimeType("image/png");
         this.setUpAvatarDimensions(smallAvatar);
         userProfile.setSmallAvatar(smallAvatar);
@@ -175,7 +176,7 @@ public class AvatarRestController implements AvatarApi {
     }
 
     private void setUpAvatarDimensions(Image avatar) throws IOException {
-        var image = ImageIO.read(new ByteArrayInputStream(avatar.getImageByte()));
+        var image = ImageIO.read(new ByteArrayInputStream(avatar.getImageData()));
         avatar.setHeight(image.getHeight());
         avatar.setWidth(image.getWidth());
     }

@@ -5,9 +5,7 @@ import java.io.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.*;
 
 import org.tkit.onecx.user.profile.domain.daos.ImageDAO;
 import org.tkit.onecx.user.profile.domain.daos.UserProfileDAO;
@@ -45,10 +43,8 @@ public class AvatarV1RestController implements AvatarV1Api {
         if (avatar == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-
-        var imageByteInputStream = new ByteArrayInputStream(avatar.getImageByte());
-
-        return Response.ok(imageByteInputStream).header("Content-Type", avatar.getMimeType()).build();
+        return Response.ok(avatar.getImageData(), avatar.getMimeType())
+                .header(HttpHeaders.CONTENT_LENGTH, avatar.getLength()).build();
     }
 
     @Override

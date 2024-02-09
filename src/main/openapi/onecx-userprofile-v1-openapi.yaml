@@ -112,8 +112,16 @@ paths:
         "200":
           description: OK
           content:
-            application/octet-stream:
+            image/png:
               schema:
+                minimum: 1
+                maximum: 20000
+                type: string
+                format: binary
+            image/jpg:
+              schema:
+                minimum: 1
+                maximum: 20000
                 type: string
                 format: binary
         "400":

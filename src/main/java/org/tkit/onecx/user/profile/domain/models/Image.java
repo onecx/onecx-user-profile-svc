@@ -8,10 +8,10 @@ import org.tkit.quarkus.jpa.models.TraceableEntity;
 import lombok.Getter;
 import lombok.Setter;
 
-@Table
 @Entity
 @Getter
 @Setter
+@Table(name = "IMAGE")
 @SuppressWarnings("java:S2160")
 public class Image extends TraceableEntity {
 
@@ -28,8 +28,10 @@ public class Image extends TraceableEntity {
     @Column(name = "MIME_TYPE")
     private String mimeType;
 
-    @Lob
-    @Column(name = "IMAGE")
-    private byte[] imageByte;
+    @Column(name = "DATA_LENGTH")
+    private Integer length;
+
+    @Column(name = "DATA")
+    private byte[] imageData;
 
 }

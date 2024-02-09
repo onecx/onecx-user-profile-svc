@@ -85,6 +85,7 @@
         <addUniqueConstraint columnNames="small_avatar_guid" constraintName="usm_user_profile_small_avatar_guid_key" tableName="usm_user_profile"/>
 
         <createTable tableName="image">
+            <column name="data_length" type="INTEGER"/>
             <column name="height" type="INTEGER"/>
             <column name="optlock" type="INTEGER">
                 <constraints nullable="false"/>
@@ -101,7 +102,7 @@
             <column name="mime_type" type="VARCHAR(255)"/>
             <column name="creationuser" type="VARCHAR(255)"/>
             <column name="modificationuser" type="VARCHAR(255)"/>
-            <column name="image" type="OID"/>
+            <column name="data" type="BYTEA"/>
         </createTable>
 
         <addForeignKeyConstraint baseColumnNames="avatar_guid" baseTableName="usm_user_profile" constraintName="fk6ugebkclhuujc15gyowewqf3p" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="image" validate="true"/>
