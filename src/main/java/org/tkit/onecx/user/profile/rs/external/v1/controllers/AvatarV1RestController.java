@@ -1,7 +1,5 @@
 package org.tkit.onecx.user.profile.rs.external.v1.controllers;
 
-import java.io.*;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;

@@ -3,10 +3,7 @@ package org.tkit.onecx.user.profile.rs.internal.mappers;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 import org.tkit.onecx.user.profile.domain.criteria.UserPersonCriteria;
 import org.tkit.onecx.user.profile.domain.models.*;
 import org.tkit.quarkus.jpa.daos.PageResult;
@@ -35,6 +32,15 @@ public interface UserProfileMapper {
     @Mapping(target = "phone", ignore = true)
     @Mapping(target = "address", ignore = true)
     UserPerson create(CreateUserPersonDTO dto);
+
+    @Named("mapProfile")
+    default UserProfileDTO mapProfile(UserProfile entity) {
+        UserProfileDTO dto = map(entity);
+        dto.getPerson().setModificationCount(entity.getModificationCount());
+        dto.getAccountSettings().setModificationCount(entity.getModificationCount());
+
+        return dto;
+    }
 
     UserProfileDTO map(UserProfile entity);
 
@@ -75,6 +81,7 @@ public interface UserProfileMapper {
     UserProfilePageResultDTO mapPageResult(PageResult<UserProfile> page);
 
     @Named("mapStream")
+    @IterableMapping(qualifiedByName = "mapProfile")
     List<UserProfileDTO> mapStream(Stream<UserProfile> stream);
 
     default void updateUserSettings(UserProfile model, UpdateUserSettingsDTO dto) {
