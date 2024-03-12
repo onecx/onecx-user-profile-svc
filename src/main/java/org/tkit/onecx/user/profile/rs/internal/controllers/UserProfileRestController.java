@@ -121,7 +121,7 @@ public class UserProfileRestController implements UserProfileApi {
             userProfile = userProfileDAO.create(createUserProfile);
         }
 
-        return Response.ok(userProfileMapper.map(userProfile)).build();
+        return Response.ok(userProfileMapper.mapProfile(userProfile)).build();
     }
 
     @Override

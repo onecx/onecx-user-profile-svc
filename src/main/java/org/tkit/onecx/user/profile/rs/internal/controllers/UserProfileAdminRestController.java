@@ -54,7 +54,7 @@ public class UserProfileAdminRestController implements UserProfileAdminApi {
 
         return Response
                 .created(uriInfo.getAbsolutePathBuilder().path(userProfile.getId()).build())
-                .entity(userProfileMapper.map(userProfile))
+                .entity(userProfileMapper.mapProfile(userProfile))
                 .build();
     }
 
@@ -77,7 +77,7 @@ public class UserProfileAdminRestController implements UserProfileAdminApi {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        return Response.ok(userProfileMapper.map(userProfile)).build();
+        return Response.ok(userProfileMapper.mapProfile(userProfile)).build();
     }
 
     @Override

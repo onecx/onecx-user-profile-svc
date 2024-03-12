@@ -206,6 +206,8 @@ class UserProfileRestControllerTest extends AbstractTest {
         assertThat(userPofile).isNotNull();
         assertThat(userPofile.getUserId()).isEqualTo("user3");
         assertThat(userPofile.getPerson().getDisplayName()).isEqualTo("User Three");
+        assertThat(userPofile.getPerson().getModificationCount()).isNotNull();
+        assertThat(userPofile.getAccountSettings().getModificationCount()).isNotNull();
     }
 
     @Test
