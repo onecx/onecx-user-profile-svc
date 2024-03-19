@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "USM_USER_PROFILE", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "USER_ID", "TENANT_ID" })
+        @UniqueConstraint(name = "UP_CONSTRAINTS", columnNames = { "USER_ID", "TENANT_ID" })
 }, indexes = {
         @Index(columnList = "FIRST_NAME,LAST_NAME,EMAIL, TENANT_ID", name = "user_person_criteria_idx") })
 @NamedEntityGraph(name = "UserProfile.loadById", attributeNodes = {
@@ -18,8 +18,6 @@ import lombok.Setter;
 })
 @NamedEntityGraph(name = "UserProfile.loadAll", attributeNodes = {
         @NamedAttributeNode(value = "person"),
-        @NamedAttributeNode(value = "avatar"),
-        @NamedAttributeNode(value = "smallAvatar")
 })
 @NamedEntityGraph(name = "UserProfile.loadPerson", attributeNodes = {
         @NamedAttributeNode(value = "person")
@@ -56,13 +54,5 @@ public class UserProfile extends TraceableEntity {
 
     @Embedded
     private UserProfileAccountSettings accountSettings;
-
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "AVATAR_GUID")
-    private Image avatar;
-
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "SMALL_AVATAR_GUID")
-    private Image smallAvatar;
 
 }

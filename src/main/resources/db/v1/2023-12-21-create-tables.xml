@@ -37,7 +37,6 @@
             </column>
             <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
-            <column name="avatar_guid" type="VARCHAR(255)"/>
             <column name="city" type="VARCHAR(255)"/>
             <column name="color_scheme" type="VARCHAR(255)"/>
             <column name="country" type="VARCHAR(255)"/>
@@ -55,7 +54,6 @@
             <column name="number" type="VARCHAR(255)"/>
             <column name="organization" type="VARCHAR(255)"/>
             <column name="postal_code" type="VARCHAR(255)"/>
-            <column name="small_avatar_guid" type="VARCHAR(255)"/>
             <column name="street" type="VARCHAR(255)"/>
             <column name="street_no" type="VARCHAR(255)"/>
             <column name="tenant_id" type="VARCHAR(255)">
@@ -80,33 +78,31 @@
             <column name="tenant_id"/>
         </createIndex>
 
-        <addUniqueConstraint columnNames="user_id, tenant_id" constraintName="ukm9nl9w7ih2pti88rq0xf31c5y" tableName="usm_user_profile"/>
-        <addUniqueConstraint columnNames="avatar_guid" constraintName="usm_user_profile_avatar_guid_key" tableName="usm_user_profile"/>
-        <addUniqueConstraint columnNames="small_avatar_guid" constraintName="usm_user_profile_small_avatar_guid_key" tableName="usm_user_profile"/>
+        <addUniqueConstraint columnNames="user_id, tenant_id" constraintName="up_constraints" tableName="usm_user_profile"/>
 
         <createTable tableName="image">
             <column name="data_length" type="INTEGER"/>
-            <column name="height" type="INTEGER"/>
             <column name="optlock" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
-            <column name="tenant_id" type="VARCHAR(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="width" type="INTEGER"/>
             <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="guid" type="VARCHAR(255)">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="image_pkey"/>
             </column>
             <column name="mime_type" type="VARCHAR(255)"/>
+            <column name="ref_type" type="VARCHAR(255)"/>
+            <column name="tenant_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="VARCHAR(255)"/>
             <column name="creationuser" type="VARCHAR(255)"/>
             <column name="modificationuser" type="VARCHAR(255)"/>
             <column name="data" type="BYTEA"/>
         </createTable>
 
-        <addForeignKeyConstraint baseColumnNames="avatar_guid" baseTableName="usm_user_profile" constraintName="fk6ugebkclhuujc15gyowewqf3p" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="image" validate="true"/>
-        <addForeignKeyConstraint baseColumnNames="small_avatar_guid" baseTableName="usm_user_profile" constraintName="fkg895b7vcf6kixqmjicil1isrd" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="image" validate="true"/>
+        <addUniqueConstraint columnNames="user_id, ref_type, tenant_id" constraintName="image_constraints" tableName="image"/>
+
     </changeSet>
 
     </databaseChangeLog>

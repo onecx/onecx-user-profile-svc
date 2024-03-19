@@ -89,25 +89,14 @@ paths:
     get:
       tags:
         - avatarV1
-      description: Get user avatar info
-      operationId: getUserAvatarInfo
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ImageInfo'
-        "404":
-          description: User avatar not found
-  /v1/userProfile/me/avatar/{id}:
-    get:
-      tags:
-        - avatarV1
-      description: Get the image of user's avatar
-      operationId: getUserAvatar
+      description: Get Image by id
+      operationId: getMyImage
       parameters:
-        - $ref: '#/components/parameters/id'
+        - name: refType
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/RefType"
       responses:
         "200":
           description: OK
@@ -115,7 +104,7 @@ paths:
             image/*:
               schema:
                 minimum: 1
-                maximum: 20000
+                maximum: 110000
                 type: string
                 format: binary
         "400":
@@ -124,10 +113,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-        "404":
-          description: Not found
 components:
   schemas:
+    RefType:
+      type: string
+      enum: [ small, normal ]
+      default: 'normal'
     UserPreferences:
       type: object
       properties:
@@ -251,15 +242,6 @@ components:
       properties:
         id:
           type: string
-        userUploaded:
-          description: flag whether Image was uploaded by user
-          type: boolean
-        imageUrl:
-          type: string
-          example: http://tkit-portal/data/afcc5d0d-6509-497a-8125-614f82b106ae
-        smallImageUrl:
-          type: string
-          example: http://tkit-portal/data/afcc5d0d-6509-497a-8125-614f82asb106ae
     ProblemDetailResponse:
       type: object
       properties:

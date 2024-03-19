@@ -8,7 +8,6 @@ servers:
 tags:
   - name: userProfileAdmin
   - name: userProfile
-  - name: avatar
 paths:
   /internal/userProfiles:
     post:
@@ -336,88 +335,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-  /internal/userProfile/me/avatar:
-    get:
-      tags:
-        - avatar
-      description: Get user avatar info
-      operationId: getUserProfileAvatarInfo
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ImageInfo'
-        "404":
-          description: User avatar not found
-    put:
-      tags:
-        - avatar
-      description: Upload user avatar
-      operationId: uploadUserProfileAvatar
-      requestBody:
-        required: true
-        content:
-          image/*:
-            schema:
-              minimum: 1
-              maximum: 20000
-              type: string
-              format: binary
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ImageInfo'
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailResponse'
-    delete:
-      tags:
-        - avatar
-      description: Delete user's avatar
-      operationId: deleteUserProfileAvatar
-      responses:
-        '204':
-          description: No Content
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailResponse'
-  /internal/userProfile/me/avatar/{id}:
-    get:
-      tags:
-        - avatar
-      description: Get the image of user's avatar
-      operationId: getUserProfileAvatar
-      parameters:
-        - $ref: '#/components/parameters/id'
-      responses:
-        "200":
-          description: OK
-          content:
-            image/*:
-              schema:
-                minimum: 1
-                maximum: 20000
-                type: string
-                format: binary
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailResponse'
-        "404":
-          description: Not found
 components:
   schemas:
     UserPersonCriteria:
@@ -650,31 +567,6 @@ components:
           $ref: '#/components/schemas/MenuMode'
         colorScheme:
           $ref: '#/components/schemas/ColorScheme'
-    ImageInfo:
-      type: object
-      properties:
-        modificationCount:
-          format: int32
-          type: integer
-        creationDate:
-          $ref: '#/components/schemas/OffsetDateTime'
-        creationUser:
-          type: string
-        modificationDate:
-          $ref: '#/components/schemas/OffsetDateTime'
-        modificationUser:
-          type: string
-        id:
-          type: string
-        userUploaded:
-          description: flag whether Image was uploaded by user
-          type: boolean
-        imageUrl:
-          type: string
-          example: http://tkit-portal/data/afcc5d0d-6509-497a-8125-614f82b106ae
-        smallImageUrl:
-          type: string
-          example: http://tkit-portal/data/afcc5d0d-6509-497a-8125-614f82asb106ae
     ProblemDetailResponse:
       type: object
       properties:
