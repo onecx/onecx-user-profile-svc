@@ -139,12 +139,8 @@ paths:
           schema:
             $ref: "#/components/schemas/RefType"
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ImageInfo'
+        "204":
+          description: No Content
         "400":
           description: Bad request
           content:
@@ -262,12 +258,8 @@ paths:
           schema:
             $ref: "#/components/schemas/RefType"
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ImageInfo'
+        "204":
+          description: No Content
         "400":
           description: Bad request
           content:
