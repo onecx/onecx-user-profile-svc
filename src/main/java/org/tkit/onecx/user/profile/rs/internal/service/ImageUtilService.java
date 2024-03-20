@@ -10,9 +10,12 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public interface ImageUtilService {
+import jakarta.enterprise.context.ApplicationScoped;
 
-    static byte[] resizeImage(byte[] imgBytesArray, Integer smallImgWidth, Integer smallImgHeight) throws IOException {
+@ApplicationScoped
+public class ImageUtilService {
+
+    public byte[] resizeImage(byte[] imgBytesArray, Integer smallImgWidth, Integer smallImgHeight) throws IOException {
 
         var image = ImageIO.read(new ByteArrayInputStream(imgBytesArray));
 

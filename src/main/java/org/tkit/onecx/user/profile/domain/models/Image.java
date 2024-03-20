@@ -11,27 +11,29 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "IMAGE")
+@Table(name = "IMAGE", uniqueConstraints = {
+        @UniqueConstraint(name = "IMAGE_CONSTRAINTS", columnNames = { "USER_ID", "REF_TYPE", "TENANT_ID" })
+})
 @SuppressWarnings("java:S2160")
 public class Image extends TraceableEntity {
 
-    @TenantId
-    @Column(name = "TENANT_ID")
-    private String tenantId;
-
-    @Column(name = "HEIGHT")
-    private Integer height;
-
-    @Column(name = "WIDTH")
-    private Integer width;
-
     @Column(name = "MIME_TYPE")
     private String mimeType;
+
+    @Column(name = "REF_TYPE")
+    private String refType;
+
+    @Column(name = "USER_ID")
+    private String userId;
 
     @Column(name = "DATA_LENGTH")
     private Integer length;
 
     @Column(name = "DATA")
     private byte[] imageData;
+
+    @TenantId
+    @Column(name = "TENANT_ID")
+    private String tenantId;
 
 }

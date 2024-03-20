@@ -9,11 +9,14 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import jakarta.ws.rs.core.HttpHeaders;
+
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.user.profile.test.AbstractTest;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.user.profile.rs.external.v1.model.ImageInfoDTO;
+import gen.org.tkit.onecx.user.profile.rs.external.v1.model.RefTypeDTO;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -21,6 +24,9 @@ import io.quarkus.test.junit.QuarkusTest;
 @TestHTTPEndpoint(AvatarV1RestController.class)
 @WithDBData(value = "data/testdata.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
 class AvatarV1RestControllerTest extends AbstractTest {
+
+    private static final String MEDIA_TYPE_IMAGE_PNG = "image/png";
+    private static final String MEDIA_TYPE_IMAGE_JPG = "image/jpg";
 
     @Test
     void testAvatarRestControler() throws URISyntaxException, IOException {
@@ -36,58 +42,38 @@ class AvatarV1RestControllerTest extends AbstractTest {
         File avatar = new File("src/test/resources/data/avatar_test.jpg");
 
         // good tenant
-        var internalImageInfo = given().basePath("/internal/userProfile/me/avatar")
+        given().basePath("/internal/images/me")
                 .when()
                 .contentType("image/jpg")
                 .body(avatar)
-                .header(APM_HEADER_PARAM, createToken("user1", "org1"))
-                .put()
+                .header(APM_HEADER_PARAM, createToken("user2", "org1"))
+                .post()
                 .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(gen.org.tkit.onecx.user.profile.rs.internal.model.ImageInfoDTO.class);
+                .statusCode(CREATED.getStatusCode())
+                .extract().as(ImageInfoDTO.class);
 
         var smallAvatarByteArray = given()
-                .when()
-                .pathParam("id",
-                        internalImageInfo.getSmallImageUrl()
-                                .substring(internalImageInfo.getSmallImageUrl().lastIndexOf("/") + 1))
-                .header(APM_HEADER_PARAM, createToken("user1", "org1"))
-                .get("{id}")
+                .contentType(APPLICATION_JSON)
+                .header(APM_HEADER_PARAM, createToken("user2", "org1"))
+                .queryParam("refType", RefTypeDTO.SMALL)
+                .get()
                 .then()
-                .contentType("image/png")
                 .statusCode(OK.getStatusCode())
-                .extract().asByteArray();
+                .header(HttpHeaders.CONTENT_TYPE, MEDIA_TYPE_IMAGE_JPG)
+                .extract().body().asByteArray();
 
         assertThat(smallAvatarByteArray).isNotNull();
 
         var avatarByteArray = given()
                 .when()
-                .pathParam("id",
-                        internalImageInfo.getImageUrl().substring(internalImageInfo.getImageUrl().lastIndexOf("/") + 1))
-                .header(APM_HEADER_PARAM, createToken("user1", "org1"))
-                .get("{id}")
-                .then()
-                .contentType("image/jpeg")
-                .statusCode(OK.getStatusCode())
-                .extract().asByteArray();
-
-        assertThat(avatarByteArray).isNotNull();
-
-        var avatarInfo = given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("user1", "org1"))
+                .header(APM_HEADER_PARAM, createToken("user2", "org1"))
                 .get()
                 .then()
                 .statusCode(OK.getStatusCode())
-                .extract().as(ImageInfoDTO.class);
+                .header(HttpHeaders.CONTENT_TYPE, MEDIA_TYPE_IMAGE_JPG)
+                .extract().body().asByteArray();
 
-        assertThat(avatarInfo).isNotNull();
-        assertThat(avatarInfo.getImageUrl().substring(avatarInfo.getImageUrl().indexOf("userProfile"))).isNotNull()
-                .isEqualTo(internalImageInfo.getImageUrl().substring(internalImageInfo.getImageUrl().indexOf("userProfile")));
-        assertThat(avatarInfo.getSmallImageUrl().substring(avatarInfo.getSmallImageUrl().indexOf("userProfile"))).isNotNull()
-                .isEqualTo(internalImageInfo.getSmallImageUrl()
-                        .substring(internalImageInfo.getSmallImageUrl().indexOf("userProfile")));
+        assertThat(avatarByteArray).isNotNull();
     }
 
     @Test
@@ -96,7 +82,7 @@ class AvatarV1RestControllerTest extends AbstractTest {
         given()
                 .when()
                 .pathParam("id", "not-existing")
-                .header(APM_HEADER_PARAM, createToken("user1", null))
+                .header(APM_HEADER_PARAM, createToken("user2", null))
                 .get("{id}")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());

@@ -14,6 +14,7 @@ import org.tkit.onecx.user.profile.test.AbstractTest;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.user.profile.rs.external.v1.model.ImageInfoDTO;
+import gen.org.tkit.onecx.user.profile.rs.external.v1.model.RefTypeDTO;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -24,54 +25,47 @@ class AvatarV1RestControllerTenantTest extends AbstractTest {
 
     @Test
     void testAvatarRestControler() throws URISyntaxException, IOException {
-        var testInfoDto = given()
+        given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("user1", "org1"))
+                .header(APM_HEADER_PARAM, createToken("user2", "org1"))
                 .get()
                 .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(ImageInfoDTO.class);
-
-        assertThat(testInfoDto.getUserUploaded()).isNull();
+                .statusCode(NOT_FOUND.getStatusCode());
 
         // add avatar
         File avatar = new File("src/test/resources/data/avatar_test.jpg");
 
         // good tenant
-        var internalImageInfo = given().basePath("/internal/userProfile/me/avatar")
+        var internalImageInfo = given().basePath("/internal/images/me")
                 .when()
                 .contentType("image/jpg")
                 .body(avatar)
-                .header(APM_HEADER_PARAM, createToken("user1", "org1"))
-                .put()
+                .header(APM_HEADER_PARAM, createToken("user2", "org1"))
+                .post()
                 .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(gen.org.tkit.onecx.user.profile.rs.internal.model.ImageInfoDTO.class);
+                .statusCode(CREATED.getStatusCode())
+                .extract().as(ImageInfoDTO.class);
 
         // wrong tenant get small avatar
         given()
                 .when()
-                .pathParam("id",
-                        internalImageInfo.getSmallImageUrl()
-                                .substring(internalImageInfo.getSmallImageUrl().lastIndexOf("/") + 1))
-                .header(APM_HEADER_PARAM, createToken("user1", "org3"))
-                .get("{id}")
+                .header(APM_HEADER_PARAM, createToken("user2", "org3"))
+                .queryParam("refType", RefTypeDTO.SMALL)
+                .get()
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
 
         // good tenant get small avatar
         var smallAvatarByteArray = given()
                 .when()
-                .pathParam("id",
-                        internalImageInfo.getSmallImageUrl()
-                                .substring(internalImageInfo.getSmallImageUrl().lastIndexOf("/") + 1))
-                .header(APM_HEADER_PARAM, createToken("user1", "org1"))
-                .get("{id}")
+                .header(APM_HEADER_PARAM, createToken("user2", "org1"))
+                .queryParam("refType", RefTypeDTO.SMALL)
+                .get()
                 .then()
-                .contentType("image/png")
+                .contentType("image/jpg")
                 .statusCode(OK.getStatusCode())
-                .extract().asByteArray();
+                .extract().body().asByteArray();
 
         assertThat(smallAvatarByteArray).isNotNull();
 
@@ -79,26 +73,10 @@ class AvatarV1RestControllerTenantTest extends AbstractTest {
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("user1", "org3"))
+                .header(APM_HEADER_PARAM, createToken("user2", "org3"))
                 .get()
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
 
-        // get avatar info with good tenant
-        var avatarInfo = given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("user1", "org1"))
-                .get()
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(ImageInfoDTO.class);
-
-        assertThat(avatarInfo).isNotNull();
-        assertThat(avatarInfo.getImageUrl().substring(avatarInfo.getImageUrl().indexOf("userProfile"))).isNotNull()
-                .isEqualTo(internalImageInfo.getImageUrl().substring(internalImageInfo.getImageUrl().indexOf("userProfile")));
-        assertThat(avatarInfo.getSmallImageUrl().substring(avatarInfo.getSmallImageUrl().indexOf("userProfile"))).isNotNull()
-                .isEqualTo(internalImageInfo.getSmallImageUrl()
-                        .substring(internalImageInfo.getSmallImageUrl().indexOf("userProfile")));
     }
 }
