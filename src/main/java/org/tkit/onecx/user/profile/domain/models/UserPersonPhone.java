@@ -12,11 +12,11 @@ import lombok.Setter;
 @Embeddable
 public class UserPersonPhone implements Serializable {
 
-    @Column(name = "TYPE")
+    @Column(name = "PHONE_TYPE")
     @Enumerated(EnumType.STRING)
     private PhoneType type;
 
-    @Column(name = "NUMBER")
+    @Column(name = "PHONE_NUMBER")
     private String number;
 
     public enum PhoneType {
