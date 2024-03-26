@@ -1,0 +1,18 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+    <changeSet author="dev (generated)" id="1703172146321-2">
+        <renameTable oldTableName="usm_preference" newTableName="preference" />
+        <renameTable oldTableName="usm_user_profile" newTableName="user_profile" />
+        <renameColumn tableName="user_profile" oldColumnName="type" newColumnName="phone_type" />
+        <renameColumn tableName="user_profile" oldColumnName="number" newColumnName="phone_number" />
+
+    </changeSet>
+
+    </databaseChangeLog>
+

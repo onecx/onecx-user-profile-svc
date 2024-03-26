@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "USM_USER_PROFILE", uniqueConstraints = {
+@Table(name = "USER_PROFILE", uniqueConstraints = {
         @UniqueConstraint(name = "UP_CONSTRAINTS", columnNames = { "USER_ID", "TENANT_ID" })
 }, indexes = {
         @Index(columnList = "FIRST_NAME,LAST_NAME,EMAIL, TENANT_ID", name = "user_person_criteria_idx") })
