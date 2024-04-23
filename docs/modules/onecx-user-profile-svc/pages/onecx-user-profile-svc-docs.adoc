@@ -1,0 +1,52 @@
+
+include::onecx-user-profile-svc-attributes.adoc[opts=optional]
+
+=== Default properties
+
+.{properties-file}
+[%collapsible%open]
+====
+[source,properties,subs=attributes+]
+----
+quarkus.datasource.db-kind=postgresql
+quarkus.datasource.jdbc.max-size=30
+quarkus.datasource.jdbc.min-size=10
+quarkus.banner.enabled=false
+quarkus.hibernate-orm.database.generation=validate
+quarkus.hibernate-orm.multitenant=DISCRIMINATOR
+quarkus.hibernate-orm.jdbc.timezone=UTC
+quarkus.liquibase.migrate-at-start=true
+quarkus.liquibase.validate-on-migrate=true
+tkit.rs.context.tenant-id.enabled=true
+%prod.quarkus.datasource.jdbc.url=${DB_URL:jdbc:postgresql://postgresdb:5432/onecx-user-profile?sslmode=disable}
+%prod.quarkus.datasource.username=${DB_USER:onecx-user-profile}
+%prod.quarkus.datasource.password=${DB_PWD:onecx-user-profile}
+----
+====
+
+=== Extensions
+
+include::onecx-user-profile-svc-extensions.adoc[opts=optional]
+
+=== Container
+
+{docker-registry}[Docker registry]
+
+
+=== Helm
+
+{helm-registry}[Helm registry]
+
+Default values
+
+.{helm-file}
+[source,yaml]
+----
+app:
+  name: svc
+  image:
+    repository: "onecx/onecx-user-profile-svc"
+  db:
+    enabled: true
+----
+

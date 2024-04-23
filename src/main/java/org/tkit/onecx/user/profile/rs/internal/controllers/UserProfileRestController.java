@@ -15,10 +15,10 @@ import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 import org.tkit.onecx.user.profile.domain.daos.PreferenceDAO;
 import org.tkit.onecx.user.profile.domain.daos.UserProfileDAO;
 import org.tkit.onecx.user.profile.domain.models.UserProfile;
+import org.tkit.onecx.user.profile.domain.service.UserProfileService;
 import org.tkit.onecx.user.profile.rs.internal.mappers.InternalExceptionMapper;
 import org.tkit.onecx.user.profile.rs.internal.mappers.PreferenceMapper;
 import org.tkit.onecx.user.profile.rs.internal.mappers.UserProfileMapper;
-import org.tkit.onecx.user.profile.rs.internal.service.JWTService;
 import org.tkit.quarkus.context.ApplicationContext;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
 import org.tkit.quarkus.log.cdi.LogService;
@@ -44,7 +44,7 @@ public class UserProfileRestController implements UserProfileApi {
     PreferenceMapper preferenceMapper;
 
     @Inject
-    JWTService jwtService;
+    UserProfileService jwtService;
 
     @Inject
     InternalExceptionMapper exceptionMapper;
@@ -117,7 +117,7 @@ public class UserProfileRestController implements UserProfileApi {
 
         if (userProfile == null) {
             // create user profile if it does not exist
-            var createUserProfile = jwtService.createProfileFromToken(userId);
+            var createUserProfile = jwtService.createProfileFromToken();
             userProfile = userProfileDAO.create(createUserProfile);
         }
 
