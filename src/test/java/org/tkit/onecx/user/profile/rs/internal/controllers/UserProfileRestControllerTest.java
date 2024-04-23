@@ -179,6 +179,23 @@ class UserProfileRestControllerTest extends AbstractTest {
     }
 
     @Test
+    void getUserProfileWrongTokenTest() {
+        // not existing user profile, should be created
+        var up = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .header(APM_HEADER_PARAM, createToken("not-existing", null, "given_name", 123))
+                .get()
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(UserProfileDTO.class);
+
+        assertThat(up.getUserId()).isEqualTo("not-existing");
+        assertThat(up.getPerson().getFirstName()).isNull();
+        assertThat(up.getPerson().getEmail()).isEqualTo("not-existing@cap.de");
+    }
+
+    @Test
     void getUserProfileTest() {
         // not existing user profile, should be created
         var userPofile = given()
@@ -191,6 +208,7 @@ class UserProfileRestControllerTest extends AbstractTest {
                 .extract().as(UserProfileDTO.class);
 
         assertThat(userPofile.getUserId()).isEqualTo("not-existing");
+        assertThat(userPofile.getOrganization()).isEqualTo("org1");
         assertThat(userPofile.getPerson().getEmail()).isEqualTo("not-existing@cap.de");
 
         // load existing user profile
@@ -205,6 +223,7 @@ class UserProfileRestControllerTest extends AbstractTest {
 
         assertThat(userPofile).isNotNull();
         assertThat(userPofile.getUserId()).isEqualTo("user3");
+        assertThat(userPofile.getOrganization()).isEqualTo("org2");
         assertThat(userPofile.getPerson().getDisplayName()).isEqualTo("User Three");
         assertThat(userPofile.getPerson().getModificationCount()).isNotNull();
         assertThat(userPofile.getAccountSettings().getModificationCount()).isNotNull();

@@ -38,10 +38,14 @@ public class AbstractTest {
     }
 
     protected static String createToken(String userId, String orgId) {
+        return createToken(userId, orgId, null, null);
+    }
+
+    protected static String createToken(String userId, String orgId, String claimName, Object value) {
         try {
             String userName = userId != null ? userId : "test-user";
             String organizationId = orgId != null ? orgId : "org1";
-            JsonObjectBuilder claims = createClaims(userName, organizationId);
+            JsonObjectBuilder claims = createClaims(userName, organizationId, claimName, value);
 
             PrivateKey privateKey = KeyUtils.generateKeyPair(2048).getPrivate();
             return Jwt.claims(claims.build()).sign(privateKey);
@@ -50,7 +54,7 @@ public class AbstractTest {
         }
     }
 
-    protected static JsonObjectBuilder createClaims(String userName, String orgId) {
+    protected static JsonObjectBuilder createClaims(String userName, String orgId, String claimName, Object claimValue) {
         JsonObjectBuilder claims = Json.createObjectBuilder();
         claims.add(Claims.preferred_username.name(), userName);
         claims.add(Claims.sub.name(), userName);
@@ -59,6 +63,16 @@ public class AbstractTest {
         claims.add(Claims.given_name.name(), "Given " + userName);
         claims.add(Claims.family_name.name(), "Family " + userName);
         claims.add(Claims.email.name(), userName + "@cap.de");
+
+        if (claimName != null && claimValue != null) {
+            if (claimValue instanceof Integer t) {
+                claims.add(claimName, Json.createValue(t));
+            } else if (claimValue instanceof Double t) {
+                claims.add(claimName, Json.createValue(t));
+            } else if (claimValue instanceof String t) {
+                claims.add(claimName, Json.createValue(t));
+            }
+        }
 
         return claims;
     }

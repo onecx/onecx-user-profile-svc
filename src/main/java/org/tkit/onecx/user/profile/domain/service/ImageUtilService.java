@@ -1,4 +1,4 @@
-package org.tkit.onecx.user.profile.rs.internal.service;
+package org.tkit.onecx.user.profile.domain.service;
 
 import static java.awt.Image.SCALE_DEFAULT;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;

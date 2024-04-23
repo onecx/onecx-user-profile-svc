@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
-import org.tkit.onecx.user.profile.rs.internal.service.ImageUtilService;
+import org.tkit.onecx.user.profile.domain.service.ImageUtilService;
 import org.tkit.onecx.user.profile.test.AbstractTest;
 import org.tkit.quarkus.test.WithDBData;
 

@@ -1,0 +1,97 @@
+
+:summaryTableId: onecx-user-profile-svc
+[.configuration-legend]
+icon:lock[title=Fixed at build time] Configuration property fixed at build time - All other configuration properties are overridable at runtime
+[.configuration-reference.searchable, cols="80,.^10,.^10"]
+|===
+
+h|[[onecx-user-profile-svc_configuration]]link:#onecx-user-profile-svc_configuration[Configuration property]
+
+h|Type
+h|Default
+
+a| [[onecx-user-profile-svc_onecx-user-profile-claims-display-name]]`link:#onecx-user-profile-svc_onecx-user-profile-claims-display-name[onecx.user-profile.claims.display-name]`
+
+
+[.description]
+--
+User profile display name token claim
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_USER_PROFILE_CLAIMS_DISPLAY_NAME+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_USER_PROFILE_CLAIMS_DISPLAY_NAME+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|`name`
+
+
+a| [[onecx-user-profile-svc_onecx-user-profile-claims-email]]`link:#onecx-user-profile-svc_onecx-user-profile-claims-email[onecx.user-profile.claims.email]`
+
+
+[.description]
+--
+User profile email token claim
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_USER_PROFILE_CLAIMS_EMAIL+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_USER_PROFILE_CLAIMS_EMAIL+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|`email`
+
+
+a| [[onecx-user-profile-svc_onecx-user-profile-claims-first-name]]`link:#onecx-user-profile-svc_onecx-user-profile-claims-first-name[onecx.user-profile.claims.first-name]`
+
+
+[.description]
+--
+User profile first name token claim
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_USER_PROFILE_CLAIMS_FIRST_NAME+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_USER_PROFILE_CLAIMS_FIRST_NAME+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|`given_name`
+
+
+a| [[onecx-user-profile-svc_onecx-user-profile-claims-last-name]]`link:#onecx-user-profile-svc_onecx-user-profile-claims-last-name[onecx.user-profile.claims.last-name]`
+
+
+[.description]
+--
+User profile last name token claim
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_USER_PROFILE_CLAIMS_LAST_NAME+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_USER_PROFILE_CLAIMS_LAST_NAME+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|`family_name`
+
+
+a| [[onecx-user-profile-svc_onecx-user-profile-claims-organization-id]]`link:#onecx-user-profile-svc_onecx-user-profile-claims-organization-id[onecx.user-profile.claims.organization-id]`
+
+
+[.description]
+--
+User profile organization token claim
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_USER_PROFILE_CLAIMS_ORGANIZATION_ID+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_USER_PROFILE_CLAIMS_ORGANIZATION_ID+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|`orgId`
+
+|===

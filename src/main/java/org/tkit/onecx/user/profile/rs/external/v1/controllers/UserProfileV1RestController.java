@@ -3,16 +3,14 @@ package org.tkit.onecx.user.profile.rs.external.v1.controllers;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.UriInfo;
 
 import org.tkit.onecx.user.profile.domain.daos.PreferenceDAO;
 import org.tkit.onecx.user.profile.domain.daos.UserProfileDAO;
 import org.tkit.onecx.user.profile.domain.models.UserProfile;
+import org.tkit.onecx.user.profile.domain.service.UserProfileService;
 import org.tkit.onecx.user.profile.rs.external.v1.mappers.PreferenceV1Mapper;
 import org.tkit.onecx.user.profile.rs.external.v1.mappers.UserProfileV1Mapper;
-import org.tkit.onecx.user.profile.rs.internal.service.JWTService;
 import org.tkit.quarkus.context.ApplicationContext;
 import org.tkit.quarkus.log.cdi.LogService;
 
@@ -36,10 +34,7 @@ public class UserProfileV1RestController implements UserProfileV1Api {
     UserProfileV1Mapper userProfileV1Mapper;
 
     @Inject
-    JWTService jwtService;
-
-    @Context
-    UriInfo uriInfo;
+    UserProfileService userProfileService;
 
     @Override
     public Response getUserPerson() {
@@ -73,7 +68,7 @@ public class UserProfileV1RestController implements UserProfileV1Api {
 
         if (userProfile == null) {
             // create user profile if it does not exist
-            var createUserProfile = jwtService.createProfileFromToken(userId);
+            var createUserProfile = userProfileService.createProfileFromToken();
             userProfile = userProfileDAO.create(createUserProfile);
         }
 
