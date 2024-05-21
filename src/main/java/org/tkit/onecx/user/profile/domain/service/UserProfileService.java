@@ -33,8 +33,16 @@ public class UserProfileService {
         userProfile.getPerson().setLastName(claim(token, config.claims().lastName()));
         userProfile.getPerson().setEmail(claim(token, config.claims().email()));
         userProfile.setAccountSettings(new UserProfileAccountSettings());
-        userProfile.getAccountSettings().setTimezone(config.claims().timeZone());
-        userProfile.getAccountSettings().setLocale(config.claims().locale());
+        if (!config.claims().timeZone().isBlank()) {
+            userProfile.getAccountSettings().setTimezone(config.claims().timeZone());
+        } else {
+            userProfile.getAccountSettings().setTimezone(config.settings().timeZone());
+        }
+        if (!config.claims().locale().isBlank()) {
+            userProfile.getAccountSettings().setLocale(config.claims().locale());
+        } else {
+            userProfile.getAccountSettings().setLocale(config.settings().locale());
+        }
         return userProfile;
     }
 

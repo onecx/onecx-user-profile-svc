@@ -21,6 +21,12 @@ public interface UserProfileConfig {
     @WithName("claims")
     Claims claims();
 
+    /**
+     * User profile settings on initial creation
+     */
+    @WithName("settings")
+    Settings settings();
+
     interface Claims {
 
         /**
@@ -62,6 +68,23 @@ public interface UserProfileConfig {
          * User profile locale
          */
         @WithName("locale")
+        @WithDefault(" ")
+        String locale();
+
+        /**
+         * User profile timezone
+         */
+        @WithName("timezone")
+        @WithDefault(" ")
+        String timeZone();
+    }
+
+    interface Settings {
+
+        /**
+         * User profile locale
+         */
+        @WithName("locale")
         @WithDefault("en")
         String locale();
 
@@ -72,5 +95,4 @@ public interface UserProfileConfig {
         @WithDefault("Europe/Berlin")
         String timeZone();
     }
-
 }
