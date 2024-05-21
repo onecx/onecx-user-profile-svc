@@ -5,8 +5,14 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.tkit.onecx.user.profile.test.AbstractTest;
 import org.tkit.quarkus.test.WithDBData;
 
@@ -101,6 +107,31 @@ class UserProfileV1RestControllerTest extends AbstractTest {
         assertThat(userPofile.getOrganization()).isEqualTo("org2");
         assertThat(userPofile.getUserId()).isEqualTo("user3");
         assertThat(userPofile.getPerson().getDisplayName()).isEqualTo("User Three");
+    }
+
+    private static Stream<Arguments> claimTimezone() {
+        return Stream.of(
+                arguments("timezone", "Europe/Berlin"),
+                arguments("timezone", " "),
+                arguments("timezone", null));
+    }
+
+    @ParameterizedTest
+    @MethodSource("claimTimezone")
+    void getUserProfileClaimTimeZoneAndLocaleTest(String claimName, String value) {
+        // not existing user profile, should be created
+        var userPofile = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .header(APM_HEADER_PARAM, createToken("not-existing", "1", claimName, value))
+                .get()
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(UserProfileDTO.class);
+
+        assertThat(userPofile.getUserId()).isEqualTo("not-existing");
+        assertThat(userPofile.getOrganization()).isEqualTo("1");
+        assertThat(userPofile.getPerson().getEmail()).isEqualTo("not-existing@cap.de");
     }
 
     @Test

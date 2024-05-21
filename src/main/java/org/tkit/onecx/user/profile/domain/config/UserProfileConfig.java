@@ -1,5 +1,7 @@
 package org.tkit.onecx.user.profile.domain.config;
 
+import java.util.Optional;
+
 import io.quarkus.runtime.annotations.ConfigDocFilename;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
@@ -20,6 +22,12 @@ public interface UserProfileConfig {
      */
     @WithName("claims")
     Claims claims();
+
+    /**
+     * User profile settings on initial creation
+     */
+    @WithName("settings")
+    Settings settings();
 
     interface Claims {
 
@@ -57,5 +65,34 @@ public interface UserProfileConfig {
         @WithName("organization-id")
         @WithDefault("orgId")
         String organization();
+
+        /**
+         * User profile locale
+         */
+        @WithName("locale")
+        Optional<String> locale();
+
+        /**
+         * User profile timezone
+         */
+        @WithName("timezone")
+        Optional<String> timeZone();
+    }
+
+    interface Settings {
+
+        /**
+         * User profile locale
+         */
+        @WithName("locale")
+        @WithDefault("en")
+        String locale();
+
+        /**
+         * User profile timezone
+         */
+        @WithName("timezone")
+        @WithDefault("Europe/Berlin")
+        String timeZone();
     }
 }
