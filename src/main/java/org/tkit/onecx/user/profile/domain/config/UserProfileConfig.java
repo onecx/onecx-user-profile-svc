@@ -1,5 +1,7 @@
 package org.tkit.onecx.user.profile.domain.config;
 
+import java.util.Optional;
+
 import io.quarkus.runtime.annotations.ConfigDocFilename;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
@@ -68,15 +70,13 @@ public interface UserProfileConfig {
          * User profile locale
          */
         @WithName("locale")
-        @WithDefault(" ")
-        String locale();
+        Optional<String> locale();
 
         /**
          * User profile timezone
          */
         @WithName("timezone")
-        @WithDefault(" ")
-        String timeZone();
+        Optional<String> timeZone();
     }
 
     interface Settings {

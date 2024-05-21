@@ -109,7 +109,7 @@ ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++ONECX_USER_PROFILE_CLAIMS_LOCALE+++`
 endif::add-copy-button-to-env-var[]
 --|string 
-|` `
+|
 
 
 a| [[onecx-user-profile-svc_onecx-user-profile-claims-timezone]]`link:#onecx-user-profile-svc_onecx-user-profile-claims-timezone[onecx.user-profile.claims.timezone]`
@@ -126,7 +126,7 @@ ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++ONECX_USER_PROFILE_CLAIMS_TIMEZONE+++`
 endif::add-copy-button-to-env-var[]
 --|string 
-|` `
+|
 
 
 a| [[onecx-user-profile-svc_onecx-user-profile-settings-locale]]`link:#onecx-user-profile-svc_onecx-user-profile-settings-locale[onecx.user-profile.settings.locale]`

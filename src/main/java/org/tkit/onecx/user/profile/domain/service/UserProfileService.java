@@ -1,5 +1,7 @@
 package org.tkit.onecx.user.profile.domain.service;
 
+import java.util.Optional;
+
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 
@@ -33,16 +35,11 @@ public class UserProfileService {
         userProfile.getPerson().setLastName(claim(token, config.claims().lastName()));
         userProfile.getPerson().setEmail(claim(token, config.claims().email()));
         userProfile.setAccountSettings(new UserProfileAccountSettings());
-        if (!config.claims().timeZone().isBlank()) {
-            userProfile.getAccountSettings().setTimezone(config.claims().timeZone());
-        } else {
-            userProfile.getAccountSettings().setTimezone(config.settings().timeZone());
-        }
-        if (!config.claims().locale().isBlank()) {
-            userProfile.getAccountSettings().setLocale(config.claims().locale());
-        } else {
-            userProfile.getAccountSettings().setLocale(config.settings().locale());
-        }
+        userProfile.getAccountSettings()
+                .setTimezone(getClaimOrConfig(token, config.claims().timeZone(), config.settings().timeZone()));
+        userProfile.getAccountSettings()
+                .setLocale(getClaimOrConfig(token, config.claims().locale(), config.settings().locale()));
+
         return userProfile;
     }
 
@@ -53,6 +50,17 @@ public class UserProfileService {
             log.error("Get claim {} failed. Returning null instead.", name, ex);
             return null;
         }
+    }
+
+    String getClaimOrConfig(JsonWebToken token, Optional<String> claim, String config) {
+        if (claim.isEmpty()) {
+            return config;
+        }
+        var temp = claim(token, claim.get());
+        if (temp != null && !temp.isBlank()) {
+            return temp;
+        }
+        return config;
     }
 
 }
