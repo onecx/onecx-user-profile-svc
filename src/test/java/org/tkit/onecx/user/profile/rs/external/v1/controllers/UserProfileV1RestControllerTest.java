@@ -132,7 +132,6 @@ class UserProfileV1RestControllerTest extends AbstractTest {
         assertThat(userPofile.getUserId()).isEqualTo("not-existing");
         assertThat(userPofile.getOrganization()).isEqualTo("1");
         assertThat(userPofile.getPerson().getEmail()).isEqualTo("not-existing@cap.de");
-
     }
 
     @Test
