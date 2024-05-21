@@ -21,6 +21,12 @@ public interface UserProfileConfig {
     @WithName("claims")
     Claims claims();
 
+    /**
+     * User profile settings on initial creation
+     */
+    @WithName("settings")
+    Settings settings();
+
     interface Claims {
 
         /**
@@ -57,5 +63,22 @@ public interface UserProfileConfig {
         @WithName("organization-id")
         @WithDefault("orgId")
         String organization();
+    }
+
+    interface Settings {
+
+        /**
+         * User profile locale
+         */
+        @WithName("locale")
+        @WithDefault("en")
+        String locale();
+
+        /**
+         * User profile timezone
+         */
+        @WithName("timezone")
+        @WithDefault("Europe/Berlin")
+        String timeZone();
     }
 }
