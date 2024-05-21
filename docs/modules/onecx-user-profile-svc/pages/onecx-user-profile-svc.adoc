@@ -95,7 +95,7 @@ endif::add-copy-button-to-env-var[]
 |`orgId`
 
 
-a| [[onecx-user-profile-svc_onecx-user-profile-settings-locale]]`link:#onecx-user-profile-svc_onecx-user-profile-settings-locale[onecx.user-profile.settings.locale]`
+a| [[onecx-user-profile-svc_onecx-user-profile-claims-locale]]`link:#onecx-user-profile-svc_onecx-user-profile-claims-locale[onecx.user-profile.claims.locale]`
 
 
 [.description]
@@ -103,16 +103,16 @@ a| [[onecx-user-profile-svc_onecx-user-profile-settings-locale]]`link:#onecx-use
 User profile locale
 
 ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++ONECX_USER_PROFILE_SETTINGS_LOCALE+++[]
+Environment variable: env_var_with_copy_button:+++ONECX_USER_PROFILE_CLAIMS_LOCALE+++[]
 endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++ONECX_USER_PROFILE_SETTINGS_LOCALE+++`
+Environment variable: `+++ONECX_USER_PROFILE_CLAIMS_LOCALE+++`
 endif::add-copy-button-to-env-var[]
 --|string 
 |`en`
 
 
-a| [[onecx-user-profile-svc_onecx-user-profile-settings-timezone]]`link:#onecx-user-profile-svc_onecx-user-profile-settings-timezone[onecx.user-profile.settings.timezone]`
+a| [[onecx-user-profile-svc_onecx-user-profile-claims-timezone]]`link:#onecx-user-profile-svc_onecx-user-profile-claims-timezone[onecx.user-profile.claims.timezone]`
 
 
 [.description]
@@ -120,10 +120,10 @@ a| [[onecx-user-profile-svc_onecx-user-profile-settings-timezone]]`link:#onecx-u
 User profile timezone
 
 ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++ONECX_USER_PROFILE_SETTINGS_TIMEZONE+++[]
+Environment variable: env_var_with_copy_button:+++ONECX_USER_PROFILE_CLAIMS_TIMEZONE+++[]
 endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++ONECX_USER_PROFILE_SETTINGS_TIMEZONE+++`
+Environment variable: `+++ONECX_USER_PROFILE_CLAIMS_TIMEZONE+++`
 endif::add-copy-button-to-env-var[]
 --|string 
 |`Europe/Berlin`
