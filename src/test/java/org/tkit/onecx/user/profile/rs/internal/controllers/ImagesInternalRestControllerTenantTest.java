@@ -218,7 +218,7 @@ class ImagesInternalRestControllerTenantTest extends AbstractTest {
 
     @Test
     void deleteMyImage() {
-        
+
         given()
                 .queryParam("refType", RefTypeDTO.SMALL)
                 .header(APM_HEADER_PARAM, createToken("user1", "org2"))
