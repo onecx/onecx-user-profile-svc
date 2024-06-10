@@ -3,7 +3,6 @@ package org.tkit.onecx.user.profile.rs.external.v1.controllers;
 import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +13,6 @@ import org.tkit.onecx.user.profile.test.AbstractTest;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.user.profile.rs.external.v1.model.ImageInfoDTO;
-import gen.org.tkit.onecx.user.profile.rs.external.v1.model.RefTypeDTO;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -46,28 +44,6 @@ class AvatarV1RestControllerTenantTest extends AbstractTest {
                 .then()
                 .statusCode(CREATED.getStatusCode())
                 .extract().as(ImageInfoDTO.class);
-
-        // wrong tenant get small avatar
-        given()
-                .when()
-                .header(APM_HEADER_PARAM, createToken("user2", "org3"))
-                .queryParam("refType", RefTypeDTO.SMALL)
-                .get()
-                .then()
-                .statusCode(NOT_FOUND.getStatusCode());
-
-        // good tenant get small avatar
-        var smallAvatarByteArray = given()
-                .when()
-                .header(APM_HEADER_PARAM, createToken("user2", "org1"))
-                .queryParam("refType", RefTypeDTO.SMALL)
-                .get()
-                .then()
-                .contentType("image/jpg")
-                .statusCode(OK.getStatusCode())
-                .extract().body().asByteArray();
-
-        assertThat(smallAvatarByteArray).isNotNull();
 
         // get avatar info with wrong tenant
         given()

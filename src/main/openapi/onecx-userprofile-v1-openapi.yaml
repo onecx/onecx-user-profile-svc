@@ -117,8 +117,8 @@ components:
   schemas:
     RefType:
       type: string
-      enum: [ small, normal ]
-      default: 'normal'
+      enum: [ small, medium, large ]
+      default: 'medium'
     UserPreferences:
       type: object
       properties:

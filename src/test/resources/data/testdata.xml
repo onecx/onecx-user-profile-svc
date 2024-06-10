@@ -3,7 +3,7 @@
 <dataset>
 
 	<!-- Image -->
-	<IMAGE guid="11-111" optlock="0" modificationuser="manual" tenant_id="tenant-100" ref_type="normal" user_id="user1" mime_type="image/jpg"/>
+	<IMAGE guid="11-111" optlock="0" modificationuser="manual" tenant_id="tenant-100" ref_type="medium" user_id="user1" mime_type="image/jpg"/>
 	<IMAGE guid="11-112" optlock="0" modificationuser="manual" tenant_id="tenant-100" ref_type="small" user_id="user1" mime_type="image/jpg"/>
 
 	<!-- UserProfile -->

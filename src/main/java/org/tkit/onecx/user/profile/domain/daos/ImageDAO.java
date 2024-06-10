@@ -9,8 +9,6 @@ import org.tkit.onecx.user.profile.domain.models.Image_;
 import org.tkit.quarkus.jpa.daos.AbstractDAO;
 import org.tkit.quarkus.jpa.exceptions.DAOException;
 
-import gen.org.tkit.onecx.image.rs.internal.model.RefTypeDTO;
-
 @ApplicationScoped
 @Transactional
 public class ImageDAO extends AbstractDAO<Image> {
@@ -41,23 +39,6 @@ public class ImageDAO extends AbstractDAO<Image> {
             var cb = this.getEntityManager().getCriteriaBuilder();
 
             cq.where(cb.equal(root.get(Image_.USER_ID), userId));
-            getEntityManager().createQuery(cq).executeUpdate();
-            getEntityManager().flush();
-        } catch (Exception e) {
-            throw handleConstraint(e, ErrorKeys.FAILED_TO_DELETE_BY_REF_ID_QUERY);
-        }
-
-    }
-
-    @Transactional(value = Transactional.TxType.REQUIRED, rollbackOn = DAOException.class)
-    public void deleteQueryByRefIdAndRefType(String userId, RefTypeDTO refType) throws DAOException {
-        try {
-            var cq = deleteQuery();
-            var root = cq.from(Image.class);
-            var cb = this.getEntityManager().getCriteriaBuilder();
-
-            cq.where(cb.equal(root.get(Image_.USER_ID), userId));
-            cq.where(cb.equal(root.get(Image_.REF_TYPE), refType.toString()));
             getEntityManager().createQuery(cq).executeUpdate();
             getEntityManager().flush();
         } catch (Exception e) {

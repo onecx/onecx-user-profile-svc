@@ -16,7 +16,6 @@ import org.tkit.onecx.user.profile.test.AbstractTest;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.user.profile.rs.external.v1.model.ImageInfoDTO;
-import gen.org.tkit.onecx.user.profile.rs.external.v1.model.RefTypeDTO;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -51,18 +50,6 @@ class AvatarV1RestControllerTest extends AbstractTest {
                 .then()
                 .statusCode(CREATED.getStatusCode())
                 .extract().as(ImageInfoDTO.class);
-
-        var smallAvatarByteArray = given()
-                .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("user2", "org1"))
-                .queryParam("refType", RefTypeDTO.SMALL)
-                .get()
-                .then()
-                .statusCode(OK.getStatusCode())
-                .header(HttpHeaders.CONTENT_TYPE, MEDIA_TYPE_IMAGE_JPG)
-                .extract().body().asByteArray();
-
-        assertThat(smallAvatarByteArray).isNotNull();
 
         var avatarByteArray = given()
                 .when()

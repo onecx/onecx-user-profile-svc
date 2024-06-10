@@ -28,6 +28,7 @@ paths:
             type: string
         - name: refType
           in: query
+          required: true
           schema:
             $ref: "#/components/schemas/RefType"
       operationId: uploadImage
@@ -61,6 +62,7 @@ paths:
           schema:
             type: string
         - name: refType
+          required: true
           in: query
           schema:
             $ref: "#/components/schemas/RefType"
@@ -98,6 +100,7 @@ paths:
           schema:
             type: string
         - name: refType
+          required: true
           in: query
           schema:
             $ref: "#/components/schemas/RefType"
@@ -134,10 +137,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: refType
-          in: query
-          schema:
-            $ref: "#/components/schemas/RefType"
       responses:
         "204":
           description: No Content
@@ -161,6 +160,7 @@ paths:
             maximum: 110000
             type: integer
         - name: refType
+          required: true
           in: query
           schema:
             $ref: "#/components/schemas/RefType"
@@ -190,6 +190,7 @@ paths:
       operationId: getMyImage
       parameters:
         - name: refType
+          required: true
           in: query
           schema:
             $ref: "#/components/schemas/RefType"
@@ -223,6 +224,7 @@ paths:
             maximum: 110000
         - name: refType
           in: query
+          required: true
           schema:
             $ref: "#/components/schemas/RefType"
       requestBody:
@@ -252,11 +254,6 @@ paths:
         - imagesInternal
       description: delete Image
       operationId: deleteMyImage
-      parameters:
-        - name: refType
-          in: query
-          schema:
-            $ref: "#/components/schemas/RefType"
       responses:
         "204":
           description: No Content
@@ -270,7 +267,8 @@ components:
   schemas:
     RefType:
       type: string
-      enum: [ small, normal ]
+      enum: [ small, medium, large ]
+      default: 'medium'
     ImageInfo:
       type: object
       properties:
