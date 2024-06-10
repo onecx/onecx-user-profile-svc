@@ -192,7 +192,6 @@ class ImagesInternalRestControllerTenantTest extends AbstractTest {
     @Test
     void deleteImage() {
         var userId = "user1";
-        var refType = RefTypeDTO.MEDIUM;
 
         given()
                 .pathParam("userId", userId)
@@ -219,9 +218,7 @@ class ImagesInternalRestControllerTenantTest extends AbstractTest {
 
     @Test
     void deleteMyImage() {
-
-        var refType = RefTypeDTO.MEDIUM;
-
+        
         given()
                 .queryParam("refType", RefTypeDTO.SMALL)
                 .header(APM_HEADER_PARAM, createToken("user1", "org2"))
