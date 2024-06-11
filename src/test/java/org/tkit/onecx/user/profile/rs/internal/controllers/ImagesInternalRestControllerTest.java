@@ -42,7 +42,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
     void uploadImage() {
         given()
                 .pathParam("userId", "user4")
-                .queryParam("refType", RefTypeDTO.NORMAL.toString())
+                .queryParam("refType", RefTypeDTO.MEDIUM.toString())
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user4", "org1"))
                 .body(SMALL)
@@ -55,7 +55,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
 
         given()
                 .pathParam("userId", "user2")
-                .queryParam("refType", RefTypeDTO.NORMAL.toString())
+                .queryParam("refType", RefTypeDTO.MEDIUM.toString())
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user2", "org1"))
                 .body(PORTRAIT)
@@ -94,7 +94,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
 
         given()
                 .pathParam("userId", "user3")
-                .queryParam("refType", RefTypeDTO.NORMAL.toString())
+                .queryParam("refType", RefTypeDTO.MEDIUM.toString())
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user3", "org1"))
                 .body(SMALL)
@@ -129,7 +129,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
     void uploadImage_shouldReturnBadRequest_whenImageIs() {
 
         var userId = "productNameUpload";
-        var refType = RefTypeDTO.NORMAL;
+        var refType = RefTypeDTO.MEDIUM;
 
         given()
                 .pathParam("userId", userId)
@@ -154,14 +154,14 @@ class ImagesInternalRestControllerTest extends AbstractTest {
 
         assertThat(exception.getErrorCode()).isEqualTo("PERSIST_ENTITY_FAILED");
         assertThat(exception.getDetail()).isEqualTo(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'image_constraints'  Detail: Key (user_id, ref_type, tenant_id)=(productNameUpload, normal, tenant-100) already exists.]");
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'image_constraints'  Detail: Key (user_id, ref_type, tenant_id)=(productNameUpload, medium, tenant-100) already exists.]");
     }
 
     @Test
     void getImageJpgTest() {
 
         var userId = "nameJpg";
-        var refType = RefTypeDTO.NORMAL;
+        var refType = RefTypeDTO.MEDIUM;
 
         given()
                 .pathParam("userId", userId)
@@ -187,7 +187,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
         data = given()
                 .contentType(APPLICATION_JSON)
                 .pathParam("userId", userId)
-                .queryParam("refType", RefTypeDTO.SMALL)
+                .queryParam("refType", RefTypeDTO.MEDIUM)
                 .get("{userId}")
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -200,7 +200,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
     @Test
     void getMyImageJpgTest() {
 
-        var refType = RefTypeDTO.NORMAL;
+        var refType = RefTypeDTO.MEDIUM;
 
         given()
                 .queryParam("refType", refType)
@@ -225,7 +225,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
 
         data = given()
                 .contentType(APPLICATION_JSON)
-                .queryParam("refType", RefTypeDTO.SMALL)
+                .queryParam("refType", RefTypeDTO.MEDIUM)
                 .header(APM_HEADER_PARAM, createToken("user2", "org1"))
                 .get("me")
                 .then()
@@ -240,7 +240,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
     void getImageTest_shouldReturnNotFound_whenImagesDoesNotExist() {
 
         var userId = "productNameGetTest";
-        var refType = RefTypeDTO.NORMAL;
+        var refType = RefTypeDTO.MEDIUM;
 
         given()
                 .pathParam("userId", userId)
@@ -265,10 +265,11 @@ class ImagesInternalRestControllerTest extends AbstractTest {
     void updateImage() {
 
         var userId = "user1";
-        var refType = RefTypeDTO.NORMAL;
+        var refType = RefTypeDTO.MEDIUM;
 
         var res = given()
                 .pathParam("userId", userId)
+                .queryParam("refType", refType)
                 .when()
                 .body(FILE)
                 .contentType(MEDIA_TYPE_IMAGE_JPG)
@@ -282,7 +283,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
 
         res = given()
                 .pathParam("userId", userId)
-                .queryParam("refType", RefTypeDTO.SMALL)
+                .queryParam("refType", RefTypeDTO.MEDIUM)
                 .when()
                 .body(SMALL)
                 .contentType(MEDIA_TYPE_IMAGE_JPG)
@@ -309,10 +310,11 @@ class ImagesInternalRestControllerTest extends AbstractTest {
     void updateMyImage() {
 
         var userId = "user1";
-        var refType = RefTypeDTO.NORMAL;
+        var refType = RefTypeDTO.MEDIUM;
 
         var res = given()
                 .when()
+                .queryParam("refType", refType)
                 .header(APM_HEADER_PARAM, createToken("user1", "org1"))
                 .body(FILE)
                 .contentType(MEDIA_TYPE_IMAGE_JPG)
@@ -341,7 +343,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
     void updateImage_returnNotFound_whenEntryNotExists() {
 
         var userId = "productNameUpdateFailed";
-        var refType = RefTypeDTO.NORMAL;
+        var refType = RefTypeDTO.MEDIUM;
 
         given()
                 .pathParam("userId", userId)
@@ -378,7 +380,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
 
         var exception = given()
                 .pathParam("userId", userId)
-                .queryParam("refType", RefTypeDTO.NORMAL)
+                .queryParam("refType", RefTypeDTO.MEDIUM)
                 .when()
                 .body(body)
                 .contentType(MEDIA_TYPE_IMAGE_JPG)
@@ -396,7 +398,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
     @Test
     void deleteImage() {
         var userId = "user1";
-        var refType = RefTypeDTO.NORMAL;
+        var refType = RefTypeDTO.MEDIUM;
 
         given()
                 .pathParam("userId", userId)
@@ -429,7 +431,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
     @Test
     void deleteMyImage() {
         var userId = "user1";
-        var refType = RefTypeDTO.NORMAL;
+        var refType = RefTypeDTO.MEDIUM;
 
         given()
                 .queryParam("refType", RefTypeDTO.SMALL)

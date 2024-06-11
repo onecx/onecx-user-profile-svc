@@ -41,7 +41,7 @@ class ImagesInternalRestControllerTenantTest extends AbstractTest {
     void uploadImage() {
         given()
                 .pathParam("userId", "user4")
-                .queryParam("refType", RefTypeDTO.NORMAL.toString())
+                .queryParam("refType", RefTypeDTO.MEDIUM.toString())
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user2", "org1"))
                 .body(SMALL)
@@ -54,7 +54,7 @@ class ImagesInternalRestControllerTenantTest extends AbstractTest {
 
         given()
                 .pathParam("userId", "user4")
-                .queryParam("refType", RefTypeDTO.NORMAL.toString())
+                .queryParam("refType", RefTypeDTO.MEDIUM.toString())
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user2", "org2"))
                 .body(SMALL)
@@ -71,7 +71,7 @@ class ImagesInternalRestControllerTenantTest extends AbstractTest {
     void getImageJpgTest() {
 
         var userId = "user2";
-        var refType = RefTypeDTO.NORMAL;
+        var refType = RefTypeDTO.MEDIUM;
 
         given()
                 .pathParam("userId", userId)
@@ -91,24 +91,12 @@ class ImagesInternalRestControllerTenantTest extends AbstractTest {
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
 
-        var data = given()
-                .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("user2", "org1"))
-                .pathParam("userId", userId)
-                .queryParam("refType", RefTypeDTO.SMALL)
-                .get("{userId}")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .header(HttpHeaders.CONTENT_TYPE, MEDIA_TYPE_IMAGE_JPG)
-                .extract().body().asByteArray();
-
-        assertThat(data).isNotNull().isNotEmpty();
     }
 
     @Test
     void getMyImageJpgTest() {
 
-        var refType = RefTypeDTO.NORMAL;
+        var refType = RefTypeDTO.MEDIUM;
 
         given()
                 .queryParam("refType", refType)
@@ -143,10 +131,11 @@ class ImagesInternalRestControllerTenantTest extends AbstractTest {
     void updateImage() {
 
         var userId = "user1";
-        var refType = RefTypeDTO.NORMAL;
+        var refType = RefTypeDTO.MEDIUM;
 
         given()
                 .pathParam("userId", userId)
+                .queryParam("refType", refType)
                 .header(APM_HEADER_PARAM, createToken("user1", "org2"))
                 .when()
                 .body(FILE)
@@ -157,6 +146,7 @@ class ImagesInternalRestControllerTenantTest extends AbstractTest {
 
         var res = given()
                 .pathParam("userId", userId)
+                .queryParam("refType", refType)
                 .header(APM_HEADER_PARAM, createToken("user1", "org1"))
                 .when()
                 .body(FILE)
@@ -174,7 +164,7 @@ class ImagesInternalRestControllerTenantTest extends AbstractTest {
     void updateMyImage() {
 
         var userId = "user1";
-        var refType = RefTypeDTO.NORMAL;
+        var refType = RefTypeDTO.MEDIUM;
 
         given()
                 .when()
@@ -187,6 +177,7 @@ class ImagesInternalRestControllerTenantTest extends AbstractTest {
 
         var res = given()
                 .when()
+                .queryParam("refType", refType)
                 .header(APM_HEADER_PARAM, createToken("user1", "org1"))
                 .body(SMALL)
                 .contentType(MEDIA_TYPE_IMAGE_JPG)
@@ -201,7 +192,6 @@ class ImagesInternalRestControllerTenantTest extends AbstractTest {
     @Test
     void deleteImage() {
         var userId = "user1";
-        var refType = RefTypeDTO.NORMAL;
 
         given()
                 .pathParam("userId", userId)
@@ -228,8 +218,6 @@ class ImagesInternalRestControllerTenantTest extends AbstractTest {
 
     @Test
     void deleteMyImage() {
-
-        var refType = RefTypeDTO.NORMAL;
 
         given()
                 .queryParam("refType", RefTypeDTO.SMALL)
