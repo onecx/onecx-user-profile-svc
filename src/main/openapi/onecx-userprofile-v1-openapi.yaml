@@ -85,40 +85,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-  /v1/userProfile/me/avatar:
-    get:
-      tags:
-        - avatarV1
-      description: Get Image by id
-      operationId: getMyImage
-      parameters:
-        - name: refType
-          in: query
-          required: true
-          schema:
-            $ref: "#/components/schemas/RefType"
-      responses:
-        "200":
-          description: OK
-          content:
-            image/*:
-              schema:
-                minimum: 1
-                maximum: 110000
-                type: string
-                format: binary
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailResponse'
 components:
   schemas:
-    RefType:
-      type: string
-      enum: [ small, medium, large ]
-      default: 'medium'
     UserPreferences:
       type: object
       properties:
