@@ -18,6 +18,7 @@ import org.tkit.onecx.user.profile.domain.models.UserProfile_;
 import org.tkit.quarkus.jpa.daos.AbstractDAO;
 import org.tkit.quarkus.jpa.daos.Page;
 import org.tkit.quarkus.jpa.daos.PageResult;
+import org.tkit.quarkus.jpa.models.AbstractTraceableEntity_;
 import org.tkit.quarkus.jpa.utils.QueryCriteriaUtil;
 
 @ApplicationScoped
@@ -47,6 +48,7 @@ public class UserProfileDAO extends AbstractDAO<UserProfile> {
         if (!predicates.isEmpty()) {
             cq.where(cb.and(predicates.toArray(new Predicate[0])));
         }
+        cq.orderBy(cb.desc(root.get(AbstractTraceableEntity_.CREATION_DATE)));
 
         return createPageQuery(cq, Page.of(pageNumber, pageSize)).getPageResult();
     }
