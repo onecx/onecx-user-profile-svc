@@ -11,6 +11,8 @@ tags:
 paths:
   /v1/userProfile/me:
     get:
+      security:
+        - oauth2: [ ocx-up:read ]
       tags:
         - userProfileV1
       description: Load user profile for current user
@@ -30,6 +32,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
   /v1/userProfile/me/preferences:
     get:
+      security:
+        - oauth2: [ ocx-up:read ]
       tags:
         - userProfileV1
       description: Load user preferences for current user
@@ -49,6 +53,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
   /v1/userProfile/me/person:
     get:
+      security:
+        - oauth2: [ ocx-up:read ]
       tags:
         - userProfileV1
       description: Load user person for current user
@@ -68,6 +74,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
   /v1/userProfile/me/settings:
     get:
+      security:
+        - oauth2: [ ocx-up:read ]
       tags:
         - userProfileV1
       description: Load user profile account settings for current user
@@ -86,6 +94,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
 components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://oauth.simple.api/token
+          scopes:
+            ocx-up:read: Grants read access
   schemas:
     UserPreferences:
       type: object

@@ -4,9 +4,11 @@ import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.user.profile.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.user.profile.rs.internal.model.*;
@@ -16,6 +18,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(UserProfileAdminRestController.class)
 @WithDBData(value = "data/testdata.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-up:read", "ocx-up:write", "ocx-up:delete", "ocx-up:all" })
 class UserProfileAdminRestControllerTenantTest extends AbstractTest {
 
     @Test
@@ -34,6 +37,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
         person.setLastName("Capgeminius");
 
         var result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user4", "org3"))
@@ -49,6 +53,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
         assertThat(result.getPerson().getPhone()).isNull();
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .pathParam("id", "cap")
                 .header(APM_HEADER_PARAM, createToken("user4", "org2"))
@@ -57,6 +62,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
                 .statusCode(NOT_FOUND.getStatusCode());
 
         result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .pathParam("id", "cap")
                 .header(APM_HEADER_PARAM, createToken("user4", "org3"))
@@ -76,6 +82,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
     void deleteUserProfileTest() {
         // delete existing profile with wrong tenant
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user4", "org3"))
                 .pathParam("id", "user1")
@@ -85,6 +92,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
 
         // load deleted profile still found as deleted with wrong tenant
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user4", "org1"))
                 .pathParam("id", "user1")
@@ -94,6 +102,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
 
         // delete existing profile with correct tenant
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user4", "org1"))
                 .pathParam("id", "user1")
@@ -103,6 +112,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
 
         // load deleted profile returns not found
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user4", "org1"))
                 .pathParam("id", "user1")
@@ -115,6 +125,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
     void getUserProfileTest() {
         // get with different tenant
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user4", "org2"))
                 .pathParam("id", "user1")
@@ -124,6 +135,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
 
         // get existing profile with correct tenant
         var result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user4", "org1"))
                 .pathParam("id", "user1")
@@ -146,6 +158,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
         UserPersonCriteriaDTO criteriaDTO = new UserPersonCriteriaDTO();
         criteriaDTO.setEmail("*cap.de");
         var result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user4", "org1"))
                 .body(criteriaDTO)
@@ -162,6 +175,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
 
         // org2
         result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user4", "org2"))
                 .body(criteriaDTO)
@@ -181,6 +195,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
     @Test
     void updateUserProfileTest() {
         var userProfileDTO = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user4", "org1"))
                 .pathParam("id", "user1")
@@ -202,6 +217,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
 
         // update existing profile with wrong tenant
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user4", "org2"))
                 .contentType(APPLICATION_JSON)
@@ -213,6 +229,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
 
         // update existing profile with correct tenant
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user4", "org1"))
                 .contentType(APPLICATION_JSON)
@@ -223,6 +240,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
                 .statusCode(NO_CONTENT.getStatusCode());
 
         userProfileDTO = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user4", "org1"))
                 .pathParam("id", "user1")

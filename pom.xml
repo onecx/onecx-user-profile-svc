@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.tkit.onecx</groupId>
         <artifactId>onecx-quarkus3-parent</artifactId>
-        <version>0.53.0</version>
+        <version>0.54.0</version>
     </parent>
 
     <artifactId>onecx-user-profile-svc</artifactId>
@@ -34,6 +34,10 @@
         <dependency>
             <groupId>org.tkit.quarkus.lib</groupId>
             <artifactId>tkit-quarkus-rest</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.tkit.onecx.quarkus</groupId>
+            <artifactId>onecx-security</artifactId>
         </dependency>
 
         <!-- TENANT -->
@@ -99,6 +103,10 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-opentelemetry</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-oidc</artifactId>
+        </dependency>
 
         <!-- OTHER -->
         <dependency>
@@ -136,6 +144,11 @@
             <artifactId>quarkus-test-keycloak-server</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.tkit.quarkus.lib</groupId>
+            <artifactId>tkit-quarkus-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -153,6 +166,7 @@
                     <generateSupportingFiles>false</generateSupportingFiles>
                     <addCompileSourceRoot>true</addCompileSourceRoot>
                     <library>quarkus</library>
+                    <additionalProperties>onecx-scopes=true</additionalProperties>
                     <configOptions>
                         <sourceFolder>/</sourceFolder>
                         <openApiNullable>false</openApiNullable>
