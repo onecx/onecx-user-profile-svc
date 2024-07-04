@@ -31,7 +31,6 @@ import io.quarkus.test.junit.QuarkusTest;
 @GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-up:read", "ocx-up:write", "ocx-up:delete", "ocx-up:all" })
 class ImagesInternalRestControllerTest extends AbstractTest {
 
-    private static final String MEDIA_TYPE_IMAGE_PNG = "image/png";
     private static final String MEDIA_TYPE_IMAGE_JPG = "image/jpg";
 
     private static final File PORTRAIT = new File(
@@ -460,7 +459,6 @@ class ImagesInternalRestControllerTest extends AbstractTest {
 
     @Test
     void deleteMyImage() {
-        var userId = "user1";
         var refType = RefTypeDTO.MEDIUM;
 
         given()

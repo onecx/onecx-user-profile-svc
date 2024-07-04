@@ -30,9 +30,6 @@ class ImagesInternalRestControllerTenantTest extends AbstractTest {
 
     private static final String MEDIA_TYPE_IMAGE_JPG = "image/jpg";
 
-    private static final File PORTRAIT = new File(
-            Objects.requireNonNull(ImagesInternalRestControllerTenantTest.class.getResource("/data/avatar_portrait.jpg"))
-                    .getFile());
     private static final File SMALL = new File(
             Objects.requireNonNull(ImagesInternalRestControllerTenantTest.class.getResource("/data/avatar_small.jpg"))
                     .getFile());
