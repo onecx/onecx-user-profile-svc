@@ -4,9 +4,11 @@ import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.user.profile.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.user.profile.rs.external.v1.model.*;
@@ -16,12 +18,14 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(UserProfileV1RestController.class)
 @WithDBData(value = "data/testdata.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-up:read" })
 class UserProfileV1RestControllerTenantTest extends AbstractTest {
 
     @Test
     void getUserPersonTest() {
         // retrieve user person dto wit wrong tenant. NOT_FOUND as result
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user2", "org2"))
@@ -31,6 +35,7 @@ class UserProfileV1RestControllerTenantTest extends AbstractTest {
 
         // retrieve user person dto
         var result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user2", "org1"))
@@ -47,6 +52,7 @@ class UserProfileV1RestControllerTenantTest extends AbstractTest {
     void getUserPreferenceTest() {
         // get user preference with wrong tenant
         var result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user1", "org3"))
@@ -59,6 +65,7 @@ class UserProfileV1RestControllerTenantTest extends AbstractTest {
 
         // user 1 has 4 preferences
         result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user1", "org1"))
@@ -74,6 +81,7 @@ class UserProfileV1RestControllerTenantTest extends AbstractTest {
     void getUserProfileTest() {
         // load existing user profile with wrong tenant - will be created, as the tenant is from organization stored in keycloak
         var userProfile = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user3", "org1"))
@@ -89,6 +97,7 @@ class UserProfileV1RestControllerTenantTest extends AbstractTest {
     void getUserSettingsTest() {
         // load existing user settings with wrong tenant - NOT_FOUND as result
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user3", "org1"))

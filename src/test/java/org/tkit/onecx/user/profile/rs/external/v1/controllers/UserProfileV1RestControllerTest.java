@@ -6,6 +6,7 @@ import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import java.util.stream.Stream;
 
@@ -14,6 +15,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.tkit.onecx.user.profile.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.user.profile.rs.external.v1.model.*;
@@ -23,12 +25,14 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(UserProfileV1RestController.class)
 @WithDBData(value = "data/testdata.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-up:read" })
 class UserProfileV1RestControllerTest extends AbstractTest {
 
     @Test
     void getUserPersonTest() {
         // not found for not existing user profile
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("not-existing-user", null))
@@ -38,6 +42,7 @@ class UserProfileV1RestControllerTest extends AbstractTest {
 
         // retrieve user person dto
         var result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user2", "org1"))
@@ -54,6 +59,7 @@ class UserProfileV1RestControllerTest extends AbstractTest {
     void getUserPreferenceTest() {
         // user 2 no preferences
         var result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user2", "org1"))
@@ -66,6 +72,7 @@ class UserProfileV1RestControllerTest extends AbstractTest {
 
         // user 1 has 4 preferences
         result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user1", "org1"))
@@ -81,6 +88,7 @@ class UserProfileV1RestControllerTest extends AbstractTest {
     void getUserProfileTest() {
         // not existing user profile, should be created
         var userPofile = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("not-existing", null))
@@ -95,6 +103,7 @@ class UserProfileV1RestControllerTest extends AbstractTest {
 
         // load existing user profile
         userPofile = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user3", "org2"))
@@ -121,6 +130,7 @@ class UserProfileV1RestControllerTest extends AbstractTest {
     void getUserProfileClaimTimeZoneAndLocaleTest(String claimName, String value) {
         // not existing user profile, should be created
         var userPofile = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("not-existing", "1", claimName, value))
@@ -138,6 +148,7 @@ class UserProfileV1RestControllerTest extends AbstractTest {
     void getUserSettingsTest() {
         // not existing user settings
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("not-existing", null))
@@ -147,6 +158,7 @@ class UserProfileV1RestControllerTest extends AbstractTest {
 
         // load existing user settings
         var userSettings = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user3", "org2"))

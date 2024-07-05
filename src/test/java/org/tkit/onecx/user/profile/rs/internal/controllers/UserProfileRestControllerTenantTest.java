@@ -4,11 +4,13 @@ import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import java.time.OffsetDateTime;
 
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.user.profile.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.user.profile.rs.internal.model.*;
@@ -18,6 +20,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(UserProfileRestController.class)
 @WithDBData(value = "data/testdata.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-up:read", "ocx-up:write", "ocx-up:delete", "ocx-up:all" })
 class UserProfileRestControllerTenantTest extends AbstractTest {
 
     @Test
@@ -30,6 +33,7 @@ class UserProfileRestControllerTenantTest extends AbstractTest {
 
         // create preference with wrong tenant
         var error = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(createUserPreferenceDTO)
@@ -44,6 +48,7 @@ class UserProfileRestControllerTenantTest extends AbstractTest {
 
         // create preference with existing user profile
         var preferenceDto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(createUserPreferenceDTO)
@@ -61,6 +66,7 @@ class UserProfileRestControllerTenantTest extends AbstractTest {
     void deleteUserPreferenceTest() {
         // delete preference for the current logged in user with wrong tenant
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
@@ -70,6 +76,7 @@ class UserProfileRestControllerTenantTest extends AbstractTest {
                 .statusCode(NO_CONTENT.getStatusCode());
 
         var result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user1", "org1"))
@@ -82,6 +89,7 @@ class UserProfileRestControllerTenantTest extends AbstractTest {
 
         // delete preference for the current logged in user with correct tenant
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
@@ -91,6 +99,7 @@ class UserProfileRestControllerTenantTest extends AbstractTest {
                 .statusCode(NO_CONTENT.getStatusCode());
 
         result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user1", "org1"))
@@ -106,6 +115,7 @@ class UserProfileRestControllerTenantTest extends AbstractTest {
     void deleteUserProfileTest() {
         // delete user profile with wrong tenant
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user3", "org1"))
@@ -114,6 +124,7 @@ class UserProfileRestControllerTenantTest extends AbstractTest {
                 .statusCode(NO_CONTENT.getStatusCode());
 
         var userPofile = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user3", "org2"))
@@ -127,6 +138,7 @@ class UserProfileRestControllerTenantTest extends AbstractTest {
 
         // delete user profile with correct tenant
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user3", "org2"))
@@ -135,6 +147,7 @@ class UserProfileRestControllerTenantTest extends AbstractTest {
                 .statusCode(NO_CONTENT.getStatusCode());
 
         userPofile = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user3", "org2"))
@@ -150,6 +163,7 @@ class UserProfileRestControllerTenantTest extends AbstractTest {
     void getUserPersonTest() {
         // retrieve user person dto wit wrong tenant. NOT_FOUND as result
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user2", "org2"))
@@ -159,6 +173,7 @@ class UserProfileRestControllerTenantTest extends AbstractTest {
 
         // retrieve user person dto
         var result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user2", "org1"))
@@ -175,6 +190,7 @@ class UserProfileRestControllerTenantTest extends AbstractTest {
     void getUserPreferenceTest() {
         // get user preference with wrong tenant
         var result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user1", "org3"))
@@ -187,6 +203,7 @@ class UserProfileRestControllerTenantTest extends AbstractTest {
 
         // user 1 has 4 preferences
         result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user1", "org1"))
@@ -202,6 +219,7 @@ class UserProfileRestControllerTenantTest extends AbstractTest {
     void getUserProfileTest() {
         // load existing user profile with wrong tenant - will be created, as the tenant is from organization stored in keycloak
         var userProfile = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user3", "org1"))
@@ -217,6 +235,7 @@ class UserProfileRestControllerTenantTest extends AbstractTest {
     void getUserSettingsTest() {
         // load existing user settings with wrong tenant - NOT_FOUND as result
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user3", "org1"))
@@ -229,6 +248,7 @@ class UserProfileRestControllerTenantTest extends AbstractTest {
     @Test
     void updateUserPersonTest() {
         var userPersonDTO4 = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user4", "org3"))
@@ -246,6 +266,7 @@ class UserProfileRestControllerTenantTest extends AbstractTest {
 
         // update email with wrong tenant
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -259,6 +280,7 @@ class UserProfileRestControllerTenantTest extends AbstractTest {
     void updateUserPreferenceTest() {
         // update preference with wrong tenant
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body("changedTestValue")
@@ -272,6 +294,7 @@ class UserProfileRestControllerTenantTest extends AbstractTest {
     @Test
     void updateUserSettingsTest() {
         var userSettings = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user3", "org2"))
@@ -288,6 +311,7 @@ class UserProfileRestControllerTenantTest extends AbstractTest {
 
         // update user settings with wrong tenant
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)

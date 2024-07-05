@@ -11,6 +11,8 @@ tags:
 paths:
   /internal/userProfiles:
     post:
+      security:
+        - oauth2: [ ocx-up:all, ocx-up:write ]
       tags:
         - userProfileAdmin
       description: Create new user profile
@@ -42,6 +44,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/userProfiles/search:
     post:
+      security:
+        - oauth2: [ ocx-up:all, ocx-up:read ]
       tags:
         - userProfileAdmin
       description: Search for user profiles by search criteria
@@ -67,6 +71,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/userProfiles/{id}:
     get:
+      security:
+        - oauth2: [ ocx-up:all, ocx-up:read ]
       tags:
         - userProfileAdmin
       description: Return user profile by id
@@ -83,6 +89,8 @@ paths:
         "404":
           description: Not found
     put:
+      security:
+        - oauth2: [ ocx-up:all, ocx-up:write ]
       tags:
         - userProfileAdmin
       description: Update workspace by ID
@@ -107,6 +115,8 @@ paths:
         "404":
           description: User profile not found
     delete:
+      security:
+        - oauth2: [ ocx-up:all, ocx-up:delete ]
       tags:
         - userProfileAdmin
       description: Delete user profile by ID
@@ -124,6 +134,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/userProfile/me:
     get:
+      security:
+        - oauth2: [ ocx-up:all, ocx-up:read ]
       tags:
         - userProfile
       description: Load user profile for current user
@@ -142,6 +154,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
     delete:
+      security:
+        - oauth2: [ ocx-up:all, ocx-up:delete ]
       tags:
         - userProfile
       description: Delete user profile for current user
@@ -157,6 +171,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/userProfile/me/preferences:
     get:
+      security:
+        - oauth2: [ ocx-up:all, ocx-up:read ]
       tags:
         - userProfile
       description: Load user preferences for current user
@@ -175,6 +191,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
     post:
+      security:
+        - oauth2: [ ocx-up:all, ocx-up:write ]
       tags:
         - userProfile
       description: Create user preference
@@ -206,6 +224,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/userProfile/me/preferences/{id}:
     patch:
+      security:
+        - oauth2: [ ocx-up:all, ocx-up:write ]
       tags:
         - userProfile
       description: Update preference value
@@ -234,6 +254,8 @@ paths:
         "404":
           description: User preference not found
     delete:
+      security:
+        - oauth2: [ ocx-up:all, ocx-up:delete ]
       tags:
         - userProfile
       description: Delete preference by id for current user
@@ -251,6 +273,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/userProfile/me/person:
     get:
+      security:
+        - oauth2: [ ocx-up:all, ocx-up:read ]
       tags:
         - userProfile
       description: Load user person for current user
@@ -269,6 +293,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
     put:
+      security:
+        - oauth2: [ ocx-up:all, ocx-up:write ]
       tags:
         - userProfile
       description: Update person information
@@ -294,6 +320,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/userProfile/me/settings:
     get:
+      security:
+        - oauth2: [ ocx-up:all, ocx-up:read ]
       tags:
         - userProfile
       description: Load user profile account settings for current user
@@ -312,6 +340,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
     put:
+      security:
+        - oauth2: [ ocx-up:all, ocx-up:write ]
       tags:
         - userProfile
       description: Update user account settings
@@ -336,6 +366,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
 components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://oauth.simple.api/token
+          scopes:
+            ocx-up:all: Grants access to all operations
+            ocx-up:read: Grants read access
+            ocx-up:write: Grants write access
+            ocx-up:delete: Grants access to delete operations
   schemas:
     UserPersonCriteria:
       type: object

@@ -4,10 +4,12 @@ import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.user.profile.rs.internal.mappers.InternalExceptionMapper;
 import org.tkit.onecx.user.profile.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.user.profile.rs.internal.model.*;
@@ -17,12 +19,14 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(UserProfileAdminRestController.class)
 @WithDBData(value = "data/testdata.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-up:read", "ocx-up:write", "ocx-up:delete", "ocx-up:all" })
 class UserProfileAdminRestControllerTest extends AbstractTest {
 
     @Test
     void createUserProfileTest() {
         // test not sending the body
         var error = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .post()
@@ -48,6 +52,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
         person.setLastName("Capgeminius");
 
         var result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user3", "org2"))
@@ -63,6 +68,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
         assertThat(result.getPerson().getPhone()).isNull();
 
         result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user3", "org2"))
                 .pathParam("id", "cap")
@@ -77,6 +83,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
         assertThat(result.getPerson().getPhone()).isNull();
 
         error = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user3", "org2"))
@@ -96,6 +103,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
     void deleteUserProfileTest() {
         // delete not existing profile
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .pathParam("id", "not-existing")
                 .delete("{id}")
@@ -104,6 +112,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
 
         // delete existing profile
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .pathParam("id", "user1")
                 .delete("{id}")
@@ -112,6 +121,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
 
         // load deleted profile
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .pathParam("id", "user1")
                 .get("{id}")
@@ -123,6 +133,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
     void getUserProfileTest() {
         // get existing profile
         var result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .pathParam("id", "user1")
                 .get("{id}")
@@ -141,6 +152,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
     void searchUserProfileTest() {
         // search without criteria
         var error = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .post("search")
@@ -156,6 +168,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
         UserPersonCriteriaDTO criteriaDTO = new UserPersonCriteriaDTO();
         criteriaDTO.setEmail("*cap.de");
         var result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .body(criteriaDTO)
                 .contentType(APPLICATION_JSON)
@@ -172,6 +185,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
         // search with empty criteria
         criteriaDTO = new UserPersonCriteriaDTO();
         result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .body(criteriaDTO)
                 .contentType(APPLICATION_JSON)
@@ -192,6 +206,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
         criteriaDTO.setFirstName("firstName");
         criteriaDTO.setLastName("lastName");
         result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .body(criteriaDTO)
                 .contentType(APPLICATION_JSON)
@@ -210,6 +225,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
         criteriaDTO.setFirstName("User*");
         criteriaDTO.setLastName("*o*");
         result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .body(criteriaDTO)
                 .contentType(APPLICATION_JSON)
@@ -226,6 +242,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
     void updateUserProfileTest() {
         // no content for update
         var error = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "not-existing")
@@ -239,6 +256,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
         assertThat(error.getDetail()).isEqualTo("updateUserProfileData.updateUserPersonRequestDTO: must not be null");
 
         var userProfileDTO = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .pathParam("id", "user1")
                 .get("{id}")
@@ -259,6 +277,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
 
         // update not existing profile
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
@@ -269,6 +288,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
 
         // update existing profile
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
@@ -279,6 +299,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
 
         // update 2nd time - existing profile - get optimistic lock exception
         error = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
@@ -291,6 +312,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
         assertThat(error.getErrorCode()).isEqualTo(InternalExceptionMapper.TechnicalErrorKeys.OPTIMISTIC_LOCK.name());
 
         userProfileDTO = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .pathParam("id", "user1")
                 .get("{id}")

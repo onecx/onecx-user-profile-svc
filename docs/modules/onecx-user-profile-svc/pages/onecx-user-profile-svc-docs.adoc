@@ -48,5 +48,13 @@ app:
     repository: "onecx/onecx-user-profile-svc"
   db:
     enabled: true
+  operator:
+    keycloak:
+      client:
+        enabled: true
+        spec:
+          kcConfig:
+            defaultClientScopes: [ ocx-tn:read ]
+
 ----
 
