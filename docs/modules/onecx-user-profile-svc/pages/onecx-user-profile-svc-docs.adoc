@@ -17,6 +17,10 @@ quarkus.hibernate-orm.multitenant=DISCRIMINATOR
 quarkus.hibernate-orm.jdbc.timezone=UTC
 quarkus.liquibase.migrate-at-start=true
 quarkus.liquibase.validate-on-migrate=true
+quarkus.http.auth.permission.health.paths=/q/*
+quarkus.http.auth.permission.health.policy=permit
+quarkus.http.auth.permission.default.paths=/*
+quarkus.http.auth.permission.default.policy=authenticated
 tkit.rs.context.tenant-id.enabled=true
 %prod.quarkus.datasource.jdbc.url=${DB_URL:jdbc:postgresql://postgresdb:5432/onecx-user-profile?sslmode=disable}
 %prod.quarkus.datasource.username=${DB_USER:onecx-user-profile}
