@@ -5,5 +5,6 @@
 
     <include relativeToChangelogFile="true" file="v1/2023-12-21-create-tables.xml"/>
     <include relativeToChangelogFile="true" file="v1/2024-03-26-update-tables.xml"/>
+    <include relativeToChangelogFile="true" file="v1/2024-07-11-drop-image-table.xml"/>
 
 </databaseChangeLog>

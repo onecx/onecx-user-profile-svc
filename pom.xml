@@ -154,6 +154,25 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.tkit.maven</groupId>
+                <artifactId>tkit-docs-quarkus-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>docs</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>docs</goal>
+                        </goals>
+                        <configuration>
+                            <skipDocs>${skipDocs}</skipDocs>
+                            <openApiFiles>
+                                <openApiFile>onecx-userprofile-v1-openapi.yaml</openApiFile>
+                            </openApiFiles>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
                 <configuration>
@@ -193,20 +212,6 @@
                             <apiPackage>gen.org.tkit.onecx.user.profile.rs.internal</apiPackage>
                             <modelPackage>gen.org.tkit.onecx.user.profile.rs.internal.model</modelPackage>
                             <modelNameSuffix>DTO</modelNameSuffix>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>image-internal</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <inputSpec>src/main/openapi/onecx-image-internal-openapi.yaml</inputSpec>
-                            <apiPackage>gen.org.tkit.onecx.image.rs.internal</apiPackage>
-                            <modelPackage>gen.org.tkit.onecx.image.rs.internal.model</modelPackage>
-                            <generateModelTests>true</generateModelTests>
-                            <generateModelDocumentation>true</generateModelDocumentation>
-                            <typeMappings>File=byte[]</typeMappings>
                         </configuration>
                     </execution>
                     <execution>
