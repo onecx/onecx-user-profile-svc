@@ -14,7 +14,6 @@ import org.tkit.quarkus.jpa.exceptions.DAOException;
 import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
-import gen.org.tkit.onecx.user.profile.rs.internal.model.*;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
