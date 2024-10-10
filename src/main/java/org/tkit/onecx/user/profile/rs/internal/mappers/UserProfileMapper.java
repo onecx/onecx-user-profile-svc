@@ -36,9 +36,14 @@ public interface UserProfileMapper {
     @Named("mapProfile")
     default UserProfileDTO mapProfile(UserProfile entity) {
         UserProfileDTO dto = map(entity);
+        if (dto.getPerson() == null) {
+            dto.setPerson(new UserPersonDTO());
+        }
+        if (dto.getAccountSettings() == null) {
+            dto.setAccountSettings(new UserProfileAccountSettingsDTO());
+        }
         dto.getPerson().setModificationCount(entity.getModificationCount());
         dto.getAccountSettings().setModificationCount(entity.getModificationCount());
-
         return dto;
     }
 
@@ -46,8 +51,10 @@ public interface UserProfileMapper {
 
     default UserPersonDTO mapUserPerson(UserProfile entity) {
         var dto = map(entity.getPerson());
+        if (dto == null) {
+            dto = new UserPersonDTO();
+        }
         dto.setModificationCount(entity.getModificationCount());
-
         return dto;
     }
 
@@ -60,6 +67,9 @@ public interface UserProfileMapper {
 
     default UserProfileAccountSettingsDTO mapAccountSettings(UserProfile entity) {
         var dto = map(entity.getAccountSettings());
+        if (dto == null) {
+            dto = new UserProfileAccountSettingsDTO();
+        }
         dto.setModificationCount(entity.getModificationCount());
         return dto;
     }
