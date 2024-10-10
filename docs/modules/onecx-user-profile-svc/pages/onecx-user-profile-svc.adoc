@@ -1,21 +1,19 @@
-
 :summaryTableId: onecx-user-profile-svc
 [.configuration-legend]
 icon:lock[title=Fixed at build time] Configuration property fixed at build time - All other configuration properties are overridable at runtime
 [.configuration-reference.searchable, cols="80,.^10,.^10"]
 |===
 
-h|[[onecx-user-profile-svc_configuration]]link:#onecx-user-profile-svc_configuration[Configuration property]
-
+h|[.header-title]##Configuration property##
 h|Type
 h|Default
 
-a| [[onecx-user-profile-svc_onecx-user-profile-claims-display-name]]`link:#onecx-user-profile-svc_onecx-user-profile-claims-display-name[onecx.user-profile.claims.display-name]`
-
+a| [[onecx-user-profile-svc_onecx-user-profile-claims-display-name]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-claims-display-name[`onecx.user-profile.claims.display-name`]##
 
 [.description]
 --
 User profile display name token claim
+
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++ONECX_USER_PROFILE_CLAIMS_DISPLAY_NAME+++[]
@@ -23,16 +21,16 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++ONECX_USER_PROFILE_CLAIMS_DISPLAY_NAME+++`
 endif::add-copy-button-to-env-var[]
---|string 
+--
+|string
 |`name`
 
-
-a| [[onecx-user-profile-svc_onecx-user-profile-claims-email]]`link:#onecx-user-profile-svc_onecx-user-profile-claims-email[onecx.user-profile.claims.email]`
-
+a| [[onecx-user-profile-svc_onecx-user-profile-claims-email]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-claims-email[`onecx.user-profile.claims.email`]##
 
 [.description]
 --
 User profile email token claim
+
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++ONECX_USER_PROFILE_CLAIMS_EMAIL+++[]
@@ -40,16 +38,16 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++ONECX_USER_PROFILE_CLAIMS_EMAIL+++`
 endif::add-copy-button-to-env-var[]
---|string 
+--
+|string
 |`email`
 
-
-a| [[onecx-user-profile-svc_onecx-user-profile-claims-first-name]]`link:#onecx-user-profile-svc_onecx-user-profile-claims-first-name[onecx.user-profile.claims.first-name]`
-
+a| [[onecx-user-profile-svc_onecx-user-profile-claims-first-name]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-claims-first-name[`onecx.user-profile.claims.first-name`]##
 
 [.description]
 --
 User profile first name token claim
+
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++ONECX_USER_PROFILE_CLAIMS_FIRST_NAME+++[]
@@ -57,16 +55,16 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++ONECX_USER_PROFILE_CLAIMS_FIRST_NAME+++`
 endif::add-copy-button-to-env-var[]
---|string 
+--
+|string
 |`given_name`
 
-
-a| [[onecx-user-profile-svc_onecx-user-profile-claims-last-name]]`link:#onecx-user-profile-svc_onecx-user-profile-claims-last-name[onecx.user-profile.claims.last-name]`
-
+a| [[onecx-user-profile-svc_onecx-user-profile-claims-last-name]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-claims-last-name[`onecx.user-profile.claims.last-name`]##
 
 [.description]
 --
 User profile last name token claim
+
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++ONECX_USER_PROFILE_CLAIMS_LAST_NAME+++[]
@@ -74,16 +72,16 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++ONECX_USER_PROFILE_CLAIMS_LAST_NAME+++`
 endif::add-copy-button-to-env-var[]
---|string 
+--
+|string
 |`family_name`
 
-
-a| [[onecx-user-profile-svc_onecx-user-profile-claims-organization-id]]`link:#onecx-user-profile-svc_onecx-user-profile-claims-organization-id[onecx.user-profile.claims.organization-id]`
-
+a| [[onecx-user-profile-svc_onecx-user-profile-claims-organization-id]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-claims-organization-id[`onecx.user-profile.claims.organization-id`]##
 
 [.description]
 --
 User profile organization token claim
+
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++ONECX_USER_PROFILE_CLAIMS_ORGANIZATION_ID+++[]
@@ -91,16 +89,16 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++ONECX_USER_PROFILE_CLAIMS_ORGANIZATION_ID+++`
 endif::add-copy-button-to-env-var[]
---|string 
+--
+|string
 |`orgId`
 
-
-a| [[onecx-user-profile-svc_onecx-user-profile-claims-locale]]`link:#onecx-user-profile-svc_onecx-user-profile-claims-locale[onecx.user-profile.claims.locale]`
-
+a| [[onecx-user-profile-svc_onecx-user-profile-claims-locale]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-claims-locale[`onecx.user-profile.claims.locale`]##
 
 [.description]
 --
 User profile locale
+
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++ONECX_USER_PROFILE_CLAIMS_LOCALE+++[]
@@ -108,16 +106,16 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++ONECX_USER_PROFILE_CLAIMS_LOCALE+++`
 endif::add-copy-button-to-env-var[]
---|string 
+--
+|string
 |
 
-
-a| [[onecx-user-profile-svc_onecx-user-profile-claims-timezone]]`link:#onecx-user-profile-svc_onecx-user-profile-claims-timezone[onecx.user-profile.claims.timezone]`
-
+a| [[onecx-user-profile-svc_onecx-user-profile-claims-timezone]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-claims-timezone[`onecx.user-profile.claims.timezone`]##
 
 [.description]
 --
 User profile timezone
+
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++ONECX_USER_PROFILE_CLAIMS_TIMEZONE+++[]
@@ -125,16 +123,16 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++ONECX_USER_PROFILE_CLAIMS_TIMEZONE+++`
 endif::add-copy-button-to-env-var[]
---|string 
+--
+|string
 |
 
-
-a| [[onecx-user-profile-svc_onecx-user-profile-settings-locale]]`link:#onecx-user-profile-svc_onecx-user-profile-settings-locale[onecx.user-profile.settings.locale]`
-
+a| [[onecx-user-profile-svc_onecx-user-profile-settings-locale]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-settings-locale[`onecx.user-profile.settings.locale`]##
 
 [.description]
 --
 User profile locale
+
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++ONECX_USER_PROFILE_SETTINGS_LOCALE+++[]
@@ -142,16 +140,16 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++ONECX_USER_PROFILE_SETTINGS_LOCALE+++`
 endif::add-copy-button-to-env-var[]
---|string 
+--
+|string
 |`en`
 
-
-a| [[onecx-user-profile-svc_onecx-user-profile-settings-timezone]]`link:#onecx-user-profile-svc_onecx-user-profile-settings-timezone[onecx.user-profile.settings.timezone]`
-
+a| [[onecx-user-profile-svc_onecx-user-profile-settings-timezone]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-settings-timezone[`onecx.user-profile.settings.timezone`]##
 
 [.description]
 --
 User profile timezone
+
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++ONECX_USER_PROFILE_SETTINGS_TIMEZONE+++[]
@@ -159,7 +157,11 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++ONECX_USER_PROFILE_SETTINGS_TIMEZONE+++`
 endif::add-copy-button-to-env-var[]
---|string 
+--
+|string
 |`Europe/Berlin`
 
 |===
+
+
+:!summaryTableId:
