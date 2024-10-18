@@ -6,6 +6,7 @@ import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.user.profile.rs.internal.mappers.InternalExceptionMapper;
 import org.tkit.onecx.user.profile.test.AbstractTest;
@@ -287,7 +288,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
                 .statusCode(NOT_FOUND.getStatusCode());
 
         // update existing profile
-        given()
+        var updatedProfile = given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
@@ -295,7 +296,10 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
                 .pathParam("id", "user1")
                 .put("{id}")
                 .then()
-                .statusCode(NO_CONTENT.getStatusCode());
+                .statusCode(OK.getStatusCode())
+                .extract().as(UserProfileDTO.class);
+
+        Assertions.assertNotNull(updatedProfile);
 
         // update 2nd time - existing profile - get optimistic lock exception
         error = given()

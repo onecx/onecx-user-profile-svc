@@ -6,6 +6,7 @@ import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.user.profile.test.AbstractTest;
 import org.tkit.quarkus.security.test.GenerateKeycloakClient;
@@ -228,7 +229,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
                 .statusCode(NOT_FOUND.getStatusCode());
 
         // update existing profile with correct tenant
-        given()
+        var updatedProfile = given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user4", "org1"))
@@ -237,7 +238,9 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
                 .pathParam("id", "user1")
                 .put("{id}")
                 .then()
-                .statusCode(NO_CONTENT.getStatusCode());
+                .statusCode(OK.getStatusCode())
+                .extract().as(UserProfileDTO.class);
+        Assertions.assertNotNull(updatedProfile);
 
         userProfileDTO = given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))

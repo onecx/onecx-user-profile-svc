@@ -93,7 +93,7 @@ paths:
         - oauth2: [ ocx-up:all, ocx-up:write ]
       tags:
         - userProfileAdmin
-      description: Update workspace by ID
+      description: Update user profile by ID
       operationId: updateUserProfileData
       parameters:
         - $ref: '#/components/parameters/id'
@@ -104,8 +104,12 @@ paths:
             schema:
               $ref: '#/components/schemas/UpdateUserPersonRequest'
       responses:
-        "204":
+        "200":
           description: User profile updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
         "400":
           description: Bad request
           content:
