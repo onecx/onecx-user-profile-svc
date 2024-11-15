@@ -127,6 +127,23 @@ endif::add-copy-button-to-env-var[]
 |string
 |
 
+a| [[onecx-user-profile-svc_onecx-user-profile-claims-menu-mode]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-claims-menu-mode[`onecx.user-profile.claims.menu-mode`]##
+
+[.description]
+--
+User profile menu
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_USER_PROFILE_CLAIMS_MENU_MODE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_USER_PROFILE_CLAIMS_MENU_MODE+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|
+
 a| [[onecx-user-profile-svc_onecx-user-profile-settings-locale]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-settings-locale[`onecx.user-profile.settings.locale`]##
 
 [.description]
@@ -160,6 +177,23 @@ endif::add-copy-button-to-env-var[]
 --
 |string
 |`Europe/Berlin`
+
+a| [[onecx-user-profile-svc_onecx-user-profile-settings-menu-mode]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-settings-menu-mode[`onecx.user-profile.settings.menu-mode`]##
+
+[.description]
+--
+User profile menu
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_USER_PROFILE_SETTINGS_MENU_MODE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_USER_PROFILE_SETTINGS_MENU_MODE+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|`STATIC`
 
 |===
 

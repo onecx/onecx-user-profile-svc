@@ -10,6 +10,7 @@ import org.tkit.onecx.user.profile.domain.config.UserProfileConfig;
 import org.tkit.onecx.user.profile.domain.models.UserPerson;
 import org.tkit.onecx.user.profile.domain.models.UserProfile;
 import org.tkit.onecx.user.profile.domain.models.UserProfileAccountSettings;
+import org.tkit.onecx.user.profile.domain.models.enums.MenuMode;
 import org.tkit.quarkus.context.ApplicationContext;
 
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +40,8 @@ public class UserProfileService {
                 .setTimezone(getClaimOrConfig(token, config.claims().timeZone(), config.settings().timeZone()));
         userProfile.getAccountSettings()
                 .setLocale(getClaimOrConfig(token, config.claims().locale(), config.settings().locale()));
-
+        userProfile.getAccountSettings()
+                .setMenuMode(getClaimOrConfigMenuMode(token, config.claims().menuMode(), config.settings().menuMode()));
         return userProfile;
     }
 
@@ -61,6 +63,17 @@ public class UserProfileService {
             return temp;
         }
         return config;
+    }
+
+    MenuMode getClaimOrConfigMenuMode(JsonWebToken token, Optional<String> claim, String config) {
+        String tmp = getClaimOrConfig(token, claim, config);
+        try {
+            return MenuMode.valueOf(tmp);
+        } catch (Exception ex) {
+            log.error("Wrong value of the menu mode for the user. Menu mode {}. Returning {} instead.", tmp, MenuMode.STATIC,
+                    ex);
+            return MenuMode.STATIC;
+        }
     }
 
 }
