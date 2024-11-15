@@ -70,8 +70,9 @@ public class UserProfileService {
         try {
             return MenuMode.valueOf(tmp);
         } catch (Exception ex) {
-            log.error("Wrong value of the menu mode for the user. Menu mode {}. Returning {} instead.", tmp, MenuMode.STATIC,
-                    ex);
+            log.error("Wrong value of the menu mode for the user. Menu mode {}. Returning {} instead. Error: {}", tmp,
+                    MenuMode.STATIC,
+                    ex.getMessage());
             return MenuMode.STATIC;
         }
     }
