@@ -77,6 +77,12 @@ public interface UserProfileConfig {
          */
         @WithName("timezone")
         Optional<String> timeZone();
+
+        /**
+         * User profile menu
+         */
+        @WithName("menu-mode")
+        Optional<String> menuMode();
     }
 
     interface Settings {
@@ -94,5 +100,13 @@ public interface UserProfileConfig {
         @WithName("timezone")
         @WithDefault("Europe/Berlin")
         String timeZone();
+
+        /**
+         * User profile menu
+         */
+        @WithName("menu-mode")
+        @WithDefault("STATIC")
+        String menuMode();
     }
+
 }

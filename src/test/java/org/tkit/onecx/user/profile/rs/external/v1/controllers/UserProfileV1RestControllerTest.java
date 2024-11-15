@@ -99,6 +99,7 @@ class UserProfileV1RestControllerTest extends AbstractTest {
         assertThat(userPofile.getUserId()).isEqualTo("not-existing");
         assertThat(userPofile.getOrganization()).isEqualTo("org1");
         assertThat(userPofile.getPerson().getEmail()).isEqualTo("not-existing@cap.de");
+        assertThat(userPofile.getAccountSettings().getMenuMode()).isEqualTo(MenuModeDTO.HORIZONTAL);
 
         // load existing user profile
         userPofile = given()
@@ -115,6 +116,7 @@ class UserProfileV1RestControllerTest extends AbstractTest {
         assertThat(userPofile.getOrganization()).isEqualTo("org2");
         assertThat(userPofile.getUserId()).isEqualTo("user3");
         assertThat(userPofile.getPerson().getDisplayName()).isEqualTo("User Three");
+        assertThat(userPofile.getAccountSettings().getMenuMode()).isEqualTo(MenuModeDTO.SLIM);
     }
 
     private static Stream<Arguments> claimTimezone() {
