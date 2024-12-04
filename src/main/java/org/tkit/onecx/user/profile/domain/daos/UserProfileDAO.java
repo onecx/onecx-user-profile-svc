@@ -80,10 +80,8 @@ public class UserProfileDAO extends AbstractDAO<UserProfile> {
         cq.where(cb.equal(root.get(TraceableEntity_.ID), id));
         var typedQuery = em.createQuery(cq);
 
-        if (!loadGraphType.isEmpty()) {
-            typedQuery.setHint("javax.persistence.loadgraph",
-                    this.em.getEntityGraph(UserProfile.class.getSimpleName() + loadGraphType));
-        }
+        typedQuery.setHint("javax.persistence.loadgraph",
+                this.em.getEntityGraph(UserProfile.class.getSimpleName() + loadGraphType));
 
         return typedQuery.getResultList().stream().findFirst().orElse(null);
     }
