@@ -67,12 +67,12 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
         assertThat(result.getUserId()).isEqualTo(request.getUserId());
         assertThat(result.getModificationDate()).isNotNull();
         assertThat(result.getPerson().getPhone()).isNull();
-
+        var id = result.getId();
         result = given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user3", "org2"))
-                .pathParam("id", "cap")
+                .pathParam("id", id)
                 .get("{id}")
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -115,7 +115,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
         given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
-                .pathParam("id", "user1")
+                .pathParam("id", "11-111")
                 .delete("{id}")
                 .then()
                 .statusCode(NO_CONTENT.getStatusCode());
@@ -124,7 +124,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
         given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
-                .pathParam("id", "user1")
+                .pathParam("id", "11-111")
                 .get("{id}")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
@@ -136,7 +136,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
         var result = given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
-                .pathParam("id", "user1")
+                .pathParam("id", "11-111")
                 .get("{id}")
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -259,7 +259,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
         var userProfileDTO = given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
-                .pathParam("id", "user1")
+                .pathParam("id", "11-111")
                 .get("{id}")
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -293,7 +293,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
-                .pathParam("id", "user1")
+                .pathParam("id", "11-111")
                 .put("{id}")
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -307,7 +307,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
-                .pathParam("id", "user1")
+                .pathParam("id", "11-111")
                 .put("{id}")
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode())
@@ -318,7 +318,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
         userProfileDTO = given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
-                .pathParam("id", "user1")
+                .pathParam("id", "11-111")
                 .get("{id}")
                 .then()
                 .statusCode(OK.getStatusCode())

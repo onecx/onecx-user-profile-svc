@@ -19,6 +19,7 @@ import org.tkit.quarkus.jpa.daos.AbstractDAO;
 import org.tkit.quarkus.jpa.daos.Page;
 import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.jpa.models.AbstractTraceableEntity_;
+import org.tkit.quarkus.jpa.models.TraceableEntity_;
 import org.tkit.quarkus.jpa.utils.QueryCriteriaUtil;
 
 @ApplicationScoped
@@ -60,6 +61,23 @@ public class UserProfileDAO extends AbstractDAO<UserProfile> {
         var cq = cb.createQuery(UserProfile.class);
         var root = cq.from(UserProfile.class);
         cq.where(cb.equal(root.get(USER_ID), userId));
+        var typedQuery = em.createQuery(cq);
+
+        if (!loadGraphType.isEmpty()) {
+            typedQuery.setHint("javax.persistence.loadgraph",
+                    this.em.getEntityGraph(UserProfile.class.getSimpleName() + loadGraphType));
+        }
+
+        return typedQuery.getResultList().stream().findFirst().orElse(null);
+    }
+
+    @Transactional
+    public UserProfile getUserProfileById(String id, String loadGraphType) {
+
+        var cb = getEntityManager().getCriteriaBuilder();
+        var cq = cb.createQuery(UserProfile.class);
+        var root = cq.from(UserProfile.class);
+        cq.where(cb.equal(root.get(TraceableEntity_.ID), id));
         var typedQuery = em.createQuery(cq);
 
         if (!loadGraphType.isEmpty()) {
