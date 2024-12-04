@@ -61,11 +61,12 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
                 .get("{id}")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
+        var id = result.getId();
 
         result = given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
-                .pathParam("id", "cap")
+                .pathParam("id", id)
                 .header(APM_HEADER_PARAM, createToken("user4", "org3"))
                 .get("{id}")
                 .then()
@@ -86,7 +87,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user4", "org3"))
-                .pathParam("id", "user1")
+                .pathParam("id", "11-111")
                 .delete("{id}")
                 .then()
                 .statusCode(NO_CONTENT.getStatusCode());
@@ -96,7 +97,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user4", "org1"))
-                .pathParam("id", "user1")
+                .pathParam("id", "11-111")
                 .get("{id}")
                 .then()
                 .statusCode(OK.getStatusCode());
@@ -106,7 +107,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user4", "org1"))
-                .pathParam("id", "user1")
+                .pathParam("id", "11-111")
                 .delete("{id}")
                 .then()
                 .statusCode(NO_CONTENT.getStatusCode());
@@ -116,7 +117,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user4", "org1"))
-                .pathParam("id", "user1")
+                .pathParam("id", "11-111")
                 .get("{id}")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
@@ -129,7 +130,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user4", "org2"))
-                .pathParam("id", "user1")
+                .pathParam("id", "11-111")
                 .get("{id}")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
@@ -139,7 +140,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user4", "org1"))
-                .pathParam("id", "user1")
+                .pathParam("id", "11-111")
                 .get("{id}")
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -199,7 +200,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user4", "org1"))
-                .pathParam("id", "user1")
+                .pathParam("id", "11-111")
                 .get("{id}")
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -223,7 +224,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
                 .header(APM_HEADER_PARAM, createToken("user4", "org2"))
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
-                .pathParam("id", "user1")
+                .pathParam("id", "11-111")
                 .put("{id}")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
@@ -235,7 +236,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
                 .header(APM_HEADER_PARAM, createToken("user4", "org1"))
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
-                .pathParam("id", "user1")
+                .pathParam("id", "11-111")
                 .put("{id}")
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -246,7 +247,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .header(APM_HEADER_PARAM, createToken("user4", "org1"))
-                .pathParam("id", "user1")
+                .pathParam("id", "11-111")
                 .get("{id}")
                 .then()
                 .statusCode(OK.getStatusCode())

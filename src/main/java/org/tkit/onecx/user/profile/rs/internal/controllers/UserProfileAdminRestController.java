@@ -61,7 +61,7 @@ public class UserProfileAdminRestController implements UserProfileAdminApi {
     @Override
     @Transactional
     public Response deleteUserProfileData(String id) {
-        var userProfile = userProfileDAO.getUserProfileByUserId(id, ENTITY_GRAPH_LOAD_PERSON);
+        var userProfile = userProfileDAO.getUserProfileById(id, ENTITY_GRAPH_LOAD_PERSON);
         if (userProfile != null) {
             preferenceDAO.delete(preferenceDAO.getAllPreferencesByUserId(id));
             userProfileDAO.delete(userProfile);
@@ -72,7 +72,7 @@ public class UserProfileAdminRestController implements UserProfileAdminApi {
 
     @Override
     public Response getUserProfileData(String id) {
-        var userProfile = userProfileDAO.getUserProfileByUserId(id, ENTITY_GRAPH_LOAD_PERSON);
+        var userProfile = userProfileDAO.getUserProfileById(id, ENTITY_GRAPH_LOAD_PERSON);
         if (userProfile == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -92,7 +92,7 @@ public class UserProfileAdminRestController implements UserProfileAdminApi {
 
     @Override
     public Response updateUserProfileData(String id, UpdateUserPersonRequestDTO updateUserPersonRequestDTO) {
-        var userProfile = userProfileDAO.getUserProfileByUserId(id, ENTITY_GRAPH_LOAD_ALL);
+        var userProfile = userProfileDAO.getUserProfileById(id, ENTITY_GRAPH_LOAD_ALL);
 
         if (userProfile == null) {
             return Response.status(Response.Status.NOT_FOUND).build();

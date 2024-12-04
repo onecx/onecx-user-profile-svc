@@ -28,12 +28,12 @@ class UserProfileAdminRestControllerExceptionTest extends AbstractTest {
 
     @Test
     void testDAOExceptionThrow() {
-        Mockito.when(userProfileDAO.getUserProfileByUserId("user1", UserProfile.ENTITY_GRAPH_LOAD_PERSON))
+        Mockito.when(userProfileDAO.getUserProfileById("11-111", UserProfile.ENTITY_GRAPH_LOAD_PERSON))
                 .thenThrow(new DAOException(TestEnumError.TEST_ERROR, null));
         given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
-                .pathParam("id", "user1")
+                .pathParam("id", "11-111")
                 .get("{id}")
                 .then()
                 .statusCode(INTERNAL_SERVER_ERROR.getStatusCode());
