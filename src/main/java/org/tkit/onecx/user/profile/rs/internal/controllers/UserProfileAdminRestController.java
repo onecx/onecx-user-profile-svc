@@ -101,7 +101,7 @@ public class UserProfileAdminRestController implements UserProfileAdminApi {
         userProfileMapper.updateUserPerson(userProfile, updateUserPersonRequestDTO);
         userProfile = userProfileDAO.update(userProfile);
 
-        return Response.ok(userProfileMapper.map(userProfile)).build();
+        return Response.ok(userProfileMapper.mapProfile(userProfile)).build();
     }
 
     @ServerExceptionMapper
