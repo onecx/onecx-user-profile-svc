@@ -300,6 +300,8 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
                 .extract().as(UserProfileDTO.class);
 
         Assertions.assertNotNull(updatedProfile);
+        Assertions.assertNotNull(updatedProfile.getPerson().getModificationCount());
+        Assertions.assertNotNull(updatedProfile.getAccountSettings().getModificationCount());
 
         // update 2nd time - existing profile - get optimistic lock exception
         error = given()
