@@ -98,7 +98,7 @@ class UserProfileV1RestControllerTest extends AbstractTest {
 
         assertThat(userPofile.getUserId()).isEqualTo("not-existing");
         assertThat(userPofile.getOrganization()).isEqualTo("org1");
-        assertThat(userPofile.getPerson().getEmail()).isEqualTo("not-existing@cap.de");
+        assertThat(userPofile.getPerson().getEmail()).isEqualTo("not-existing@testOrg.de");
         assertThat(userPofile.getAccountSettings().getMenuMode()).isEqualTo(MenuModeDTO.HORIZONTAL);
 
         // load existing user profile
@@ -142,7 +142,7 @@ class UserProfileV1RestControllerTest extends AbstractTest {
 
         assertThat(userPofile.getUserId()).isEqualTo("not-existing");
         assertThat(userPofile.getOrganization()).isEqualTo("1");
-        assertThat(userPofile.getPerson().getEmail()).isEqualTo("not-existing@cap.de");
+        assertThat(userPofile.getPerson().getEmail()).isEqualTo("not-existing@testOrg.de");
     }
 
     @Test

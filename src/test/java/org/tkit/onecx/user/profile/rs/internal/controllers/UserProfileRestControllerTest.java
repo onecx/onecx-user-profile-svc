@@ -208,7 +208,7 @@ class UserProfileRestControllerTest extends AbstractTest {
 
         assertThat(up.getUserId()).isEqualTo("not-existing");
         assertThat(up.getPerson().getFirstName()).isNull();
-        assertThat(up.getPerson().getEmail()).isEqualTo("not-existing@cap.de");
+        assertThat(up.getPerson().getEmail()).isEqualTo("not-existing@testOrg.de");
     }
 
     @Test
@@ -226,7 +226,7 @@ class UserProfileRestControllerTest extends AbstractTest {
 
         assertThat(userPofile.getUserId()).isEqualTo("not-existing");
         assertThat(userPofile.getOrganization()).isEqualTo("org1");
-        assertThat(userPofile.getPerson().getEmail()).isEqualTo("not-existing@cap.de");
+        assertThat(userPofile.getPerson().getEmail()).isEqualTo("not-existing@testOrg.de");
 
         // load existing user profile
         userPofile = given()
@@ -301,7 +301,7 @@ class UserProfileRestControllerTest extends AbstractTest {
                 .statusCode(OK.getStatusCode())
                 .extract().as(UserPersonDTO.class);
         UpdateUserPersonRequestDTO request = new UpdateUserPersonRequestDTO();
-        request.setEmail("new_email@capgemini.com");
+        request.setEmail("new_email@testOrg.com");
         request.setLastName(userPersonDTO4.getLastName());
         request.setFirstName(userPersonDTO4.getFirstName());
         request.setDisplayName(userPersonDTO4.getDisplayName());

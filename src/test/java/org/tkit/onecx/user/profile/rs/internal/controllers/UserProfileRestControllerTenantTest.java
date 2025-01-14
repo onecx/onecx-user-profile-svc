@@ -257,7 +257,7 @@ class UserProfileRestControllerTenantTest extends AbstractTest {
                 .statusCode(OK.getStatusCode())
                 .extract().as(UserPersonDTO.class);
         UpdateUserPersonRequestDTO request = new UpdateUserPersonRequestDTO();
-        request.setEmail("new_email@capgemini.com");
+        request.setEmail("new_email@testOrg.com");
         request.setLastName(userPersonDTO4.getLastName());
         request.setFirstName(userPersonDTO4.getFirstName());
         request.setDisplayName(userPersonDTO4.getDisplayName());

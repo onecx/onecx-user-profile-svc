@@ -41,16 +41,16 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
 
         // create user profile with content
         CreateUserProfileRequestDTO request = new CreateUserProfileRequestDTO();
-        request.setUserId("cap");
-        request.setOrganization("capgemini");
+        request.setUserId("testOrgUser");
+        request.setOrganization("testOrg");
         request.setIdentityProvider("database");
         request.setIdentityProviderId("db");
         var person = new CreateUserPersonDTO();
         request.setPerson(person);
-        person.setDisplayName("Capgemini super user");
-        person.setEmail("cap@capgemini.com");
+        person.setDisplayName("testOrg super user");
+        person.setEmail("test@testOrg.com");
         person.setFirstName("Superuser");
-        person.setLastName("Capgeminius");
+        person.setLastName("TestLastName");
 
         var result = given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
@@ -97,7 +97,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
         assertThat(error).isNotNull();
         assertThat(error.getErrorCode()).isEqualTo("PERSIST_ENTITY_FAILED");
         assertThat(error.getDetail()).isEqualTo(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'up_constraints'  Detail: Key (user_id, tenant_id)=(cap, tenant-200) already exists.]");
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'up_constraints'  Detail: Key (user_id, tenant_id)=(testOrgUser, tenant-200) already exists.]");
     }
 
     @Test
@@ -167,7 +167,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
 
         // search with criteria
         UserPersonCriteriaDTO criteriaDTO = new UserPersonCriteriaDTO();
-        criteriaDTO.setEmail("*cap.de");
+        criteriaDTO.setEmail("*testOrg.de");
         var result = given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
@@ -221,7 +221,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
 
         // search with all criteria filled with * or ?
         criteriaDTO = new UserPersonCriteriaDTO();
-        criteriaDTO.setEmail("*cap.d?");
+        criteriaDTO.setEmail("*testOrg.d?");
         criteriaDTO.setUserId("user?");
         criteriaDTO.setFirstName("User*");
         criteriaDTO.setLastName("*o*");
