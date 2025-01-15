@@ -26,16 +26,16 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
     void createUserProfileTest() {
         // create user profile with content
         CreateUserProfileRequestDTO request = new CreateUserProfileRequestDTO();
-        request.setUserId("cap");
-        request.setOrganization("capgemini");
+        request.setUserId("testOrgUser");
+        request.setOrganization("testOrg");
         request.setIdentityProvider("database");
         request.setIdentityProviderId("db");
         var person = new CreateUserPersonDTO();
         request.setPerson(person);
-        person.setDisplayName("Capgemini super user");
-        person.setEmail("cap@capgemini.com");
+        person.setDisplayName("testOrg super user");
+        person.setEmail("test@testOrg.com");
         person.setFirstName("Superuser");
-        person.setLastName("Capgeminius");
+        person.setLastName("SuperLastName");
 
         var result = given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
@@ -56,7 +56,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
         given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
-                .pathParam("id", "cap")
+                .pathParam("id", "testOrg")
                 .header(APM_HEADER_PARAM, createToken("user4", "org2"))
                 .get("{id}")
                 .then()
@@ -158,7 +158,7 @@ class UserProfileAdminRestControllerTenantTest extends AbstractTest {
         // search with criteria
         // org1
         UserPersonCriteriaDTO criteriaDTO = new UserPersonCriteriaDTO();
-        criteriaDTO.setEmail("*cap.de");
+        criteriaDTO.setEmail("*testOrg.de");
         var result = given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()

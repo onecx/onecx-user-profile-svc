@@ -69,7 +69,7 @@ public class AbstractTest {
         claims.add("name", "Given Family " + userName);
         claims.add(Claims.given_name.name(), "Given " + userName);
         claims.add(Claims.family_name.name(), "Family " + userName);
-        claims.add(Claims.email.name(), userName + "@cap.de");
+        claims.add(Claims.email.name(), userName + "@testOrg.de");
 
         if (claimName != null && claimValue != null) {
             if (claimValue instanceof Integer t) {

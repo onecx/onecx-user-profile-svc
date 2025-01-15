@@ -64,7 +64,7 @@ class UserProfileV1RestControllerMenuSettingsTest extends AbstractTest {
 
         assertThat(userProfile.getUserId()).isEqualTo("not-existing");
         assertThat(userProfile.getOrganization()).isEqualTo("org1");
-        assertThat(userProfile.getPerson().getEmail()).isEqualTo("not-existing@cap.de");
+        assertThat(userProfile.getPerson().getEmail()).isEqualTo("not-existing@testOrg.de");
         assertThat(userProfile.getAccountSettings().getMenuMode()).isEqualTo(MenuModeDTO.STATIC);
     }
 
