@@ -490,6 +490,8 @@ components:
           type: string
         identityProviderId:
           type: string
+        issuer:
+          type: string
         organization:
           type: string
         person:

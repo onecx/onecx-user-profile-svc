@@ -31,6 +31,7 @@ public class UserProfileService {
         userProfile.setIdentityProvider("keycloak");
         userProfile.setUserId(userId);
         userProfile.setOrganization(claim(token, config.claims().organization()));
+        userProfile.setIssuer(token.getIssuer());
         userProfile.getPerson().setDisplayName(claim(token, config.claims().displayName()));
         userProfile.getPerson().setFirstName(claim(token, config.claims().firstName()));
         userProfile.getPerson().setLastName(claim(token, config.claims().lastName()));
