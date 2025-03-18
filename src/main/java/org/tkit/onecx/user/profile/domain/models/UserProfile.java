@@ -46,6 +46,9 @@ public class UserProfile extends TraceableEntity {
     @Column(name = "IDENTITY_PROVIDER_ID")
     private String identityProviderId;
 
+    @Column(name = "ISSUER")
+    private String issuer;
+
     @Column(name = "ORGANIZATION")
     private String organization;
 

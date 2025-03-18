@@ -63,13 +63,17 @@ public class UserProfileV1RestController implements UserProfileV1Api {
     @Override
     public Response getUserProfile() {
         var userId = ApplicationContext.get().getPrincipal();
-
         var userProfile = userProfileDAO.getUserProfileByUserId(userId, UserProfile.ENTITY_GRAPH_LOAD_PERSON);
 
         if (userProfile == null) {
             // create user profile if it does not exist
             var createUserProfile = userProfileService.createProfileFromToken();
             userProfile = userProfileDAO.create(createUserProfile);
+        }
+        if (userProfile.getIssuer() == null) {
+            System.out.println("MYISSUER: " + ApplicationContext.get().getPrincipalToken().getIssuer());
+            userProfile.setIssuer(ApplicationContext.get().getPrincipalToken().getIssuer());
+            userProfile = userProfileDAO.update(userProfile);
         }
 
         return Response.ok(userProfileV1Mapper.map(userProfile)).build();

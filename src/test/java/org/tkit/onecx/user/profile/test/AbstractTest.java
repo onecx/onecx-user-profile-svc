@@ -65,6 +65,7 @@ public class AbstractTest {
         JsonObjectBuilder claims = Json.createObjectBuilder();
         claims.add(Claims.preferred_username.name(), userName);
         claims.add(Claims.sub.name(), userName);
+        claims.add(Claims.iss.name(), "testIssuer");
         claims.add(CLAIMS_ORG_ID, orgId);
         claims.add("name", "Given Family " + userName);
         claims.add(Claims.given_name.name(), "Given " + userName);
