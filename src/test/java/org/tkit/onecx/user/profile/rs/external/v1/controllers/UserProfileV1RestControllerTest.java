@@ -118,7 +118,6 @@ class UserProfileV1RestControllerTest extends AbstractTest {
         assertThat(userPofile.getUserId()).isEqualTo("user3");
         assertThat(userPofile.getPerson().getDisplayName()).isEqualTo("User Three");
         assertThat(userPofile.getAccountSettings().getMenuMode()).isEqualTo(MenuModeDTO.SLIM);
-        System.out.println("ISSUERXXX" + userPofile.getIssuer());
         assertThat(userPofile.getIssuer()).isNotNull();
     }
 
