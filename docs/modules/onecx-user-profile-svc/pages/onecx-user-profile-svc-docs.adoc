@@ -61,6 +61,10 @@ app:
         spec:
           kcConfig:
             defaultClientScopes: [ ocx-tn:read ]
+    microservice:
+      spec:
+        description: OneCX User Profile Backend Service
+        name: OneCX User Profile SVC
 
 ----
 
