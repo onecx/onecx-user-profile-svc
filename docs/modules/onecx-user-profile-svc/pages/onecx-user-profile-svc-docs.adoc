@@ -24,6 +24,7 @@ quarkus.http.auth.permission.health.policy=permit
 quarkus.http.auth.permission.default.paths=/*
 quarkus.http.auth.permission.default.policy=authenticated
 tkit.rs.context.tenant-id.enabled=true
+%prod.quarkus.oidc-client.client-id=${quarkus.application.name}
 %prod.quarkus.datasource.jdbc.url=${DB_URL:jdbc:postgresql://postgresdb:5432/onecx-user-profile?sslmode=disable}
 %prod.quarkus.datasource.username=${DB_USER:onecx-user-profile}
 %prod.quarkus.datasource.password=${DB_PWD:onecx-user-profile}
