@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.quarkus.test.Mock;
+import io.quarkus.test.keycloak.client.KeycloakTestClient;
 import io.restassured.config.RestAssuredConfig;
 import io.smallrye.config.SmallRyeConfig;
 import io.smallrye.jwt.build.Jwt;
@@ -42,6 +43,12 @@ public class AbstractTest {
                             objectMapper.configure(WRITE_DATES_AS_TIMESTAMPS, false);
                             return objectMapper;
                         }));
+    }
+
+    KeycloakTestClient keycloakClient = new KeycloakTestClient();
+
+    protected String getKeycloakClientToken(String clientId) {
+        return keycloakClient.getClientAccessToken(clientId);
     }
 
     protected static String createToken(String userId, String orgId) {
