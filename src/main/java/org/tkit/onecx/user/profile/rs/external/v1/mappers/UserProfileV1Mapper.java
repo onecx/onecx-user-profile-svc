@@ -1,5 +1,6 @@
 package org.tkit.onecx.user.profile.rs.external.v1.mappers;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.mapstruct.Mapper;
@@ -34,7 +35,7 @@ public interface UserProfileV1Mapper {
         ObjectMapper objectMapper = new ObjectMapper();
 
         if (value == null || value.isBlank()) {
-            return null;
+            return new HashMap<>();
         }
         try {
             return objectMapper.readValue(value, new TypeReference<Map<String, String>>() {

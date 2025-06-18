@@ -274,7 +274,8 @@ class UserProfileRestControllerTest extends AbstractTest {
         assertThat(userSettings).isNotNull();
         assertThat(userSettings.getMenuMode()).isEqualTo(MenuModeDTO.SLIM);
         assertThat(userSettings.getColorScheme()).isEqualTo(ColorSchemeDTO.LIGHT);
-        assertThat(userSettings.getSettings().get("language")).isEqualTo("spanish");
+        assertThat(userSettings.getSettings()).containsEntry("language", "spanish");
+
     }
 
     @Test
@@ -488,7 +489,7 @@ class UserProfileRestControllerTest extends AbstractTest {
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(UserProfileAccountSettingsDTO.class);
-        assertThat(newSettings.getSettings().get("newSetting")).isEqualTo("123");
+        assertThat(newSettings.getSettings()).containsEntry("newSetting", "123");
 
         // update 2nd time OPTIMISTIC LOCK EXCEPTION
         error = given()

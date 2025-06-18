@@ -1,5 +1,6 @@
 package org.tkit.onecx.user.profile.rs.internal.mappers;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -7,6 +8,8 @@ import java.util.stream.Stream;
 import org.mapstruct.*;
 import org.tkit.onecx.user.profile.domain.criteria.UserPersonCriteria;
 import org.tkit.onecx.user.profile.domain.models.*;
+import org.tkit.onecx.user.profile.domain.models.enums.ColorScheme;
+import org.tkit.onecx.user.profile.domain.models.enums.MenuMode;
 import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
@@ -44,6 +47,11 @@ public interface UserProfileMapper {
             dto.setPerson(new UserPersonDTO());
         }
         if (dto.getAccountSettings() == null) {
+            UserProfileAccountSettings accountSettings = new UserProfileAccountSettings();
+            HashMap<String, String> settings = new HashMap<>();
+            settings.put("menuMode", MenuMode.STATIC.toString());
+            settings.put("colorScheme", ColorScheme.AUTO.toString());
+            accountSettings.setSettings(m2s(settings));
             dto.setAccountSettings(new UserProfileAccountSettingsDTO());
         }
         dto.getPerson().setModificationCount(entity.getModificationCount());
@@ -113,7 +121,7 @@ public interface UserProfileMapper {
         ObjectMapper objectMapper = new ObjectMapper();
 
         if (value == null || value.isBlank()) {
-            return null;
+            return new HashMap<>();
         }
         try {
             return objectMapper.readValue(value, new TypeReference<Map<String, String>>() {
