@@ -4,13 +4,13 @@
 
 	<!-- UserProfile -->
 	<USER_PROFILE guid="11-111" optlock="0" user_id="user1" tenant_id="tenant-100" identity_provider="keycloak" identity_provider_id="keycloak" organization="Company1" hide_my_profile="false" locale="de" timezone="de" menu_mode="STATIC" color_scheme="AUTO"
-					  first_name="User" last_name="One" display_name="User One" email="user1@testOrg.de" phone_type="MOBILE" phone_number="123456" street="userstreet1" street_no="11" city="Muenchen" postal_code="12345" country="GERMANY"/>
+					  first_name="User" last_name="One" display_name="User One" email="user1@testOrg.de" phone_type="MOBILE" phone_number="123456" street="userstreet1" street_no="11" city="Muenchen" postal_code="12345" country="GERMANY" settings="{&quot;language&quot;:&quot;english&quot;}"/>
 	<USER_PROFILE guid="22-111" optlock="0" user_id="user2" tenant_id="tenant-100" identity_provider="keycloak" identity_provider_id="keycloak" organization="Company1" hide_my_profile="false" locale="en" timezone="en" menu_mode="HORIZONTAL" color_scheme="DARK"
-					  first_name="User" last_name="Two" display_name="User Two" email="user2@testOrg.de" phone_type="LANDLINE" phone_number="987654" street="userstreet2" street_no="22" city="Muenchen" postal_code="12345" country="GERMANY"/>
+					  first_name="User" last_name="Two" display_name="User Two" email="user2@testOrg.de" phone_type="LANDLINE" phone_number="987654" street="userstreet2" street_no="22" city="Muenchen" postal_code="12345" country="GERMANY" settings="{&quot;language&quot;:&quot;english&quot;}"/>
 	<USER_PROFILE guid="33-111" optlock="0" user_id="user3" tenant_id="tenant-200" identity_provider="keycloak" identity_provider_id="keycloak" organization="org2" hide_my_profile="true" locale="de" timezone="de" menu_mode="SLIM" color_scheme="LIGHT"
-					  first_name="User" last_name="Three" display_name="User Three" email="user3@testOrg.de" phone_type="MOBILE" phone_number="654321" street="userstreet3" street_no="33" city="Muenchen" postal_code="12345" country="GERMANY"/>
+					  first_name="User" last_name="Three" display_name="User Three" email="user3@testOrg.de" phone_type="MOBILE" phone_number="654321" street="userstreet3" street_no="33" city="Muenchen" postal_code="12345" country="GERMANY" settings="{&quot;language&quot;:&quot;spanish&quot;}"/>
 	<USER_PROFILE guid="44-111" optlock="0" user_id="user4" tenant_id="tenant-300" identity_provider="keycloak" identity_provider_id="keycloak" organization="Company3" hide_my_profile="false" locale="en" timezone="en" menu_mode="OVERLAY" color_scheme="AUTO"
-					  first_name="User" last_name="Four" display_name="User Four" email="user4@testOrg.de" phone_type="LANDLINE" phone_number="456789" street="userstreet4" street_no="44" city="Muenchen" postal_code="12345" country="GERMANY"/>
+					  first_name="User" last_name="Four" display_name="User Four" email="user4@testOrg.de" phone_type="LANDLINE" phone_number="456789" street="userstreet4" street_no="44" city="Muenchen" postal_code="12345" country="GERMANY" settings="{&quot;language&quot;:&quot;german&quot;}"/>
 
 	<!-- Preference -->
 	<PREFERENCE guid="11-111" optlock="0" tenant_id="tenant-100" user_id="user1" application_id="app1" name="preference1" description="Preference 1 app 1 for user 1" value="P1A1U1" />
