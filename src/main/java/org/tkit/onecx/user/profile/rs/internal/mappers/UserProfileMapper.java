@@ -1,13 +1,20 @@
 package org.tkit.onecx.user.profile.rs.internal.mappers;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import org.mapstruct.*;
 import org.tkit.onecx.user.profile.domain.criteria.UserPersonCriteria;
 import org.tkit.onecx.user.profile.domain.models.*;
+import org.tkit.onecx.user.profile.domain.models.enums.ColorScheme;
+import org.tkit.onecx.user.profile.domain.models.enums.MenuMode;
 import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gen.org.tkit.onecx.user.profile.rs.internal.model.*;
 
@@ -40,6 +47,11 @@ public interface UserProfileMapper {
             dto.setPerson(new UserPersonDTO());
         }
         if (dto.getAccountSettings() == null) {
+            UserProfileAccountSettings accountSettings = new UserProfileAccountSettings();
+            HashMap<String, String> settings = new HashMap<>();
+            settings.put("menuMode", MenuMode.STATIC.toString());
+            settings.put("colorScheme", ColorScheme.AUTO.toString());
+            accountSettings.setSettings(m2s(settings));
             dto.setAccountSettings(new UserProfileAccountSettingsDTO());
         }
         dto.getPerson().setModificationCount(entity.getModificationCount());
@@ -74,7 +86,9 @@ public interface UserProfileMapper {
         return dto;
     }
 
+    @Mapping(target = "removeSettingsItem", ignore = true)
     @Mapping(target = "modificationCount", ignore = true)
+    @Mapping(target = "settings", source = "settings", qualifiedByName = "s2m")
     UserProfileAccountSettingsDTO map(UserProfileAccountSettings entity);
 
     default void updateUserPerson(UserProfile model, UpdateUserPersonRequestDTO dto) {
@@ -99,6 +113,42 @@ public interface UserProfileMapper {
         update(model.getAccountSettings(), dto);
     }
 
+    @Mapping(target = "settings", source = "settings", qualifiedByName = "m2s")
     void update(@MappingTarget UserProfileAccountSettings model, UpdateUserSettingsDTO dto);
 
+    @Named("s2m")
+    default Map<String, String> s2m(String value) {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        if (value == null || value.isBlank()) {
+            return new HashMap<>();
+        }
+        try {
+            return objectMapper.readValue(value, new TypeReference<Map<String, String>>() {
+            });
+        } catch (Exception e) {
+            throw new MapperException("Error reading parameter value", e);
+        }
+    }
+
+    @Named("m2s")
+    default String m2s(Map<String, String> value) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        if (value == null) {
+            return null;
+        }
+        try {
+            return objectMapper.writeValueAsString(value);
+        } catch (Exception e) {
+            throw new MapperException("Error reading parameter value", e);
+        }
+    }
+
+    class MapperException extends RuntimeException {
+
+        public MapperException(String msg, Throwable t) {
+            super(msg, t);
+        }
+
+    }
 }

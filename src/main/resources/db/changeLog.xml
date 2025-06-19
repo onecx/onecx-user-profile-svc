@@ -7,4 +7,5 @@
     <include relativeToChangelogFile="true" file="v1/2024-03-26-update-tables.xml"/>
     <include relativeToChangelogFile="true" file="v1/2024-07-11-drop-image-table.xml"/>
     <include relativeToChangelogFile="true" file="v1/2025-03-18-add-issuer.xml"/>
+    <include relativeToChangelogFile="true" file="v1/2025-06-18-add-profile-settings.xml"/>
 </databaseChangeLog>

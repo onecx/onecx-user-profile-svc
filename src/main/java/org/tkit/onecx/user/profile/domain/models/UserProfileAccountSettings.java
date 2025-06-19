@@ -35,4 +35,7 @@ public class UserProfileAccountSettings implements Serializable {
     @Enumerated(EnumType.STRING)
     private ColorScheme colorScheme = ColorScheme.AUTO;
 
+    @Column(name = "SETTINGS", columnDefinition = "varchar(5000)")
+    private String settings;
+
 }
