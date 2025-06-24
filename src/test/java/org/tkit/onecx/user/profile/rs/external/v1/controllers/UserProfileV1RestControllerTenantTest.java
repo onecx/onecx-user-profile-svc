@@ -90,6 +90,8 @@ class UserProfileV1RestControllerTenantTest extends AbstractTest {
                 .extract().as(UserProfileDTO.class);
 
         assertThat(userProfile).isNotNull();
+        assertThat(userProfile.getTenantId()).isNotNull();
+
     }
 
     @Test
