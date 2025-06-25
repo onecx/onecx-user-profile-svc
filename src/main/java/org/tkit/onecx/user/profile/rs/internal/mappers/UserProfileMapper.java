@@ -47,18 +47,19 @@ public interface UserProfileMapper {
             dto.setPerson(new UserPersonDTO());
         }
         if (dto.getAccountSettings() == null) {
-            UserProfileAccountSettings accountSettings = new UserProfileAccountSettings();
-            HashMap<String, String> settings = new HashMap<>();
-            settings.put("menuMode", MenuMode.STATIC.toString());
-            settings.put("colorScheme", ColorScheme.AUTO.toString());
-            accountSettings.setSettings(m2s(settings));
             dto.setAccountSettings(new UserProfileAccountSettingsDTO());
         }
+        HashMap<String, List<String>> settings = new HashMap<>();
+        settings.put("menuMode", List.of(MenuMode.STATIC.toString()));
+        settings.put("colorScheme", List.of(ColorScheme.AUTO.toString()));
+        dto.setSettings(settings);
         dto.getPerson().setModificationCount(entity.getModificationCount());
         dto.getAccountSettings().setModificationCount(entity.getModificationCount());
         return dto;
     }
 
+    @Mapping(target = "removeSettingsItem", ignore = true)
+    @Mapping(target = "settings", source = "settings", qualifiedByName = "s2m")
     UserProfileDTO map(UserProfile entity);
 
     default UserPersonDTO mapUserPerson(UserProfile entity) {
@@ -86,9 +87,7 @@ public interface UserProfileMapper {
         return dto;
     }
 
-    @Mapping(target = "removeSettingsItem", ignore = true)
     @Mapping(target = "modificationCount", ignore = true)
-    @Mapping(target = "settings", source = "settings", qualifiedByName = "s2m")
     UserProfileAccountSettingsDTO map(UserProfileAccountSettings entity);
 
     default void updateUserPerson(UserProfile model, UpdateUserPersonRequestDTO dto) {
@@ -113,18 +112,17 @@ public interface UserProfileMapper {
         update(model.getAccountSettings(), dto);
     }
 
-    @Mapping(target = "settings", source = "settings", qualifiedByName = "m2s")
     void update(@MappingTarget UserProfileAccountSettings model, UpdateUserSettingsDTO dto);
 
     @Named("s2m")
-    default Map<String, String> s2m(String value) {
+    default Map<String, List<String>> s2m(String value) {
         ObjectMapper objectMapper = new ObjectMapper();
 
         if (value == null || value.isBlank()) {
             return new HashMap<>();
         }
         try {
-            return objectMapper.readValue(value, new TypeReference<Map<String, String>>() {
+            return objectMapper.readValue(value, new TypeReference<Map<String, List<String>>>() {
             });
         } catch (Exception e) {
             throw new MapperException("Error reading parameter value", e);
@@ -132,7 +130,7 @@ public interface UserProfileMapper {
     }
 
     @Named("m2s")
-    default String m2s(Map<String, String> value) {
+    default String m2s(Map<String, List<String>> value) {
         ObjectMapper objectMapper = new ObjectMapper();
         if (value == null) {
             return null;

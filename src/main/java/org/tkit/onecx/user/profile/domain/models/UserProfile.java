@@ -58,4 +58,7 @@ public class UserProfile extends TraceableEntity {
     @Embedded
     private UserProfileAccountSettings accountSettings;
 
+    @Column(name = "SETTINGS", columnDefinition = "varchar(5000)")
+    private String settings;
+
 }

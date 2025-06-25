@@ -5,8 +5,6 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Map;
-
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.user.profile.rs.internal.mappers.InternalExceptionMapper;
 import org.tkit.onecx.user.profile.test.AbstractTest;
@@ -228,7 +226,7 @@ class UserProfileRestControllerTest extends AbstractTest {
         assertThat(userPofile.getUserId()).isEqualTo("not-existing");
         assertThat(userPofile.getOrganization()).isEqualTo("org1");
         assertThat(userPofile.getPerson().getEmail()).isEqualTo("not-existing@testOrg.de");
-
+        assertThat(userPofile.getSettings()).isNotNull();
         // load existing user profile
         userPofile = given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
@@ -274,8 +272,6 @@ class UserProfileRestControllerTest extends AbstractTest {
         assertThat(userSettings).isNotNull();
         assertThat(userSettings.getMenuMode()).isEqualTo(MenuModeDTO.SLIM);
         assertThat(userSettings.getColorScheme()).isEqualTo(ColorSchemeDTO.LIGHT);
-        assertThat(userSettings.getSettings()).containsEntry("language", "spanish");
-
     }
 
     @Test
@@ -450,7 +446,6 @@ class UserProfileRestControllerTest extends AbstractTest {
         request.setTimezone(userSettings.getTimezone());
         request.setMenuMode(userSettings.getMenuMode());
         request.setModificationCount(userSettings.getModificationCount());
-        request.setSettings(Map.of("newSetting", "123"));
 
         // not existing user profile
         given()
@@ -489,7 +484,6 @@ class UserProfileRestControllerTest extends AbstractTest {
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(UserProfileAccountSettingsDTO.class);
-        assertThat(newSettings.getSettings()).containsEntry("newSetting", "123");
 
         // update 2nd time OPTIMISTIC LOCK EXCEPTION
         error = given()

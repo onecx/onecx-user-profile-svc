@@ -1,6 +1,7 @@
 package org.tkit.onecx.user.profile.rs.external.v1.mappers;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.mapstruct.Mapper;
@@ -18,6 +19,8 @@ import gen.org.tkit.onecx.user.profile.rs.external.v1.model.*;
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public interface UserProfileV1Mapper {
 
+    @Mapping(target = "removeSettingsItem", ignore = true)
+    @Mapping(target = "settings", source = "settings", qualifiedByName = "s2m")
     UserProfileDTO map(UserProfile entity);
 
     UserPersonDTO map(UserPerson entity);
@@ -26,19 +29,17 @@ public interface UserProfileV1Mapper {
 
     UserPersonPhoneDTO map(UserPersonPhone entity);
 
-    @Mapping(target = "removeSettingsItem", ignore = true)
-    @Mapping(target = "settings", source = "settings", qualifiedByName = "s2m")
     UserProfileAccountSettingsDTO map(UserProfileAccountSettings entity);
 
     @Named("s2m")
-    default Map<String, String> s2m(String value) {
+    default Map<String, List<String>> s2m(String value) {
         ObjectMapper objectMapper = new ObjectMapper();
 
         if (value == null || value.isBlank()) {
             return new HashMap<>();
         }
         try {
-            return objectMapper.readValue(value, new TypeReference<Map<String, String>>() {
+            return objectMapper.readValue(value, new TypeReference<Map<String, List<String>>>() {
             });
         } catch (Exception e) {
             throw new UserProfileMapper.MapperException("Error reading parameter value", e);
