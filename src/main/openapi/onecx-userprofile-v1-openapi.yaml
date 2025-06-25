@@ -145,10 +145,6 @@ components:
           $ref: '#/components/schemas/UserProfileAccountSettings'
         settings:
           type: object
-          additionalProperties:
-            type: array
-            items:
-              type: string
     UserPerson:
       type: object
       properties:

@@ -2,7 +2,6 @@ package org.tkit.onecx.user.profile.rs.internal.mappers;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import org.mapstruct.*;
@@ -13,8 +12,8 @@ import org.tkit.onecx.user.profile.domain.models.enums.MenuMode;
 import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import gen.org.tkit.onecx.user.profile.rs.internal.model.*;
 
@@ -49,17 +48,19 @@ public interface UserProfileMapper {
         if (dto.getAccountSettings() == null) {
             dto.setAccountSettings(new UserProfileAccountSettingsDTO());
         }
-        HashMap<String, List<String>> settings = new HashMap<>();
-        settings.put("menuMode", List.of(MenuMode.STATIC.toString()));
-        settings.put("colorScheme", List.of(ColorScheme.AUTO.toString()));
-        dto.setSettings(settings);
+        if (dto.getSettings() == null) {
+            ObjectNode settings = new ObjectMapper().createObjectNode();
+            settings.put("menuMode", MenuMode.STATIC.toString());
+            settings.put("colorScheme", ColorScheme.AUTO.toString());
+            dto.setSettings(settings);
+        }
+
         dto.getPerson().setModificationCount(entity.getModificationCount());
         dto.getAccountSettings().setModificationCount(entity.getModificationCount());
         return dto;
     }
 
-    @Mapping(target = "removeSettingsItem", ignore = true)
-    @Mapping(target = "settings", source = "settings", qualifiedByName = "s2m")
+    @Mapping(target = "settings", source = "settings", qualifiedByName = "s2o")
     UserProfileDTO map(UserProfile entity);
 
     default UserPersonDTO mapUserPerson(UserProfile entity) {
@@ -114,29 +115,15 @@ public interface UserProfileMapper {
 
     void update(@MappingTarget UserProfileAccountSettings model, UpdateUserSettingsDTO dto);
 
-    @Named("s2m")
-    default Map<String, List<String>> s2m(String value) {
+    @Named("s2o")
+    default Object s2o(String value) {
         ObjectMapper objectMapper = new ObjectMapper();
 
         if (value == null || value.isBlank()) {
             return new HashMap<>();
         }
         try {
-            return objectMapper.readValue(value, new TypeReference<Map<String, List<String>>>() {
-            });
-        } catch (Exception e) {
-            throw new MapperException("Error reading parameter value", e);
-        }
-    }
-
-    @Named("m2s")
-    default String m2s(Map<String, List<String>> value) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        if (value == null) {
-            return null;
-        }
-        try {
-            return objectMapper.writeValueAsString(value);
+            return objectMapper.readValue(value, Object.class);
         } catch (Exception e) {
             throw new MapperException("Error reading parameter value", e);
         }
