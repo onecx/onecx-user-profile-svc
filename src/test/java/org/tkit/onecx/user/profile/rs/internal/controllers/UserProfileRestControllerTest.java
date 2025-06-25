@@ -475,7 +475,7 @@ class UserProfileRestControllerTest extends AbstractTest {
         assertThat(result.getMenuMode()).isEqualTo(request.getMenuMode());
 
         // load existing user settings
-        var newSettings = given()
+        given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
