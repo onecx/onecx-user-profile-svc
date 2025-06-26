@@ -137,6 +137,8 @@ components:
           type: string
         organization:
           type: string
+        tenantId:
+          type: string
         person:
           $ref: '#/components/schemas/UserPerson'
         accountSettings:
