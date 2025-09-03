@@ -1,7 +1,8 @@
 ---
 openapi: 3.0.3
 info:
-  title: onecx-user-profile internal service
+  title: onecx-user-profile v1 service
+  description: OneCX User Profile SVC External API
   version: 1.0.0
 servers:
   - url: "http://onecx-user-profile:8080"
@@ -272,3 +273,4 @@ components:
       required: true
       schema:
         type: string
+
