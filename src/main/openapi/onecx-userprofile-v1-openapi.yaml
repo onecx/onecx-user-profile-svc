@@ -8,7 +8,6 @@ servers:
   - url: "http://onecx-user-profile:8080"
 tags:
   - name: userProfileV1
-  - name: userAvatarV1
 paths:
   /v1/userProfile/me:
     get:
@@ -273,4 +272,5 @@ components:
       required: true
       schema:
         type: string
+
 
