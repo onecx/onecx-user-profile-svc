@@ -162,7 +162,7 @@
                         <configuration>
                             <skipDocs>${skipDocs}</skipDocs>
                             <openApiFiles>
-                                <openApiFile>onecx-userprofile-v1-openapi.yaml</openApiFile>
+                                <openApiFile>onecx-userprofile-v1.yaml</openApiFile>
                             </openApiFiles>
                         </configuration>
                     </execution>
@@ -204,7 +204,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>src/main/openapi/onecx-userprofile-internal-openapi.yaml</inputSpec>
+                            <inputSpec>src/main/openapi/onecx-userprofile-internal.yaml</inputSpec>
                             <apiPackage>gen.org.tkit.onecx.user.profile.rs.internal</apiPackage>
                             <modelPackage>gen.org.tkit.onecx.user.profile.rs.internal.model</modelPackage>
                             <modelNameSuffix>DTO</modelNameSuffix>
@@ -216,7 +216,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>src/main/openapi/onecx-userprofile-v1-openapi.yaml</inputSpec>
+                            <inputSpec>src/main/openapi/onecx-userprofile-v1.yaml</inputSpec>
                             <apiPackage>gen.org.tkit.onecx.user.profile.rs.external.v1</apiPackage>
                             <modelPackage>gen.org.tkit.onecx.user.profile.rs.external.v1.model</modelPackage>
                             <modelNameSuffix>DTO</modelNameSuffix>
