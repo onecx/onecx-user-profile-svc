@@ -1,13 +1,14 @@
 ---
 openapi: 3.0.3
 info:
-  title: onecx-user-profile v1 service
-  description: OneCX User Profile SVC External API
+  title: onecx-user-profile external service V1
+  description: This API provides endpoints to manage the user profile of the requesting user
   version: 1.0.0
 servers:
   - url: "http://onecx-user-profile:8080"
 tags:
   - name: userProfileV1
+    description: Managing user profile by the requesting user
 paths:
   /v1/userProfile/me:
     get:
@@ -15,11 +16,11 @@ paths:
         - oauth2: [ ocx-up:read ]
       tags:
         - userProfileV1
-      description: Load user profile for current user
+      description: Load the user profile of the requesting user
       operationId: getUserProfile
       responses:
         "200":
-          description: User profile of current user
+          description: User profile retrieved successfully
           content:
             application/json:
               schema:
@@ -36,11 +37,11 @@ paths:
         - oauth2: [ ocx-up:read ]
       tags:
         - userProfileV1
-      description: Load user preferences for current user
+      description: Load user preferences for the requesting user
       operationId: getUserPreference
       responses:
         "200":
-          description: User profile of current user
+          description: User profile preferences retrieved successfully
           content:
             application/json:
               schema:
@@ -57,11 +58,11 @@ paths:
         - oauth2: [ ocx-up:read ]
       tags:
         - userProfileV1
-      description: Load user person for current user
+      description: Get user person for the requesting user
       operationId: getUserPerson
       responses:
         "200":
-          description: User person of current user
+          description: User person retrieved successfully
           content:
             application/json:
               schema:
@@ -78,11 +79,11 @@ paths:
         - oauth2: [ ocx-up:read ]
       tags:
         - userProfileV1
-      description: Load user profile account settings for current user
+      description: Load user profile account settings for the requesting user
       operationId: getUserSettings
       responses:
         "200":
-          description: User profile account settings of current user
+          description: User profile account settings retrieved successfully
           content:
             application/json:
               schema:

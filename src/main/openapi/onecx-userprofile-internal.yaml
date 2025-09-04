@@ -2,12 +2,15 @@
 openapi: 3.0.3
 info:
   title: onecx-user-profile internal service
+  description: This API provides endpoints to manage User Profiles and Account Settings as an user and as an admin
   version: 1.0.0
 servers:
   - url: "http://onecx-user-profile:8080"
 tags:
   - name: userProfileAdmin
+    description: Managing User Profiles and Account Settings as an admin
   - name: userProfile
+    description: Managing User Profile and Account Settings as an user
 paths:
   /internal/userProfiles:
     post:
@@ -15,7 +18,7 @@ paths:
         - oauth2: [ ocx-up:all, ocx-up:write ]
       tags:
         - userProfileAdmin
-      description: Create new user profile
+      description: Create a new user profile
       operationId: createUserProfileData
       requestBody:
         required: true
@@ -25,7 +28,7 @@ paths:
               $ref: '#/components/schemas/CreateUserProfileRequest'
       responses:
         "201":
-          description: New user profile created
+          description: User profile created successfully
           headers:
             Location:
               required: true
@@ -58,7 +61,7 @@ paths:
               $ref: '#/components/schemas/UserPersonCriteria'
       responses:
         "200":
-          description: Corresponding user profiles
+          description: User profile search results retrieved successfully
           content:
             application/json:
               schema:
@@ -75,25 +78,25 @@ paths:
         - oauth2: [ ocx-up:all, ocx-up:read ]
       tags:
         - userProfileAdmin
-      description: Return user profile by id
+      description: Return a user profile by its id
       operationId: getUserProfileData
       parameters:
         - $ref: '#/components/parameters/id'
       responses:
         "200":
-          description: OK
+          description: User profile retrieved successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserProfile'
         "404":
-          description: Not found
+          description: User profile not found
     put:
       security:
         - oauth2: [ ocx-up:all, ocx-up:write ]
       tags:
         - userProfileAdmin
-      description: Update user profile by ID
+      description: Update a user profile by its id
       operationId: updateUserProfileData
       parameters:
         - $ref: '#/components/parameters/id'
@@ -105,7 +108,7 @@ paths:
               $ref: '#/components/schemas/UpdateUserPersonRequest'
       responses:
         "200":
-          description: User profile updated
+          description: User profile updated successfully
           content:
             application/json:
               schema:
@@ -123,15 +126,15 @@ paths:
         - oauth2: [ ocx-up:all, ocx-up:delete ]
       tags:
         - userProfileAdmin
-      description: Delete user profile by ID
+      description: Delete a user profile by its id
       operationId: deleteUserProfileData
       parameters:
         - $ref: '#/components/parameters/id'
       responses:
         "204":
-          description: No Content
+          description: User profile deleted successfully
         "400":
-          description: Internal Server Error
+          description: Bad request
           content:
             application/json:
               schema:
@@ -142,11 +145,11 @@ paths:
         - oauth2: [ ocx-up:all, ocx-up:read ]
       tags:
         - userProfile
-      description: Load user profile for current user
+      description: Load the user profile for the requesting user
       operationId: getMyUserProfile
       responses:
         "200":
-          description: User profile of current user
+          description: User profile retrieved successfully
           content:
             application/json:
               schema:
@@ -162,13 +165,13 @@ paths:
         - oauth2: [ ocx-up:all, ocx-up:delete ]
       tags:
         - userProfile
-      description: Delete user profile for current user
+      description: Delete the user profile for the requesting user
       operationId: deleteMyUserProfile
       responses:
         "204":
-          description: OK
+          description: User profile deleted successfully
         "400":
-          description: Internal Server Error
+          description: Bad request
           content:
             application/json:
               schema:
@@ -179,11 +182,11 @@ paths:
         - oauth2: [ ocx-up:all, ocx-up:read ]
       tags:
         - userProfile
-      description: Load user preferences for current user
+      description: Load user preferences for the requesting user
       operationId: getUserProfilePreference
       responses:
         "200":
-          description: User profile of current user
+          description: User preferences retrieved successfully
           content:
             application/json:
               schema:
@@ -199,7 +202,7 @@ paths:
         - oauth2: [ ocx-up:all, ocx-up:write ]
       tags:
         - userProfile
-      description: Create user preference
+      description: Create user preference for the requesting user
       operationId: createUserProfilePreference
       requestBody:
         required: true
@@ -209,7 +212,7 @@ paths:
               $ref: '#/components/schemas/CreateUserPreference'
       responses:
         "201":
-          description: OK
+          description: User preference created successfully
           headers:
             Location:
               required: true
@@ -232,7 +235,7 @@ paths:
         - oauth2: [ ocx-up:all, ocx-up:write ]
       tags:
         - userProfile
-      description: Update preference value
+      description: Update a user preference value by its id for the requesting user
       operationId: updateUserProfilePreference
       parameters:
         - $ref: '#/components/parameters/id'
@@ -244,7 +247,7 @@ paths:
               type: string
       responses:
         "200":
-          description: OK
+          description: User preference updated successfully
           content:
             application/json:
               schema:
@@ -262,15 +265,15 @@ paths:
         - oauth2: [ ocx-up:all, ocx-up:delete ]
       tags:
         - userProfile
-      description: Delete preference by id for current user
+      description: Delete a preference by its id for the requesting user
       operationId: deleteUserProfilePreference
       parameters:
         - $ref: '#/components/parameters/id'
       responses:
         "204":
-          description: OK
+          description: User preference deleted successfully
         "400":
-          description: Internal Server Error
+          description: Bad request
           content:
             application/json:
               schema:
@@ -281,11 +284,11 @@ paths:
         - oauth2: [ ocx-up:all, ocx-up:read ]
       tags:
         - userProfile
-      description: Load user person for current user
+      description: Load user person for the requesting user
       operationId: getUserProfilePerson
       responses:
         "200":
-          description: User person of current user
+          description: User person retrieved successfully
           content:
             application/json:
               schema:
@@ -301,7 +304,7 @@ paths:
         - oauth2: [ ocx-up:all, ocx-up:write ]
       tags:
         - userProfile
-      description: Update person information
+      description: Update user information of the requesting user
       operationId: updateUserProfilePerson
       requestBody:
         required: true
@@ -311,7 +314,7 @@ paths:
               $ref: '#/components/schemas/UpdateUserPersonRequest'
       responses:
         "200":
-          description: OK
+          description: User information updated successfully
           content:
             application/json:
               schema:
@@ -328,11 +331,11 @@ paths:
         - oauth2: [ ocx-up:all, ocx-up:read ]
       tags:
         - userProfile
-      description: Load user profile account settings for current user
+      description: Load user profile account settings of the requesting user
       operationId: getUserProfileSettings
       responses:
         "200":
-          description: User profile account settings of current user
+          description: User profile account settings retrieved successfully
           content:
             application/json:
               schema:
@@ -348,7 +351,7 @@ paths:
         - oauth2: [ ocx-up:all, ocx-up:write ]
       tags:
         - userProfile
-      description: Update user account settings
+      description: Update user account settings of the requesting user
       operationId: updateUserProfileSettings
       requestBody:
         required: true
@@ -358,7 +361,7 @@ paths:
               $ref: '#/components/schemas/UpdateUserSettings'
       responses:
         "200":
-          description: OK
+          description: User profile account settings updated successfully
           content:
             application/json:
               schema:
