@@ -60,5 +60,4 @@ public class UserProfile extends TraceableEntity {
 
     @Column(name = "SETTINGS", columnDefinition = "varchar(5000)")
     private String settings;
-
 }

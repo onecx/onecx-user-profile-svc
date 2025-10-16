@@ -54,9 +54,6 @@ public interface UserProfileMapper {
             settings.put("colorScheme", ColorScheme.AUTO.toString());
             dto.setSettings(settings);
         }
-
-        dto.getPerson().setModificationCount(entity.getModificationCount());
-        dto.getAccountSettings().setModificationCount(entity.getModificationCount());
         return dto;
     }
 
@@ -68,11 +65,9 @@ public interface UserProfileMapper {
         if (dto == null) {
             dto = new UserPersonDTO();
         }
-        dto.setModificationCount(entity.getModificationCount());
         return dto;
     }
 
-    @Mapping(target = "modificationCount", ignore = true)
     UserPersonDTO map(UserPerson entity);
 
     UserPersonAddressDTO map(UserPersonAddress entity);
@@ -84,11 +79,9 @@ public interface UserProfileMapper {
         if (dto == null) {
             dto = new UserProfileAccountSettingsDTO();
         }
-        dto.setModificationCount(entity.getModificationCount());
         return dto;
     }
 
-    @Mapping(target = "modificationCount", ignore = true)
     UserProfileAccountSettingsDTO map(UserProfileAccountSettings entity);
 
     default void updateUserPerson(UserProfile model, UpdateUserPersonRequestDTO dto) {
@@ -108,13 +101,6 @@ public interface UserProfileMapper {
     @IterableMapping(qualifiedByName = "mapProfile")
     List<UserProfileDTO> mapStream(Stream<UserProfile> stream);
 
-    default void updateUserSettings(UserProfile model, UpdateUserSettingsDTO dto) {
-        model.setModificationCount(dto.getModificationCount());
-        update(model.getAccountSettings(), dto);
-    }
-
-    void update(@MappingTarget UserProfileAccountSettings model, UpdateUserSettingsDTO dto);
-
     @Named("s2o")
     default Object s2o(String value) {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -125,7 +111,53 @@ public interface UserProfileMapper {
         try {
             return objectMapper.readValue(value, Object.class);
         } catch (Exception e) {
-            throw new MapperException("Error reading parameter value", e);
+            throw new MapperException("Error reading settings values", e);
+        }
+    }
+
+    @Named("o2s")
+    default String o2s(Object value) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        if (value == null) {
+            return null;
+        }
+        try {
+            return objectMapper.writeValueAsString(value);
+        } catch (Exception e) {
+            throw new MapperException("Error reading settings values", e);
+        }
+    }
+
+    @Mapping(source = "accountSettings", target = "settings", qualifiedByName = "o2s")
+    UserProfile mapSettingsToString(UserProfile userProfile);
+
+    @Mapping(target = "userId", ignore = true)
+    @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "persisted", ignore = true)
+    @Mapping(target = "modificationUser", ignore = true)
+    @Mapping(target = "modificationDate", ignore = true)
+    @Mapping(target = "issuer", ignore = true)
+    @Mapping(target = "identityProviderId", ignore = true)
+    @Mapping(target = "identityProvider", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "creationUser", ignore = true)
+    @Mapping(target = "creationDate", ignore = true)
+    @Mapping(target = "controlTraceabilityManual", ignore = true)
+    @Mapping(target = "settings", source = "settings", qualifiedByName = "o2s")
+    @Mapping(target = "accountSettings", source = "settings", qualifiedByName = "mirrorSettingsToLegacySettings")
+    void updateProfile(@MappingTarget UserProfile userProfile, UpdateUserProfileRequestDTO updateUserProfileRequestDTO);
+
+    @Named("mirrorSettingsToLegacySettings")
+    default UserProfileAccountSettings mirrorSettings(Object settings) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        if (settings == null) {
+            return null;
+        }
+        try {
+            String json = objectMapper.writeValueAsString(settings);
+            return objectMapper.readValue(json, UserProfileAccountSettings.class);
+        } catch (Exception e) {
+            throw new MapperException("Error reading settings values", e);
         }
     }
 

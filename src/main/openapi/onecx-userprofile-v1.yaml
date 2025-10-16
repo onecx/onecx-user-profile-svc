@@ -37,8 +37,9 @@ paths:
         - oauth2: [ ocx-up:read ]
       tags:
         - userProfileV1
-      description: Load user preferences for the requesting user
+      description: Load user preferences for the requesting user. Deprecated! Preferences will be removed.
       operationId: getUserPreference
+      deprecated: true
       responses:
         "200":
           description: User profile preferences retrieved successfully
@@ -58,8 +59,9 @@ paths:
         - oauth2: [ ocx-up:read ]
       tags:
         - userProfileV1
-      description: Get user person for the requesting user
+      description: Get user person for the requesting user. Deprecated! Please retrieve user person by fetching the complete user-profile.
       operationId: getUserPerson
+      deprecated: true
       responses:
         "200":
           description: User person retrieved successfully
@@ -79,8 +81,9 @@ paths:
         - oauth2: [ ocx-up:read ]
       tags:
         - userProfileV1
-      description: Load user profile account settings for the requesting user
+      description: Load user profile account settings for the requesting user. Deprecated! Please retrieve user account settings by fetching the complete user-profile.
       operationId: getUserSettings
+      deprecated: true
       responses:
         "200":
           description: User profile account settings retrieved successfully
