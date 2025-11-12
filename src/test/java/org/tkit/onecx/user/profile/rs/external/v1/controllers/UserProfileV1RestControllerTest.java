@@ -118,6 +118,24 @@ class UserProfileV1RestControllerTest extends AbstractTest {
         assertThat(userPofile.getPerson().getDisplayName()).isEqualTo("User Three");
         assertThat(userPofile.getAccountSettings().getMenuMode()).isEqualTo(MenuModeDTO.SLIM);
         assertThat(userPofile.getIssuer()).isNotNull();
+
+        // load second user profile
+        userPofile = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .header(APM_HEADER_PARAM, createToken("user4", "org3"))
+                .get()
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(UserProfileDTO.class);
+
+        assertThat(userPofile).isNotNull();
+        assertThat(userPofile.getOrganization()).isEqualTo("Company3");
+        assertThat(userPofile.getUserId()).isEqualTo("user4");
+        assertThat(userPofile.getPerson().getDisplayName()).isEqualTo("User Four");
+        assertThat(userPofile.getAccountSettings().getMenuMode()).isEqualTo(MenuModeDTO.OVERLAY);
+        assertThat(userPofile.getIssuer()).isNotNull();
     }
 
     private static Stream<Arguments> claimTimezone() {

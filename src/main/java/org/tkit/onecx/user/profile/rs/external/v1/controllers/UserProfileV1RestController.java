@@ -71,9 +71,14 @@ public class UserProfileV1RestController implements UserProfileV1Api {
             userProfile = userProfileDAO.create(createUserProfile);
         }
         if (userProfile.getIssuer() == null) {
-            System.out.println("MYISSUER: " + ApplicationContext.get().getPrincipalToken().getIssuer());
             userProfile.setIssuer(ApplicationContext.get().getPrincipalToken().getIssuer());
             userProfile = userProfileDAO.update(userProfile);
+        }
+
+        //temporary mirroring of account settings - sunset strategy of deprecating old account settings
+        if (userProfile.getSettings() == null) {
+            userProfile = userProfileService.mirrorSettings(userProfile);
+            userProfileDAO.update(userProfile);
         }
 
         return Response.ok(userProfileV1Mapper.map(userProfile)).build();
