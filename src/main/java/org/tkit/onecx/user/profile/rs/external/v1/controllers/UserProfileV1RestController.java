@@ -71,7 +71,6 @@ public class UserProfileV1RestController implements UserProfileV1Api {
             userProfile = userProfileDAO.create(createUserProfile);
         }
         if (userProfile.getIssuer() == null) {
-            System.out.println("MYISSUER: " + ApplicationContext.get().getPrincipalToken().getIssuer());
             userProfile.setIssuer(ApplicationContext.get().getPrincipalToken().getIssuer());
             userProfile = userProfileDAO.update(userProfile);
         }
