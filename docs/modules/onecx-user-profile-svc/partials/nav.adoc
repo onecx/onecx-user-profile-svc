@@ -1,0 +1,3 @@
+** xref:documentation:onecx-user-profile-svc:index.adoc[User Profile Service]
+*** External API(s)
+**** xref:documentation:onecx-user-profile-svc:openapi/onecx-userprofile-v1-openapi.adoc[User Profile Management V1]
