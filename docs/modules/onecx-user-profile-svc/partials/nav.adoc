@@ -1,0 +1,2 @@
+** xref:documentation:onecx-user-profile-svc:index.adoc[Backend Service]
+*** xref:documentation:onecx-user-profile-svc:openapi/onecx-userprofile-v1.adoc[OpenAPI v1]
