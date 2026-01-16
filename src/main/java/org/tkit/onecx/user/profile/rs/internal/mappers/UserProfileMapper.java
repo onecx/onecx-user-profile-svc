@@ -84,13 +84,6 @@ public interface UserProfileMapper {
 
     UserProfileAccountSettingsDTO map(UserProfileAccountSettings entity);
 
-    default void updateUserPerson(UserProfile model, UpdateUserPersonRequestDTO dto) {
-        model.setModificationCount(dto.getModificationCount());
-        update(model.getPerson(), dto);
-    }
-
-    void update(@MappingTarget UserPerson model, UpdateUserPersonRequestDTO dto);
-
     UserPersonCriteria map(UserPersonCriteriaDTO dto);
 
     @Mapping(target = "removeStreamItem", ignore = true)

@@ -7,7 +7,6 @@ import jakarta.inject.Inject;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.tkit.onecx.user.profile.domain.config.UserProfileConfig;
-import org.tkit.onecx.user.profile.domain.daos.UserProfileDAO;
 import org.tkit.onecx.user.profile.domain.models.UserPerson;
 import org.tkit.onecx.user.profile.domain.models.UserProfile;
 import org.tkit.onecx.user.profile.domain.models.UserProfileAccountSettings;
@@ -26,9 +25,6 @@ public class UserProfileService {
 
     @Inject
     UserProfileMapper userProfileMapper;
-
-    @Inject
-    UserProfileDAO userProfileDAO;
 
     public UserProfile createProfileFromToken() {
         var userId = ApplicationContext.get().getPrincipal();

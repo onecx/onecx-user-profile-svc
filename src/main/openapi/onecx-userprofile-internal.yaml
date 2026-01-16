@@ -105,7 +105,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateUserPersonRequest'
+              $ref: '#/components/schemas/UpdateUserProfileRequest'
       responses:
         "200":
           description: User profile updated successfully
@@ -283,6 +283,8 @@ components:
           type: string
     UpdateUserProfileRequest:
       type: object
+      required:
+        - modificationCount
       properties:
         modificationCount:
           format: int32
@@ -293,24 +295,6 @@ components:
           $ref: '#/components/schemas/UserPerson'
         settings:
           type: object
-    UpdateUserPersonRequest:
-      type: object
-      properties:
-        modificationCount:
-          format: int32
-          type: integer
-        firstName:
-          type: string
-        lastName:
-          type: string
-        displayName:
-          type: string
-        email:
-          type: string
-        address:
-          $ref: '#/components/schemas/UserPersonAddress'
-        phone:
-          $ref: '#/components/schemas/UserPersonPhone'
     UserProfile:
       type: object
       properties:

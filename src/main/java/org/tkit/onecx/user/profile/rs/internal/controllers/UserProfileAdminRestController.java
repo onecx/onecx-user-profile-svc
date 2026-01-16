@@ -22,10 +22,7 @@ import org.tkit.quarkus.jpa.exceptions.ConstraintException;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.org.tkit.onecx.user.profile.rs.internal.UserProfileAdminApi;
-import gen.org.tkit.onecx.user.profile.rs.internal.model.CreateUserProfileRequestDTO;
-import gen.org.tkit.onecx.user.profile.rs.internal.model.ProblemDetailResponseDTO;
-import gen.org.tkit.onecx.user.profile.rs.internal.model.UpdateUserPersonRequestDTO;
-import gen.org.tkit.onecx.user.profile.rs.internal.model.UserPersonCriteriaDTO;
+import gen.org.tkit.onecx.user.profile.rs.internal.model.*;
 
 @LogService
 @ApplicationScoped
@@ -91,16 +88,13 @@ public class UserProfileAdminRestController implements UserProfileAdminApi {
     }
 
     @Override
-    public Response updateUserProfileData(String id, UpdateUserPersonRequestDTO updateUserPersonRequestDTO) {
+    public Response updateUserProfileData(String id, UpdateUserProfileRequestDTO updateUserProfileRequestDTO) {
         var userProfile = userProfileDAO.getUserProfileById(id, ENTITY_GRAPH_LOAD_ALL);
-
         if (userProfile == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-
-        userProfileMapper.updateUserPerson(userProfile, updateUserPersonRequestDTO);
-        userProfile = userProfileDAO.update(userProfile);
-
+        userProfileMapper.updateProfile(userProfile, updateUserProfileRequestDTO);
+        userProfileDAO.update(userProfile);
         return Response.ok(userProfileMapper.mapProfile(userProfile)).build();
     }
 

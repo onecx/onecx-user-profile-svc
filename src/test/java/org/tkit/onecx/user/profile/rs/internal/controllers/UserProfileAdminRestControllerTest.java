@@ -253,7 +253,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
 
         assertThat(error).isNotNull();
         assertThat(error.getErrorCode()).isEqualTo(InternalExceptionMapper.TechnicalErrorKeys.CONSTRAINT_VIOLATIONS.name());
-        assertThat(error.getDetail()).isEqualTo("updateUserProfileData.updateUserPersonRequestDTO: must not be null");
+        assertThat(error.getDetail()).isEqualTo("updateUserProfileData.updateUserProfileRequestDTO: must not be null");
 
         var userProfileDTO = given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
@@ -264,15 +264,19 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
                 .statusCode(OK.getStatusCode())
                 .extract().as(UserProfileDTO.class);
 
-        UpdateUserPersonRequestDTO requestDTO = new UpdateUserPersonRequestDTO();
-        requestDTO.setEmail(userProfileDTO.getPerson().getEmail());
-        requestDTO.setDisplayName(userProfileDTO.getPerson().getDisplayName());
-        requestDTO.setFirstName(userProfileDTO.getPerson().getFirstName());
-        requestDTO.setLastName(userProfileDTO.getPerson().getLastName());
-        requestDTO.setAddress(userProfileDTO.getPerson().getAddress());
-        requestDTO.setPhone(userProfileDTO.getPerson().getPhone());
-        requestDTO.getPhone().setNumber("123456789");
-        requestDTO.getPhone().setType(PhoneTypeDTO.LANDLINE);
+        UpdateUserProfileRequestDTO requestDTO = new UpdateUserProfileRequestDTO();
+        UserPersonDTO userPersonDTO = new UserPersonDTO();
+        userPersonDTO.setDisplayName("xx");
+        userPersonDTO.setEmail(userProfileDTO.getPerson().getEmail());
+        userPersonDTO.setDisplayName(userProfileDTO.getPerson().getDisplayName());
+        userPersonDTO.setFirstName(userProfileDTO.getPerson().getFirstName());
+        userPersonDTO.setLastName(userProfileDTO.getPerson().getLastName());
+        userPersonDTO.setAddress(userProfileDTO.getPerson().getAddress());
+        userPersonDTO.setPhone(userProfileDTO.getPerson().getPhone());
+        userPersonDTO.getPhone().setNumber("123456789");
+        userPersonDTO.getPhone().setType(PhoneTypeDTO.LANDLINE);
+        requestDTO.setPerson(userPersonDTO);
+
         requestDTO.setModificationCount(userProfileDTO.getModificationCount());
 
         // update not existing profile
@@ -323,7 +327,7 @@ class UserProfileAdminRestControllerTest extends AbstractTest {
                 .statusCode(OK.getStatusCode())
                 .extract().as(UserProfileDTO.class);
 
-        assertThat(userProfileDTO.getPerson().getPhone().getType()).isEqualTo(requestDTO.getPhone().getType());
-        assertThat(userProfileDTO.getPerson().getPhone().getNumber()).isEqualTo(requestDTO.getPhone().getNumber());
+        assertThat(userProfileDTO.getPerson().getPhone().getType()).isEqualTo(requestDTO.getPerson().getPhone().getType());
+        assertThat(userProfileDTO.getPerson().getPhone().getNumber()).isEqualTo(requestDTO.getPerson().getPhone().getNumber());
     }
 }
