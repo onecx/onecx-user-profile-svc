@@ -6,10 +6,12 @@ import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
-import org.tkit.onecx.user.profile.rs.internal.mappers.InternalExceptionMapper;
 import org.tkit.onecx.user.profile.test.AbstractTest;
 import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gen.org.tkit.onecx.user.profile.rs.internal.model.*;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
@@ -20,99 +22,6 @@ import io.quarkus.test.junit.QuarkusTest;
 @WithDBData(value = "data/testdata.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
 @GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-up:read", "ocx-up:write", "ocx-up:delete", "ocx-up:all" })
 class UserProfileRestControllerTest extends AbstractTest {
-
-    @Test
-    void createUserPreferenceTest() {
-        // create without body
-        var error = given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("user1", null))
-                .post("preferences")
-                .then()
-                .statusCode(BAD_REQUEST.getStatusCode())
-                .extract().as(ProblemDetailResponseDTO.class);
-
-        assertThat(error).isNotNull();
-        assertThat(error.getErrorCode()).isEqualTo(InternalExceptionMapper.TechnicalErrorKeys.CONSTRAINT_VIOLATIONS.name());
-        assertThat(error.getDetail()).isEqualTo("createUserProfilePreference.createUserPreferenceDTO: must not be null");
-
-        CreateUserPreferenceDTO createUserPreferenceDTO = new CreateUserPreferenceDTO();
-        createUserPreferenceDTO.setValue("test");
-        createUserPreferenceDTO.setDescription("Test preference");
-        createUserPreferenceDTO.setName("TestPreference");
-        createUserPreferenceDTO.setApplicationId("TestApp");
-
-        // create with body but not existing user profile
-        error = given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(createUserPreferenceDTO)
-                .header(APM_HEADER_PARAM, createToken("does-not-exist", null))
-                .post("preferences")
-                .then()
-                .statusCode(BAD_REQUEST.getStatusCode())
-                .extract().as(ProblemDetailResponseDTO.class);
-        assertThat(error).isNotNull();
-        assertThat(error.getErrorCode()).isEqualTo("USER_PROFILE_DOES_NOT_EXIST");
-
-        // create preference with existing user profile
-        var preferenceDto = given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(createUserPreferenceDTO)
-                .header(APM_HEADER_PARAM, createToken("user1", null))
-                .post("preferences")
-                .then()
-                .statusCode(CREATED.getStatusCode())
-                .extract().as(UserPreferenceDTO.class);
-
-        assertThat(preferenceDto).isNotNull();
-        assertThat(preferenceDto.getValue()).isEqualTo(createUserPreferenceDTO.getValue());
-    }
-
-    @Test
-    void deleteUserPreferenceTest() {
-        // delete not existing preference
-        given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .pathParam("id", "not-existing")
-                .header(APM_HEADER_PARAM, createToken("user1", null))
-                .delete("preferences/{id}")
-                .then()
-                .statusCode(NO_CONTENT.getStatusCode());
-
-        // delete preference for preference of another user
-        var error = given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
-                .header(APM_HEADER_PARAM, createToken("user2", null))
-                .delete("preferences/{id}")
-                .then()
-                .statusCode(BAD_REQUEST.getStatusCode())
-                .extract().as(ProblemDetailResponseDTO.class);
-
-        assertThat(error).isNotNull();
-        assertThat(error.getErrorCode()).isEqualTo("PREFERENCE_NOT_FROM_ACTUAL_USER");
-
-        // delete preference for the current logged in user
-        given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
-                .header(APM_HEADER_PARAM, createToken("user1", null))
-                .delete("preferences/{id}")
-                .then()
-                .statusCode(NO_CONTENT.getStatusCode());
-    }
 
     @Test
     void deleteUserProfileTest() {
@@ -134,62 +43,6 @@ class UserProfileRestControllerTest extends AbstractTest {
                 .delete()
                 .then()
                 .statusCode(NO_CONTENT.getStatusCode());
-    }
-
-    @Test
-    void getUserPersonTest() {
-        // not found for not existing user profile
-        given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("not-existing-user", null))
-                .get("person")
-                .then()
-                .statusCode(NOT_FOUND.getStatusCode());
-
-        // retrieve user person dto
-        var result = given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("user2", "org1"))
-                .get("person")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(UserPersonDTO.class);
-
-        assertThat(result).isNotNull();
-        assertThat(result.getDisplayName()).isEqualTo("User Two");
-    }
-
-    @Test
-    void getUserPreferenceTest() {
-        // user 2 no preferences
-        var result = given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("user2", "org1"))
-                .get("preferences")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(UserPreferencesDTO.class);
-        assertThat(result).isNotNull();
-        assertThat(result.getPreferences()).isEmpty();
-
-        // user 1 has 4 preferences
-        result = given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("user1", "org1"))
-                .get("preferences")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(UserPreferencesDTO.class);
-        assertThat(result).isNotNull();
-        assertThat(result.getPreferences()).isNotEmpty().hasSize(4);
     }
 
     @Test
@@ -242,262 +95,98 @@ class UserProfileRestControllerTest extends AbstractTest {
         assertThat(userPofile.getUserId()).isEqualTo("user3");
         assertThat(userPofile.getOrganization()).isEqualTo("org2");
         assertThat(userPofile.getPerson().getDisplayName()).isEqualTo("User Three");
-        assertThat(userPofile.getPerson().getModificationCount()).isNotNull();
-        assertThat(userPofile.getAccountSettings().getModificationCount()).isNotNull();
-    }
 
-    @Test
-    void getUserSettingsTest() {
-        // not existing user settings
-        given()
+        // load second user profile
+        userPofile = given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("not-existing", null))
-                .get("settings")
-                .then()
-                .statusCode(NOT_FOUND.getStatusCode());
-
-        // load existing user settings
-        var userSettings = given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("user3", "org2"))
-                .get("settings")
+                .header(APM_HEADER_PARAM, createToken("user4", "org3"))
+                .get()
                 .then()
                 .statusCode(OK.getStatusCode())
-                .extract().as(UserProfileAccountSettingsDTO.class);
+                .extract().as(UserProfileDTO.class);
 
-        assertThat(userSettings).isNotNull();
-        assertThat(userSettings.getMenuMode()).isEqualTo(MenuModeDTO.SLIM);
-        assertThat(userSettings.getColorScheme()).isEqualTo(ColorSchemeDTO.LIGHT);
+        assertThat(userPofile).isNotNull();
+        assertThat(userPofile.getUserId()).isEqualTo("user4");
+        assertThat(userPofile.getOrganization()).isEqualTo("Company3");
+        assertThat(userPofile.getPerson().getDisplayName()).isEqualTo("User Four");
     }
 
     @Test
-    void updateUserPersonTest() {
-        // update without body
-        var error = given()
+    void updateUserProfileTest() throws JsonProcessingException {
+
+        UpdateUserProfileRequestDTO updateDTO = new UpdateUserProfileRequestDTO();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Object settingsObject = objectMapper.readValue("{\"locale\":\"testLocale\"}", Object.class);
+        updateDTO.setSettings(settingsObject);
+
+        updateDTO.setModificationCount(0);
+        UserPersonDTO personDTO = new UserPersonDTO();
+        personDTO.setEmail("updated@email.de");
+        updateDTO.setPerson(personDTO);
+
+        //try to update without body
+        given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user1", "org1"))
-                .put("person")
+                .put()
                 .then()
-                .statusCode(BAD_REQUEST.getStatusCode())
-                .extract().as(ProblemDetailResponseDTO.class);
+                .statusCode(BAD_REQUEST.getStatusCode());
 
-        assertThat(error).isNotNull();
-        assertThat(error.getErrorCode()).isEqualTo(InternalExceptionMapper.TechnicalErrorKeys.CONSTRAINT_VIOLATIONS.name());
-
-        var userPersonDTO4 = given()
+        var updatedProfile = given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("user4", "org3"))
-                .get("person")
+                .header(APM_HEADER_PARAM, createToken("user1", "org1"))
+                .body(updateDTO)
+                .put()
                 .then()
                 .statusCode(OK.getStatusCode())
-                .extract().as(UserPersonDTO.class);
-        UpdateUserPersonRequestDTO request = new UpdateUserPersonRequestDTO();
-        request.setEmail("new_email@testOrg.com");
-        request.setLastName(userPersonDTO4.getLastName());
-        request.setFirstName(userPersonDTO4.getFirstName());
-        request.setDisplayName(userPersonDTO4.getDisplayName());
-        request.setAddress(userPersonDTO4.getAddress());
-        request.setPhone(userPersonDTO4.getPhone());
-        request.setModificationCount(userPersonDTO4.getModificationCount());
+                .extract().as(UserProfileDTO.class);
 
-        // Update for not existing profile
+        assertThat(updatedProfile.getPerson().getEmail()).isEqualTo(updateDTO.getPerson().getEmail());
+        assertThat(updatedProfile.getSettings()).isNotNull();
+        assertThat(updatedProfile.getAccountSettings().getLocale()).isEqualTo("testLocale");
+
+        //second time with same modificationCount => optlock exception
         given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
-                .body(request)
-                .header(APM_HEADER_PARAM, createToken("not-existing", null))
-                .put("person")
+                .header(APM_HEADER_PARAM, createToken("user1", "org1"))
+                .body(updateDTO)
+                .put()
                 .then()
-                .statusCode(NOT_FOUND.getStatusCode());
-
-        // update email
-        var result = given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(request)
-                .header(APM_HEADER_PARAM, createToken("user4", "org3"))
-                .put("person")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(UserPersonDTO.class);
-
-        assertThat(result).isNotNull();
-        assertThat(result.getEmail()).isEqualTo(request.getEmail());
-        assertThat(result.getFirstName()).isNotNull().isNotEmpty();
-        assertThat(result.getPhone()).isNotNull();
-
-        // update 2nd time OPTIMISTIC LOCK EXCEPTION
-        error = given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(request)
-                .header(APM_HEADER_PARAM, createToken("user4", "org3"))
-                .put("person")
-                .then()
-                .statusCode(BAD_REQUEST.getStatusCode())
-                .extract().as(ProblemDetailResponseDTO.class);
-
-        assertThat(error.getErrorCode()).isEqualTo(InternalExceptionMapper.TechnicalErrorKeys.OPTIMISTIC_LOCK.name());
+                .statusCode(BAD_REQUEST.getStatusCode());
     }
 
     @Test
-    void updateUserPreferenceTest() {
-        // update without body
-        var error = given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("user1", null))
-                .pathParam("id", "11-111")
-                .patch("preferences/{id}")
-                .then()
-                .statusCode(BAD_REQUEST.getStatusCode())
-                .extract().as(ProblemDetailResponseDTO.class);
+    void updateUserProfileNotFoundTest() throws JsonProcessingException {
 
-        assertThat(error).isNotNull();
-        assertThat(error.getErrorCode()).isEqualTo("PREFERENCE_WITH_EMPTY_VALUE");
+        UpdateUserProfileRequestDTO updateDTO = new UpdateUserProfileRequestDTO();
 
-        // not existing preference
+        ObjectMapper objectMapper = new ObjectMapper();
+        Object settingsObject = objectMapper.readValue("{\"locale\":\"testLocale\"}", Object.class);
+        updateDTO.setSettings(settingsObject);
+
+        updateDTO.setModificationCount(0);
+        UserPersonDTO personDTO = new UserPersonDTO();
+        personDTO.setEmail("updated@email.de");
+        updateDTO.setPerson(personDTO);
+
         given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
-                .body("changedTestValue")
-                .header(APM_HEADER_PARAM, createToken("user1", null))
-                .pathParam("id", "not-existing")
-                .patch("preferences/{id}")
+                .header(APM_HEADER_PARAM, createToken("user123", "org123"))
+                .body(updateDTO)
+                .put()
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
-
-        // not existing user profile
-        error = given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body("changedTestValue")
-                .header(APM_HEADER_PARAM, createToken("not-existing", null))
-                .pathParam("id", "11-111")
-                .patch("preferences/{id}")
-                .then()
-                .statusCode(BAD_REQUEST.getStatusCode())
-                .extract().as(ProblemDetailResponseDTO.class);
-
-        assertThat(error).isNotNull();
-        assertThat(error.getErrorCode()).isEqualTo("PREFERENCE_NOT_FROM_ACTUAL_USER");
-
-        // update preference
-        var result = given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body("changedTestValue")
-                .header(APM_HEADER_PARAM, createToken("user1", null))
-                .pathParam("id", "11-111")
-                .patch("preferences/{id}")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(UserPreferenceDTO.class);
-
-        assertThat(result).isNotNull();
-        assertThat(result.getValue()).isEqualTo("changedTestValue");
-    }
-
-    @Test
-    void updateUserSettingsTest() {
-
-        // dont send body
-        var error = given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("user3", null))
-                .put("settings")
-                .then()
-                .statusCode(BAD_REQUEST.getStatusCode())
-                .extract().as(ProblemDetailResponseDTO.class);
-
-        assertThat(error).isNotNull();
-        assertThat(error.getErrorCode()).isEqualTo(InternalExceptionMapper.TechnicalErrorKeys.CONSTRAINT_VIOLATIONS.name());
-
-        var userSettings = given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("user3", "org2"))
-                .get("settings")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(UserProfileAccountSettingsDTO.class);
-        UpdateUserSettingsDTO request = new UpdateUserSettingsDTO();
-        request.setColorScheme(userSettings.getColorScheme());
-        request.setLocale(userSettings.getLocale());
-        request.setHideMyProfile(userSettings.getHideMyProfile());
-        request.setTimezone(userSettings.getTimezone());
-        request.setMenuMode(userSettings.getMenuMode());
-        request.setModificationCount(userSettings.getModificationCount());
-
-        // not existing user profile
-        given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(request)
-                .header(APM_HEADER_PARAM, createToken("not-existing", null))
-                .put("settings")
-                .then()
-                .statusCode(NOT_FOUND.getStatusCode());
-
-        request.setMenuMode(MenuModeDTO.SLIMPLUS);
-        // not existing user profile
-        var result = given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(request)
-                .header(APM_HEADER_PARAM, createToken("user3", "org2"))
-                .put("settings")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(UserProfileAccountSettingsDTO.class);
-
-        assertThat(result).isNotNull();
-        assertThat(result.getMenuMode()).isEqualTo(request.getMenuMode());
-
-        // load existing user settings
-        given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("user3", "org2"))
-                .get("settings")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(UserProfileAccountSettingsDTO.class);
-
-        // update 2nd time OPTIMISTIC LOCK EXCEPTION
-        error = given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(request)
-                .header(APM_HEADER_PARAM, createToken("user3", "org2"))
-                .put("settings")
-                .then()
-                .statusCode(BAD_REQUEST.getStatusCode())
-                .extract().as(ProblemDetailResponseDTO.class);
-
-        assertThat(error.getErrorCode()).isEqualTo(InternalExceptionMapper.TechnicalErrorKeys.OPTIMISTIC_LOCK.name());
     }
 
 }

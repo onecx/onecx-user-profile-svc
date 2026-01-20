@@ -11,6 +11,7 @@ import org.tkit.onecx.user.profile.domain.models.UserPerson;
 import org.tkit.onecx.user.profile.domain.models.UserProfile;
 import org.tkit.onecx.user.profile.domain.models.UserProfileAccountSettings;
 import org.tkit.onecx.user.profile.domain.models.enums.MenuMode;
+import org.tkit.onecx.user.profile.rs.internal.mappers.UserProfileMapper;
 import org.tkit.quarkus.context.ApplicationContext;
 
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,9 @@ public class UserProfileService {
 
     @Inject
     UserProfileConfig config;
+
+    @Inject
+    UserProfileMapper userProfileMapper;
 
     public UserProfile createProfileFromToken() {
         var userId = ApplicationContext.get().getPrincipal();
@@ -43,6 +47,8 @@ public class UserProfileService {
                 .setLocale(getClaimOrConfig(token, config.claims().locale(), config.settings().locale()));
         userProfile.getAccountSettings()
                 .setMenuMode(getClaimOrConfigMenuMode(token, config.claims().menuMode(), config.settings().menuMode()));
+
+        userProfile = mirrorSettings(userProfile);
         return userProfile;
     }
 
@@ -78,4 +84,12 @@ public class UserProfileService {
         }
     }
 
+    /**
+     * Temporary method to mirror user account settings to new settings json object
+     * Sunset strategy to deprecate userAccountSettings
+     */
+    public UserProfile mirrorSettings(UserProfile userProfile) {
+        userProfile = userProfileMapper.mapSettingsToString(userProfile);
+        return userProfile;
+    }
 }
