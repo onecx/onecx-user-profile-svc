@@ -97,6 +97,69 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
+  /v1/userProfile/search:
+    get:
+      security:
+        - oauth2: [ ocx-up:read ]
+      tags:
+        - userProfileV1
+      description: Fetch user profiles matching given criteria
+      operationId: searchProfileAbstractsByCriteria
+      parameters:
+        - name: userIds
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          description: Filter by user IDs
+          style: form
+          explode: true
+        - name: emailAddresses
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          description: Filter by email addresses
+          style: form
+          explode: true
+        - name: displayNames
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          description: Filter by user names
+          style: form
+          explode: true
+        - name: pageNumber
+          in: query
+          schema:
+            type: integer
+            format: int32
+            default: 0
+          description: Page number
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            format: int32
+            default: 10
+          description: Page size
+      responses:
+        "200":
+          description: User profile account settings retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfilePageResult'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
 components:
   securitySchemes:
     oauth2:
@@ -217,6 +280,35 @@ components:
           $ref: '#/components/schemas/MenuMode'
         colorScheme:
           $ref: '#/components/schemas/ColorScheme'
+    UserProfileAbstract:
+      type: object
+      properties:
+        userId:
+          type: string
+        displayName:
+          type: string
+        emailAddress:
+          type: string
+    UserProfilePageResult:
+      type: object
+      properties:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserProfileAbstract'
     MenuMode:
       enum:
         - STATIC
