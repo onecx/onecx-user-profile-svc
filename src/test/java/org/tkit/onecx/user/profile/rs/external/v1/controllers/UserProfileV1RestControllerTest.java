@@ -34,7 +34,7 @@ class UserProfileV1RestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("not-existing-user", null))
-                .get("person")
+                .get("/me/person")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
 
@@ -44,7 +44,7 @@ class UserProfileV1RestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user2", "org1"))
-                .get("person")
+                .get("/me/person")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(UserPersonDTO.class);
@@ -61,7 +61,7 @@ class UserProfileV1RestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user2", "org1"))
-                .get("preferences")
+                .get("/me/preferences")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(UserPreferencesDTO.class);
@@ -74,7 +74,7 @@ class UserProfileV1RestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user1", "org1"))
-                .get("preferences")
+                .get("/me/preferences")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(UserPreferencesDTO.class);
@@ -90,7 +90,7 @@ class UserProfileV1RestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("not-existing", null))
-                .get()
+                .get("/me")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(UserProfileDTO.class);
@@ -106,7 +106,7 @@ class UserProfileV1RestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user3", "org2"))
-                .get()
+                .get("/me")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(UserProfileDTO.class);
@@ -124,7 +124,7 @@ class UserProfileV1RestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user4", "org3"))
-                .get()
+                .get("/me")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(UserProfileDTO.class);
@@ -153,7 +153,7 @@ class UserProfileV1RestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("not-existing", "1", claimName, value))
-                .get()
+                .get("/me")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(UserProfileDTO.class);
@@ -171,7 +171,7 @@ class UserProfileV1RestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("not-existing", null))
-                .get("settings")
+                .get("/me/settings")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
 
@@ -181,7 +181,7 @@ class UserProfileV1RestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user3", "org2"))
-                .get("settings")
+                .get("/me/settings")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(UserProfileAccountSettingsDTO.class);
@@ -189,6 +189,110 @@ class UserProfileV1RestControllerTest extends AbstractTest {
         assertThat(userSettings).isNotNull();
         assertThat(userSettings.getMenuMode()).isEqualTo(MenuModeDTO.SLIM);
         assertThat(userSettings.getColorScheme()).isEqualTo(ColorSchemeDTO.LIGHT);
+    }
+
+    @Test
+    void searchProfileAbstractsByCriteriaTest() {
+        // search by single userId
+        var result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .header(APM_HEADER_PARAM, createToken("user1", "org1"))
+                .queryParam("userIds", "user1")
+                .get("/search")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(UserProfilePageResultDTO.class);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getTotalElements()).isEqualTo(1L);
+        assertThat(result.getStream()).hasSize(1);
+        assertThat(result.getStream().get(0).getUserId()).isEqualTo("user1");
+        assertThat(result.getStream().get(0).getDisplayName()).isEqualTo("User One");
+        assertThat(result.getStream().get(0).getEmailAddress()).isEqualTo("user1@testOrg.de");
+
+        // search by multiple userIds
+        result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .header(APM_HEADER_PARAM, createToken("user1", "org1"))
+                .queryParam("userIds", "user1", "user2")
+                .get("/search")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(UserProfilePageResultDTO.class);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getTotalElements()).isEqualTo(2L);
+        assertThat(result.getStream()).hasSize(2);
+
+        // search by emailAddress
+        result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .header(APM_HEADER_PARAM, createToken("user1", "org1"))
+                .queryParam("emailAddresses", "user1@testOrg.de")
+                .get("/search")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(UserProfilePageResultDTO.class);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getTotalElements()).isEqualTo(1L);
+        assertThat(result.getStream()).hasSize(1);
+        assertThat(result.getStream().get(0).getEmailAddress()).isEqualTo("user1@testOrg.de");
+        assertThat(result.getStream().get(0).getDisplayName()).isEqualTo("User One");
+
+        // search by displayName
+        result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .header(APM_HEADER_PARAM, createToken("user1", "org1"))
+                .queryParam("displayNames", "User Two")
+                .get("/search")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(UserProfilePageResultDTO.class);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getTotalElements()).isEqualTo(1L);
+        assertThat(result.getStream()).hasSize(1);
+        assertThat(result.getStream().get(0).getDisplayName()).isEqualTo("User Two");
+
+        // search with no results
+        result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .header(APM_HEADER_PARAM, createToken("user1", "org1"))
+                .queryParam("userIds", "non-existing-user")
+                .get("/search")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(UserProfilePageResultDTO.class);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getTotalElements()).isEqualTo(0L);
+        assertThat(result.getStream()).isEmpty();
+
+        // search without any criteria (should return all)
+        result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .header(APM_HEADER_PARAM, createToken("user1", "org1"))
+                .get("/search")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(UserProfilePageResultDTO.class);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getTotalElements()).isEqualTo(2L);
+        assertThat(result.getStream()).hasSize(2);
     }
 
 }
