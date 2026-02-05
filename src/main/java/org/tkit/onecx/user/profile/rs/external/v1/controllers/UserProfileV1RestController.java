@@ -15,11 +15,9 @@ import org.tkit.onecx.user.profile.domain.service.UserProfileService;
 import org.tkit.onecx.user.profile.rs.external.v1.mappers.PreferenceV1Mapper;
 import org.tkit.onecx.user.profile.rs.external.v1.mappers.UserProfileV1Mapper;
 import org.tkit.quarkus.context.ApplicationContext;
-import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.org.tkit.onecx.user.profile.rs.external.v1.UserProfileV1Api;
-import gen.org.tkit.onecx.user.profile.rs.external.v1.model.UserProfileAbstractDTO;
 
 @LogService
 @ApplicationScoped
@@ -111,9 +109,7 @@ public class UserProfileV1RestController implements UserProfileV1Api {
                 .emailAddresses(emailAddresses)
                 .displayNames(displayNames).build();
         final var userProfilesPageResult = userProfileDAO.findProfileAbstractByCriteria(criteria, pageNumber, pageSize);
-        final var profileAbstractsStream = userProfilesPageResult.getStream().map(userProfileV1Mapper::mapToAbstract);
-        final var pageResult = new PageResult<>(userProfilesPageResult.getTotalElements(),
-                profileAbstractsStream, userProfilesPageResult.getNumber(), userProfilesPageResult.getSize());
+        final var pageResult = userProfileV1Mapper.mapToPageResult(userProfilesPageResult);
         return Response.ok(pageResult).build();
     }
 }
