@@ -27,6 +27,10 @@ public interface UserProfileV1Mapper {
 
     UserProfileAccountSettingsDTO map(UserProfileAccountSettings entity);
 
+    @Mapping(target = "emailAddress", source = "person.email")
+    @Mapping(target = "displayName", source = "person.displayName")
+    UserProfileAbstractDTO mapToAbstract(UserProfile entity);
+
     @Named("s2o")
     default Object s2o(String value) {
         ObjectMapper objectMapper = new ObjectMapper();
