@@ -67,7 +67,7 @@ public class UserProfileDAO extends AbstractDAO<UserProfile> {
             var predicates = new ArrayList<>();
             if (isCriteriaListValid(criteria.getUserIds())) {
                 predicates.add(
-                        createInStringListPredicate(cb, root.get(UserProfile_.userId), criteria.getUserIds(), true));
+                        createInStringListPredicate(cb, root.get(UserProfile_.userId), criteria.getUserIds(), false));
             }
             if (isCriteriaListValid(criteria.getEmailAddresses())) {
                 predicates.add(
@@ -77,7 +77,7 @@ public class UserProfileDAO extends AbstractDAO<UserProfile> {
             if (isCriteriaListValid(criteria.getDisplayNames())) {
                 predicates.add(
                         createInStringListPredicate(cb, root.get(PERSON).get(UserPerson_.DISPLAY_NAME),
-                                criteria.getDisplayNames(), false));
+                                criteria.getDisplayNames(), true));
             }
             if (!predicates.isEmpty()) {
                 cq.where(cb.or(predicates.toArray(new Predicate[0])));
