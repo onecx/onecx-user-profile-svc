@@ -1,6 +1,7 @@
 package org.tkit.onecx.user.profile.domain.daos;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.tkit.onecx.user.profile.domain.criteria.UserProfileAbstractCriteria;
 import org.tkit.onecx.user.profile.domain.models.UserProfile;
 import org.tkit.onecx.user.profile.domain.models.UserProfile_;
 import org.tkit.onecx.user.profile.test.AbstractTest;
+import org.tkit.quarkus.jpa.exceptions.DAOException;
 import org.tkit.quarkus.test.WithDBData;
 
 import io.quarkus.test.junit.QuarkusTest;
@@ -56,7 +58,7 @@ class UserProfileDAOTest extends AbstractTest {
 
         // Test case insensitive (default) - should match regardless of case
         List<String> criteriaList = List.of("USER1", "USER2");
-        var predicate = dao.createInStringListPredicate(cb, root.get(UserProfile_.userId), criteriaList);
+        var predicate = dao.createInStringListPredicate(cb, root.get(UserProfile_.userId), criteriaList, true);
 
         assertThat(predicate).isNotNull();
 
@@ -92,9 +94,11 @@ class UserProfileDAOTest extends AbstractTest {
     void testFindProfileAbstractByCriteriaWithUserIds() {
         var criteria = UserProfileAbstractCriteria.builder()
                 .userIds(List.of("user1"))
+                .pageNumber(0)
+                .pageSize(10)
                 .build();
 
-        var result = dao.findProfileAbstractByCriteria(criteria, 0, 10);
+        var result = dao.findProfileAbstractByCriteria(criteria);
 
         assertThat(result).isNotNull();
         assertThat(result.getTotalElements()).isEqualTo(1L);
@@ -104,9 +108,11 @@ class UserProfileDAOTest extends AbstractTest {
     void testFindProfileAbstractByCriteriaWithEmailAddresses() {
         var criteria = UserProfileAbstractCriteria.builder()
                 .emailAddresses(List.of("user1@testOrg.de"))
+                .pageNumber(0)
+                .pageSize(10)
                 .build();
 
-        var result = dao.findProfileAbstractByCriteria(criteria, 0, 10);
+        var result = dao.findProfileAbstractByCriteria(criteria);
 
         assertThat(result).isNotNull();
         assertThat(result.getTotalElements()).isEqualTo(1L);
@@ -116,9 +122,11 @@ class UserProfileDAOTest extends AbstractTest {
     void testFindProfileAbstractByCriteriaWithDisplayNames() {
         var criteria = UserProfileAbstractCriteria.builder()
                 .displayNames(List.of("User One"))
+                .pageNumber(0)
+                .pageSize(10)
                 .build();
 
-        var result = dao.findProfileAbstractByCriteria(criteria, 0, 10);
+        var result = dao.findProfileAbstractByCriteria(criteria);
 
         assertThat(result).isNotNull();
         assertThat(result.getTotalElements()).isEqualTo(1L);
@@ -130,9 +138,11 @@ class UserProfileDAOTest extends AbstractTest {
                 .userIds(new ArrayList<>())
                 .emailAddresses(new ArrayList<>())
                 .displayNames(new ArrayList<>())
+                .pageNumber(0)
+                .pageSize(10)
                 .build();
 
-        var result = dao.findProfileAbstractByCriteria(criteria, 0, 10);
+        var result = dao.findProfileAbstractByCriteria(criteria);
 
         assertThat(result).isNotNull();
         assertThat(result.getTotalElements()).isEqualTo(2L);
@@ -144,9 +154,11 @@ class UserProfileDAOTest extends AbstractTest {
                 .userIds(null)
                 .emailAddresses(null)
                 .displayNames(null)
+                .pageNumber(0)
+                .pageSize(10)
                 .build();
 
-        var result = dao.findProfileAbstractByCriteria(criteria, 0, 10);
+        var result = dao.findProfileAbstractByCriteria(criteria);
 
         assertThat(result).isNotNull();
         assertThat(result.getTotalElements()).isEqualTo(2L);
@@ -157,12 +169,21 @@ class UserProfileDAOTest extends AbstractTest {
         var criteria = UserProfileAbstractCriteria.builder()
                 .userIds(List.of("user1"))
                 .emailAddresses(List.of("user2@testOrg.de"))
+                .pageNumber(0)
+                .pageSize(10)
                 .build();
 
-        var result = dao.findProfileAbstractByCriteria(criteria, 0, 10);
+        var result = dao.findProfileAbstractByCriteria(criteria);
 
         assertThat(result).isNotNull();
         // Should use OR logic, so both user1 and user with email user2@testOrg.de should be returned
         assertThat(result.getTotalElements()).isEqualTo(2L);
+    }
+
+    @Test
+    void testFindProfileAbstractByCriteriaThrowsDaoExceptionWhenCriteriaNull() {
+        assertThatThrownBy(() -> dao.findProfileAbstractByCriteria(null))
+                .isInstanceOf(DAOException.class)
+                .hasMessageContaining("SEARCH_PROFILE_ABSTRACT_FAILED");
     }
 }

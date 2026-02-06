@@ -101,8 +101,7 @@ public class UserProfileV1RestController implements UserProfileV1Api {
     @Override
     public Response searchProfileAbstractsByCriteria(UserProfileAbstractCriteriaDTO userProfileAbstractCriteriaDTO) {
         final var criteria = userProfileV1Mapper.mapCriteria(userProfileAbstractCriteriaDTO);
-        final var userProfilesPageResult = userProfileDAO.findProfileAbstractByCriteria(criteria,
-                userProfileAbstractCriteriaDTO.getPageNumber(), userProfileAbstractCriteriaDTO.getPageSize());
+        final var userProfilesPageResult = userProfileDAO.findProfileAbstractByCriteria(criteria);
         final var pageResult = userProfileV1Mapper.mapToPageResult(userProfilesPageResult);
         return Response.ok(pageResult).build();
     }

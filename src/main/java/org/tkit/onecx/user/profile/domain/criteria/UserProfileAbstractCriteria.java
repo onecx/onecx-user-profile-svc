@@ -13,4 +13,6 @@ public class UserProfileAbstractCriteria {
     private List<String> userIds;
     private List<String> emailAddresses;
     private List<String> displayNames;
+    private int pageSize;
+    private int pageNumber;
 }

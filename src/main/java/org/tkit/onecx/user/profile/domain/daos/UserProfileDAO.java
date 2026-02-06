@@ -21,6 +21,7 @@ import org.tkit.onecx.user.profile.domain.models.UserProfile_;
 import org.tkit.quarkus.jpa.daos.AbstractDAO;
 import org.tkit.quarkus.jpa.daos.Page;
 import org.tkit.quarkus.jpa.daos.PageResult;
+import org.tkit.quarkus.jpa.exceptions.DAOException;
 import org.tkit.quarkus.jpa.models.AbstractTraceableEntity_;
 import org.tkit.quarkus.jpa.models.TraceableEntity_;
 import org.tkit.quarkus.jpa.utils.QueryCriteriaUtil;
@@ -57,31 +58,36 @@ public class UserProfileDAO extends AbstractDAO<UserProfile> {
         return createPageQuery(cq, Page.of(pageNumber, pageSize)).getPageResult();
     }
 
-    public PageResult<UserProfile> findProfileAbstractByCriteria(final UserProfileAbstractCriteria criteria,
-            final int pageNumber, final int pageSize) {
-        var cb = getEntityManager().getCriteriaBuilder();
-        var cq = cb.createQuery(UserProfile.class);
-        var root = cq.from(UserProfile.class);
-        cq.select(root).distinct(true);
-        var predicates = new ArrayList<>();
-        if (isCriteriaListValid(criteria.getUserIds())) {
-            predicates.add(
-                    createInStringListPredicate(cb, root.get(UserProfile_.userId), criteria.getUserIds()));
+    public PageResult<UserProfile> findProfileAbstractByCriteria(final UserProfileAbstractCriteria criteria) {
+        try {
+            var cb = getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(UserProfile.class);
+            var root = cq.from(UserProfile.class);
+            cq.select(root).distinct(true);
+            var predicates = new ArrayList<>();
+            if (isCriteriaListValid(criteria.getUserIds())) {
+                predicates.add(
+                        createInStringListPredicate(cb, root.get(UserProfile_.userId), criteria.getUserIds(), true));
+            }
+            if (isCriteriaListValid(criteria.getEmailAddresses())) {
+                predicates.add(
+                        createInStringListPredicate(cb, root.get(PERSON).get(UserPerson_.EMAIL), criteria.getEmailAddresses(),
+                                true));
+            }
+            if (isCriteriaListValid(criteria.getDisplayNames())) {
+                predicates.add(
+                        createInStringListPredicate(cb, root.get(PERSON).get(UserPerson_.DISPLAY_NAME),
+                                criteria.getDisplayNames(), false));
+            }
+            if (!predicates.isEmpty()) {
+                cq.where(cb.or(predicates.toArray(new Predicate[0])));
+            }
+            cq.orderBy(cb.desc(root.get(AbstractTraceableEntity_.CREATION_DATE)));
+            return createPageQuery(cq, Page.of(criteria.getPageNumber(), criteria.getPageSize())).getPageResult();
+        } catch (RuntimeException e) {
+            throw new DAOException(ErrorKeys.SEARCH_PROFILE_ABSTRACT_FAILED, e);
         }
-        if (isCriteriaListValid(criteria.getEmailAddresses())) {
-            predicates.add(
-                    createInStringListPredicate(cb, root.get(PERSON).get(UserPerson_.EMAIL), criteria.getEmailAddresses()));
-        }
-        if (isCriteriaListValid(criteria.getDisplayNames())) {
-            predicates.add(
-                    createInStringListPredicate(cb, root.get(PERSON).get(UserPerson_.DISPLAY_NAME),
-                            criteria.getDisplayNames()));
-        }
-        if (!predicates.isEmpty()) {
-            cq.where(cb.or(predicates.toArray(new Predicate[0])));
-        }
-        cq.orderBy(cb.desc(root.get(AbstractTraceableEntity_.CREATION_DATE)));
-        return createPageQuery(cq, Page.of(pageNumber, pageSize)).getPageResult();
+
     }
 
     @Transactional
@@ -158,19 +164,6 @@ public class UserProfileDAO extends AbstractDAO<UserProfile> {
     }
 
     /**
-     * Create an IN predicate for a list of string values as a case-insensitive search.
-     *
-     * @param criteriaBuilder - CriteriaBuilder
-     * @param column - column Path [root.get(Entity_.attribute)]
-     * @param criteriaList - list of strings to match against
-     * @return IN Predicate for the given list of values
-     */
-    public Predicate createInStringListPredicate(CriteriaBuilder criteriaBuilder, Expression<String> column,
-            List<String> criteriaList) {
-        return createInStringListPredicate(criteriaBuilder, column, criteriaList, true);
-    }
-
-    /**
      * Create an IN predicate for a list of string values.
      *
      * @param criteriaBuilder - CriteriaBuilder
@@ -191,5 +184,9 @@ public class UserProfileDAO extends AbstractDAO<UserProfile> {
 
     private boolean isCriteriaListValid(final List<String> list) {
         return Objects.nonNull(list) && !list.isEmpty();
+    }
+
+    enum ErrorKeys {
+        SEARCH_PROFILE_ABSTRACT_FAILED
     }
 }
