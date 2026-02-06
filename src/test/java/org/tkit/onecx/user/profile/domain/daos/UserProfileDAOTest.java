@@ -65,8 +65,7 @@ class UserProfileDAOTest extends AbstractTest {
         var result = em.createQuery(cq).getResultList();
 
         // Should find user1 and user2 despite uppercase search criteria
-        assertThat(result).isNotEmpty();
-        assertThat(result).hasSizeGreaterThanOrEqualTo(1);
+        assertThat(result).isNotEmpty().hasSizeGreaterThanOrEqualTo(1);
     }
 
     @Test
