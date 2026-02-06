@@ -15,6 +15,7 @@ import org.tkit.quarkus.context.ApplicationContext;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.org.tkit.onecx.user.profile.rs.external.v1.UserProfileV1Api;
+import gen.org.tkit.onecx.user.profile.rs.external.v1.model.UserProfileAbstractCriteriaDTO;
 
 @LogService
 @ApplicationScoped
@@ -97,4 +98,11 @@ public class UserProfileV1RestController implements UserProfileV1Api {
         return Response.ok(userProfileV1Mapper.map(userProfile.getAccountSettings())).build();
     }
 
+    @Override
+    public Response searchProfileAbstractsByCriteria(UserProfileAbstractCriteriaDTO userProfileAbstractCriteriaDTO) {
+        final var criteria = userProfileV1Mapper.mapCriteria(userProfileAbstractCriteriaDTO);
+        final var userProfilesPageResult = userProfileDAO.findProfileAbstractByCriteria(criteria);
+        final var pageResult = userProfileV1Mapper.mapToPageResult(userProfilesPageResult);
+        return Response.ok(pageResult).build();
+    }
 }

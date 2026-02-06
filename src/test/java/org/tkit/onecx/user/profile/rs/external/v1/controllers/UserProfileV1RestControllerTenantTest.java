@@ -28,7 +28,7 @@ class UserProfileV1RestControllerTenantTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user2", "org2"))
-                .get("person")
+                .get("/me/person")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
 
@@ -38,7 +38,7 @@ class UserProfileV1RestControllerTenantTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user2", "org1"))
-                .get("person")
+                .get("/me/person")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(UserPersonDTO.class);
@@ -55,7 +55,7 @@ class UserProfileV1RestControllerTenantTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user1", "org3"))
-                .get("preferences")
+                .get("/me/preferences")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(UserPreferencesDTO.class);
@@ -68,7 +68,7 @@ class UserProfileV1RestControllerTenantTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user1", "org1"))
-                .get("preferences")
+                .get("/me/preferences")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(UserPreferencesDTO.class);
@@ -84,7 +84,7 @@ class UserProfileV1RestControllerTenantTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user3", "org1"))
-                .get()
+                .get("/me")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(UserProfileDTO.class);
@@ -102,7 +102,7 @@ class UserProfileV1RestControllerTenantTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("user3", "org1"))
-                .get("settings")
+                .get("/me/settings")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
 

@@ -56,7 +56,7 @@ class UserProfileV1RestControllerMenuSettingsTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("not-existing", null))
-                .get()
+                .get("/me")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(UserProfileDTO.class);

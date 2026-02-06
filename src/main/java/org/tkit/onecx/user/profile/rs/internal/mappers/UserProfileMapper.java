@@ -1,8 +1,6 @@
 package org.tkit.onecx.user.profile.rs.internal.mappers;
 
 import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Stream;
 
 import org.mapstruct.*;
 import org.tkit.onecx.user.profile.domain.criteria.UserPersonCriteria;
@@ -87,12 +85,7 @@ public interface UserProfileMapper {
     UserPersonCriteria map(UserPersonCriteriaDTO dto);
 
     @Mapping(target = "removeStreamItem", ignore = true)
-    @Mapping(target = "stream", qualifiedByName = "mapStream")
     UserProfilePageResultDTO mapPageResult(PageResult<UserProfile> page);
-
-    @Named("mapStream")
-    @IterableMapping(qualifiedByName = "mapProfile")
-    List<UserProfileDTO> mapStream(Stream<UserProfile> stream);
 
     @Named("s2o")
     default Object s2o(String value) {

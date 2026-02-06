@@ -97,6 +97,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
+  /v1/userProfile/search:
+    post:
+      security:
+        - oauth2: [ ocx-up:read ]
+      tags:
+        - userProfileV1
+      description: Fetch user profiles matching given criteria
+      operationId: searchProfileAbstractsByCriteria
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfileAbstractCriteria'
+      responses:
+        "200":
+          description: User profile account settings retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfilePageResult'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
 components:
   securitySchemes:
     oauth2:
@@ -217,6 +244,61 @@ components:
           $ref: '#/components/schemas/MenuMode'
         colorScheme:
           $ref: '#/components/schemas/ColorScheme'
+    UserProfileAbstractCriteria:
+      type: object
+      properties:
+        userIds:
+          type: array
+          items:
+            type: string
+        emailAddresses:
+          type: array
+          items:
+            type: string
+        displayNames:
+          type: array
+          items:
+            type: string
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 100
+          maximum: 1000
+          type: integer
+    UserProfileAbstract:
+      type: object
+      properties:
+        userId:
+          type: string
+        displayName:
+          type: string
+        emailAddress:
+          type: string
+    UserProfilePageResult:
+      type: object
+      properties:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserProfileAbstract'
     MenuMode:
       enum:
         - STATIC
