@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+import org.tkit.onecx.user.profile.domain.criteria.UserProfileAbstractCriteria;
 import org.tkit.onecx.user.profile.domain.models.*;
 import org.tkit.onecx.user.profile.rs.internal.mappers.UserProfileMapper;
 import org.tkit.quarkus.jpa.daos.PageResult;
@@ -29,6 +30,8 @@ public interface UserProfileV1Mapper {
     UserPersonPhoneDTO map(UserPersonPhone entity);
 
     UserProfileAccountSettingsDTO map(UserProfileAccountSettings entity);
+
+    UserProfileAbstractCriteria mapCriteria(UserProfileAbstractCriteriaDTO dto);
 
     @Mapping(target = "emailAddress", source = "person.email")
     @Mapping(target = "displayName", source = "person.displayName")

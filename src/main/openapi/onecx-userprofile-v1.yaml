@@ -98,55 +98,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
   /v1/userProfile/search:
-    get:
+    post:
       security:
         - oauth2: [ ocx-up:read ]
       tags:
         - userProfileV1
       description: Fetch user profiles matching given criteria
       operationId: searchProfileAbstractsByCriteria
-      parameters:
-        - name: userIds
-          in: query
-          schema:
-            type: array
-            items:
-              type: string
-          description: Filter by user IDs
-          style: form
-          explode: true
-        - name: emailAddresses
-          in: query
-          schema:
-            type: array
-            items:
-              type: string
-          description: Filter by email addresses
-          style: form
-          explode: true
-        - name: displayNames
-          in: query
-          schema:
-            type: array
-            items:
-              type: string
-          description: Filter by user names
-          style: form
-          explode: true
-        - name: pageNumber
-          in: query
-          schema:
-            type: integer
-            format: int32
-            default: 0
-          description: Page number
-        - name: pageSize
-          in: query
-          schema:
-            type: integer
-            format: int32
-            default: 10
-          description: Page size
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfileAbstractCriteria'
       responses:
         "200":
           description: User profile account settings retrieved successfully
@@ -280,6 +244,32 @@ components:
           $ref: '#/components/schemas/MenuMode'
         colorScheme:
           $ref: '#/components/schemas/ColorScheme'
+    UserProfileAbstractCriteria:
+      type: object
+      properties:
+        userIds:
+          type: array
+          items:
+            type: string
+        emailAddresses:
+          type: array
+          items:
+            type: string
+        displayNames:
+          type: array
+          items:
+            type: string
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 100
+          maximum: 1000
+          type: integer
     UserProfileAbstract:
       type: object
       properties:

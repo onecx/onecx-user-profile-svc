@@ -1,13 +1,10 @@
 package org.tkit.onecx.user.profile.rs.external.v1.controllers;
 
-import java.util.List;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 
-import org.tkit.onecx.user.profile.domain.criteria.UserProfileAbstractCriteria;
 import org.tkit.onecx.user.profile.domain.daos.PreferenceDAO;
 import org.tkit.onecx.user.profile.domain.daos.UserProfileDAO;
 import org.tkit.onecx.user.profile.domain.models.UserProfile;
@@ -18,6 +15,7 @@ import org.tkit.quarkus.context.ApplicationContext;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.org.tkit.onecx.user.profile.rs.external.v1.UserProfileV1Api;
+import gen.org.tkit.onecx.user.profile.rs.external.v1.model.UserProfileAbstractCriteriaDTO;
 
 @LogService
 @ApplicationScoped
@@ -101,14 +99,10 @@ public class UserProfileV1RestController implements UserProfileV1Api {
     }
 
     @Override
-    public Response searchProfileAbstractsByCriteria(List<String> userIds, List<String> emailAddresses,
-            List<String> displayNames,
-            Integer pageNumber, Integer pageSize) {
-        final var criteria = UserProfileAbstractCriteria.builder()
-                .userIds(userIds)
-                .emailAddresses(emailAddresses)
-                .displayNames(displayNames).build();
-        final var userProfilesPageResult = userProfileDAO.findProfileAbstractByCriteria(criteria, pageNumber, pageSize);
+    public Response searchProfileAbstractsByCriteria(UserProfileAbstractCriteriaDTO userProfileAbstractCriteriaDTO) {
+        final var criteria = userProfileV1Mapper.mapCriteria(userProfileAbstractCriteriaDTO);
+        final var userProfilesPageResult = userProfileDAO.findProfileAbstractByCriteria(criteria,
+                userProfileAbstractCriteriaDTO.getPageNumber(), userProfileAbstractCriteriaDTO.getPageSize());
         final var pageResult = userProfileV1Mapper.mapToPageResult(userProfilesPageResult);
         return Response.ok(pageResult).build();
     }
