@@ -90,6 +90,30 @@ public class UserProfileRestController implements UserProfileApi {
         return Response.status(Response.Status.OK).entity(userProfileMapper.map(updatedProfile)).build();
     }
 
+    @Override
+    public Response updateMyUserProfileContact(UpdateUserPersonContactRequestDTO updateUserPersonContactRequestDTO) {
+        var userId = ApplicationContext.get().getPrincipal();
+        var userProfile = userProfileDAO.getUserProfileByUserId(userId, UserProfile.ENTITY_GRAPH_LOAD_ALL);
+        if (userProfile == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        userProfile = userProfileMapper.updateProfileContactDetails(userProfile, updateUserPersonContactRequestDTO);
+        var updatedProfile = userProfileDAO.update(userProfile);
+        return Response.status(Response.Status.OK).entity(userProfileMapper.map(updatedProfile)).build();
+    }
+
+    @Override
+    public Response updateMyUserProfileSettings(UpdateUserPersonSettingsRequestDTO updateUserPersonSettingsRequestDTO) {
+        var userId = ApplicationContext.get().getPrincipal();
+        var userProfile = userProfileDAO.getUserProfileByUserId(userId, UserProfile.ENTITY_GRAPH_LOAD_ALL);
+        if (userProfile == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        userProfile = userProfileMapper.updateProfileSettings(userProfile, updateUserPersonSettingsRequestDTO);
+        var updatedProfile = userProfileDAO.update(userProfile);
+        return Response.status(Response.Status.OK).entity(userProfileMapper.map(updatedProfile)).build();
+    }
+
     @ServerExceptionMapper
     public RestResponse<ProblemDetailResponseDTO> daoException(OptimisticLockException ex) {
         return exceptionMapper.optimisticLock(ex);
