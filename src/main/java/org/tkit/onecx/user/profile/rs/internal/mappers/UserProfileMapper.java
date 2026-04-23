@@ -147,6 +147,26 @@ public interface UserProfileMapper {
         }
     }
 
+    default UserProfile updateProfileContactDetails(UserProfile userProfile,
+            UpdateUserPersonContactRequestDTO updateUserPersonContactRequestDTO) {
+        userProfile.getPerson().setAddress(mapAddress(updateUserPersonContactRequestDTO.getAddress()));
+        userProfile.getPerson().setPhone(mapPhone(updateUserPersonContactRequestDTO.getPhone()));
+        userProfile.setModificationCount(updateUserPersonContactRequestDTO.getModificationCount());
+        return userProfile;
+    }
+
+    UserPersonPhone mapPhone(UserPersonPhoneDTO phone);
+
+    UserPersonAddress mapAddress(UserPersonAddressDTO address);
+
+    default UserProfile updateProfileSettings(UserProfile userProfile,
+            UpdateUserPersonSettingsRequestDTO updateUserPersonSettingsRequestDTO) {
+        userProfile.setAccountSettings(mirrorSettings(updateUserPersonSettingsRequestDTO.getSettings()));
+        userProfile.setSettings(o2s(updateUserPersonSettingsRequestDTO.getSettings()));
+        userProfile.setModificationCount(updateUserPersonSettingsRequestDTO.getModificationCount());
+        return userProfile;
+    }
+
     class MapperException extends RuntimeException {
 
         public MapperException(String msg, Throwable t) {

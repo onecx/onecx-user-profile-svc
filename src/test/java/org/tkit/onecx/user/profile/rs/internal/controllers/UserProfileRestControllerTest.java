@@ -189,4 +189,123 @@ class UserProfileRestControllerTest extends AbstractTest {
                 .statusCode(NOT_FOUND.getStatusCode());
     }
 
+    @Test
+    void updateUserProfileContactDetailsTest() {
+
+        UpdateUserPersonContactRequestDTO updateDTO = new UpdateUserPersonContactRequestDTO();
+
+        updateDTO.setModificationCount(0);
+        UserPersonAddressDTO addressDTO = new UserPersonAddressDTO();
+        addressDTO.setStreet("Updated Street");
+        updateDTO.setAddress(addressDTO);
+
+        UserPersonPhoneDTO phoneDTO = new UserPersonPhoneDTO();
+        phoneDTO.setNumber("123456789");
+        updateDTO.setPhone(phoneDTO);
+
+        //try to update non existing user profile
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .header(APM_HEADER_PARAM, createToken("user123", "org123"))
+                .body(updateDTO)
+                .put("/contact")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        //try to update without body
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .header(APM_HEADER_PARAM, createToken("user1", "org1"))
+                .put("/contact")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
+
+        var updatedProfile = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .header(APM_HEADER_PARAM, createToken("user1", "org1"))
+                .body(updateDTO)
+                .put("/contact")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(UserProfileDTO.class);
+
+        assertThat(updatedProfile.getPerson().getAddress().getStreet()).isEqualTo(updateDTO.getAddress().getStreet());
+        assertThat(updatedProfile.getPerson().getPhone().getNumber()).isEqualTo(updateDTO.getPhone().getNumber());
+
+        //second time with same modificationCount => optlock exception
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .header(APM_HEADER_PARAM, createToken("user1", "org1"))
+                .body(updateDTO)
+                .put("/contact")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
+    }
+
+    @Test
+    void updateUserProfileSettingsTest() throws JsonProcessingException {
+
+        UpdateUserPersonSettingsRequestDTO updateDTO = new UpdateUserPersonSettingsRequestDTO();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Object settingsObject = objectMapper.readValue("{\"locale\":\"testLocale\"}", Object.class);
+        updateDTO.setSettings(settingsObject);
+
+        updateDTO.setModificationCount(0);
+
+        //try to update non existing user profile
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .header(APM_HEADER_PARAM, createToken("user123", "org123"))
+                .body(updateDTO)
+                .put("/settings")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        //try to update without body
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .header(APM_HEADER_PARAM, createToken("user1", "org1"))
+                .put("/settings")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
+
+        var updatedProfile = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .header(APM_HEADER_PARAM, createToken("user1", "org1"))
+                .body(updateDTO)
+                .put("/settings")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(UserProfileDTO.class);
+
+        assertThat(updatedProfile.getSettings()).isNotNull();
+        assertThat(updatedProfile.getAccountSettings().getLocale()).isEqualTo("testLocale");
+
+        //second time with same modificationCount => optlock exception
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .header(APM_HEADER_PARAM, createToken("user1", "org1"))
+                .body(updateDTO)
+                .put("/settings")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
+    }
+
 }

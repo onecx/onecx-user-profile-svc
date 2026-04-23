@@ -182,6 +182,7 @@ paths:
       tags:
         - userProfile
       description: Update the user profile of the requesting user
+      deprecated: true
       operationId: updateMyUserProfile
       requestBody:
         required: true
@@ -189,6 +190,60 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UpdateUserProfileRequest'
+      responses:
+        "200":
+          description: User profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/userProfile/me/settings:
+    put:
+      security:
+        - oauth2: [ ocx-up:all, ocx-up:write ]
+      tags:
+        - userProfile
+      description: Update the user profile settings of the requesting user
+      operationId: updateMyUserProfileSettings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserPersonSettingsRequest'
+      responses:
+        "200":
+          description: User profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/userProfile/me/contact:
+    put:
+      security:
+        - oauth2: [ocx-up:all, ocx-up:write]
+      tags:
+        - userProfile
+      description: Update the user profile contact details of the requesting user
+      operationId: updateMyUserProfileContact
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserPersonContactRequest'
       responses:
         "200":
           description: User profile updated successfully
@@ -344,6 +399,28 @@ components:
           $ref: '#/components/schemas/UserPersonAddress'
         phone:
           $ref: '#/components/schemas/UserPersonPhone'
+    UpdateUserPersonContactRequest:
+      type: object
+      required:
+        - modificationCount
+      properties:
+        modificationCount:
+          format: int32
+          type: integer
+        address:
+          $ref: '#/components/schemas/UserPersonAddress'
+        phone:
+          $ref: '#/components/schemas/UserPersonPhone'
+    UpdateUserPersonSettingsRequest:
+      type: object
+      required:
+        - modificationCount
+      properties:
+        modificationCount:
+          format: int32
+          type: integer
+        settings:
+          type: object
     UserPersonAddress:
       type: object
       properties:
