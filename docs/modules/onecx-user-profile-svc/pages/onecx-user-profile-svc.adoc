@@ -7,7 +7,7 @@ h|[.header-title]##Configuration property##
 h|Type
 h|Default
 
-a| [[onecx-user-profile-svc_onecx-user-profile-claims-display-name]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-claims-display-name[`onecx.user-profile.claims.display-name`]##
+a| [[onecx-user-profile-svc_onecx-user-profile-claims-display-name]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-claims-display-name[`+++onecx.user-profile.claims.display-name+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++onecx.user-profile.claims.display-name+++[]
 endif::add-copy-button-to-config-props[]
@@ -28,7 +28,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |`+++name+++`
 
-a| [[onecx-user-profile-svc_onecx-user-profile-claims-email]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-claims-email[`onecx.user-profile.claims.email`]##
+a| [[onecx-user-profile-svc_onecx-user-profile-claims-email]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-claims-email[`+++onecx.user-profile.claims.email+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++onecx.user-profile.claims.email+++[]
 endif::add-copy-button-to-config-props[]
@@ -49,7 +49,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |`+++email+++`
 
-a| [[onecx-user-profile-svc_onecx-user-profile-claims-first-name]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-claims-first-name[`onecx.user-profile.claims.first-name`]##
+a| [[onecx-user-profile-svc_onecx-user-profile-claims-first-name]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-claims-first-name[`+++onecx.user-profile.claims.first-name+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++onecx.user-profile.claims.first-name+++[]
 endif::add-copy-button-to-config-props[]
@@ -70,7 +70,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |`+++given_name+++`
 
-a| [[onecx-user-profile-svc_onecx-user-profile-claims-last-name]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-claims-last-name[`onecx.user-profile.claims.last-name`]##
+a| [[onecx-user-profile-svc_onecx-user-profile-claims-last-name]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-claims-last-name[`+++onecx.user-profile.claims.last-name+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++onecx.user-profile.claims.last-name+++[]
 endif::add-copy-button-to-config-props[]
@@ -91,7 +91,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |`+++family_name+++`
 
-a| [[onecx-user-profile-svc_onecx-user-profile-claims-organization-id]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-claims-organization-id[`onecx.user-profile.claims.organization-id`]##
+a| [[onecx-user-profile-svc_onecx-user-profile-claims-organization-id]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-claims-organization-id[`+++onecx.user-profile.claims.organization-id+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++onecx.user-profile.claims.organization-id+++[]
 endif::add-copy-button-to-config-props[]
@@ -112,7 +112,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |`+++orgId+++`
 
-a| [[onecx-user-profile-svc_onecx-user-profile-claims-locale]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-claims-locale[`onecx.user-profile.claims.locale`]##
+a| [[onecx-user-profile-svc_onecx-user-profile-claims-locale]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-claims-locale[`+++onecx.user-profile.claims.locale+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++onecx.user-profile.claims.locale+++[]
 endif::add-copy-button-to-config-props[]
@@ -133,7 +133,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |
 
-a| [[onecx-user-profile-svc_onecx-user-profile-claims-timezone]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-claims-timezone[`onecx.user-profile.claims.timezone`]##
+a| [[onecx-user-profile-svc_onecx-user-profile-claims-timezone]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-claims-timezone[`+++onecx.user-profile.claims.timezone+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++onecx.user-profile.claims.timezone+++[]
 endif::add-copy-button-to-config-props[]
@@ -154,7 +154,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |
 
-a| [[onecx-user-profile-svc_onecx-user-profile-claims-menu-mode]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-claims-menu-mode[`onecx.user-profile.claims.menu-mode`]##
+a| [[onecx-user-profile-svc_onecx-user-profile-claims-menu-mode]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-claims-menu-mode[`+++onecx.user-profile.claims.menu-mode+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++onecx.user-profile.claims.menu-mode+++[]
 endif::add-copy-button-to-config-props[]
@@ -175,7 +175,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |
 
-a| [[onecx-user-profile-svc_onecx-user-profile-settings-locale]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-settings-locale[`onecx.user-profile.settings.locale`]##
+a| [[onecx-user-profile-svc_onecx-user-profile-settings-locale]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-settings-locale[`+++onecx.user-profile.settings.locale+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++onecx.user-profile.settings.locale+++[]
 endif::add-copy-button-to-config-props[]
@@ -196,7 +196,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |`+++en+++`
 
-a| [[onecx-user-profile-svc_onecx-user-profile-settings-timezone]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-settings-timezone[`onecx.user-profile.settings.timezone`]##
+a| [[onecx-user-profile-svc_onecx-user-profile-settings-timezone]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-settings-timezone[`+++onecx.user-profile.settings.timezone+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++onecx.user-profile.settings.timezone+++[]
 endif::add-copy-button-to-config-props[]
@@ -217,7 +217,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |`+++Europe/Berlin+++`
 
-a| [[onecx-user-profile-svc_onecx-user-profile-settings-menu-mode]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-settings-menu-mode[`onecx.user-profile.settings.menu-mode`]##
+a| [[onecx-user-profile-svc_onecx-user-profile-settings-menu-mode]] [.property-path]##link:#onecx-user-profile-svc_onecx-user-profile-settings-menu-mode[`+++onecx.user-profile.settings.menu-mode+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++onecx.user-profile.settings.menu-mode+++[]
 endif::add-copy-button-to-config-props[]
