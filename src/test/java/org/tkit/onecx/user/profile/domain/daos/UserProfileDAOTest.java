@@ -21,7 +21,7 @@ import org.tkit.quarkus.test.WithDBData;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-@WithDBData(value = "data/testdata.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@WithDBData(value = "data/testdata.xml", deleteBeforeInsert = true, rinseAndRepeat = true)
 class UserProfileDAOTest extends AbstractTest {
 
     @Inject

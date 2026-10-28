@@ -24,7 +24,7 @@ import io.smallrye.config.SmallRyeConfig;
 
 @QuarkusTest
 @TestHTTPEndpoint(UserProfileV1RestController.class)
-@WithDBData(value = "data/testdata.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@WithDBData(value = "data/testdata.xml", deleteBeforeInsert = true, rinseAndRepeat = true)
 @GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-up:read" })
 class UserProfileV1RestControllerMenuSettingsTest extends AbstractTest {
 
