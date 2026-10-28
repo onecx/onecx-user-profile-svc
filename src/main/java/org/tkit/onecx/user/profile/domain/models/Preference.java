@@ -3,7 +3,6 @@ package org.tkit.onecx.user.profile.domain.models;
 import jakarta.persistence.*;
 
 import org.hibernate.annotations.JoinColumnOrFormula;
-import org.hibernate.annotations.JoinColumnsOrFormulas;
 import org.hibernate.annotations.JoinFormula;
 import org.hibernate.annotations.TenantId;
 import org.tkit.quarkus.jpa.models.TraceableEntity;
@@ -19,10 +18,8 @@ import lombok.Setter;
 public class Preference extends TraceableEntity {
 
     @ManyToOne(optional = false)
-    @JoinColumnsOrFormulas({
-            @JoinColumnOrFormula(column = @JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")),
-            @JoinColumnOrFormula(formula = @JoinFormula(value = "TENANT_ID", referencedColumnName = "TENANT_ID"))
-    })
+    @JoinColumnOrFormula(column = @JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID"))
+    @JoinColumnOrFormula(formula = @JoinFormula(value = "TENANT_ID", referencedColumnName = "TENANT_ID"))
     private UserProfile userProfile;
 
     @Column(name = "APPLICATION_ID")
